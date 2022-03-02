@@ -1,6 +1,6 @@
 # Quasar App (slack)
 
-text communication app
+A Quasar Framework app
 
 ## Install the dependencies
 
