@@ -1,129 +1,72 @@
 <template>
-  <q-page>
-    <div class="q-pa-md column almost-window-height content-between">
-      <q-infinite-scroll @load="onLoad" class="full-width chat overflow-auto" reverse>
-        <template v-slot:loading>
-          <div class="row justify-center q-my-md">
-            <q-spinner color="primary" name="dots" size="40px" />
-          </div>
-        </template>
+  <q-page class="q-pa-md container">
+    <q-infinite-scroll id="chat" @load="onLoad" class="full-width overflow-auto" reverse>
+      <template v-slot:loading>
+        <div class="row justify-center q-my-md">
+          <q-spinner color="primary" name="dots" size="20px" />
+        </div>
+      </template>
 
-        <q-chat-message
-          label="Sunday, 19th"
-        />
-
-        <q-chat-message
-          name="me"
-          avatar="https://cdn.quasar.dev/img/avatar4.jpg"
-          :text="['hey, how are you?']"
-          sent
-          stamp="7 minutes ago"
-        />
-        <q-chat-message
-          name="Jane"
-          avatar="https://cdn.quasar.dev/img/avatar3.jpg"
-          :text="['doing fine, how r you?']"
-          stamp="4 minutes ago"
-        />
-        <q-chat-message
-          name="me"
-          avatar="https://cdn.quasar.dev/img/avatar4.jpg"
-          :text="['hey, how are you?']"
-          sent
-          stamp="7 minutes ago"
-        />
-        <q-chat-message
-          name="Jane"
-          avatar="https://cdn.quasar.dev/img/avatar3.jpg"
-          :text="['doing fine, how r you?']"
-          stamp="4 minutes ago"
-        />
-        <q-chat-message
-          name="me"
-          avatar="https://cdn.quasar.dev/img/avatar4.jpg"
-          :text="['hey, how are you?']"
-          sent
-          stamp="7 minutes ago"
-        />
-        <q-chat-message
-          name="Jane"
-          avatar="https://cdn.quasar.dev/img/avatar3.jpg"
-          :text="['doing fine, how r you?']"
-          stamp="4 minutes ago"
-        />
-        <q-chat-message
-          name="me"
-          avatar="https://cdn.quasar.dev/img/avatar4.jpg"
-          :text="['hey, how are you?']"
-          sent
-          stamp="7 minutes ago"
-        />
-        <q-chat-message
-          name="Jane"
-          avatar="https://cdn.quasar.dev/img/avatar3.jpg"
-          :text="['doing fine, how r you?']"
-          stamp="4 minutes ago"
-        />
-        <q-chat-message
-          name="me"
-          avatar="https://cdn.quasar.dev/img/avatar4.jpg"
-          :text="['hey, how are you?']"
-          sent
-          stamp="7 minutes ago"
-        />
-        <q-chat-message
-          name="Jane"
-          avatar="https://cdn.quasar.dev/img/avatar3.jpg"
-          :text="['doing fine, how r you?']"
-          stamp="4 minutes ago"
-        />
-        <q-chat-message
-          name="me"
-          avatar="https://cdn.quasar.dev/img/avatar4.jpg"
-          :text="['hey, how are you?']"
-          sent
-          stamp="7 minutes ago"
-        />
-        <q-chat-message
-          name="Jane"
-          avatar="https://cdn.quasar.dev/img/avatar3.jpg"
-          :text="['doing fine, how r you?']"
-          stamp="4 minutes ago"
-        />
-      </q-infinite-scroll>
-      <div class="full-width q-mt-sm">
-        <q-form
-          @submit="onSubmit"
-          @reset="onReset"
-          class="q-gutter-md"
-        >
-          <q-input
-            filled
-            v-model="name"
-            placeholder="Message"
+      <div v-for="message in messages" v-bind:key="message" >
+          <q-chat-message
+            name="me"
+            avatar="https://cdn.quasar.dev/img/avatar4.jpg"
+            :text="[message]"
+            sent
+            stamp="7 minutes ago"
           />
 
-          <div>
-            <q-btn label="Submit" type="submit" color="primary"/>
-          </div>
-        </q-form>
       </div>
-    </div>
+    </q-infinite-scroll>
+    <q-form
+      @submit="submit"
+      class="q-gutter-md chat-input"
+    >
+      <q-input
+        filled
+        type="text"
+        v-model="message"
+        placeholder="Message"
+      />
+
+      <div>
+        <q-btn label="" icon="send" type="submit" color="primary" class="float-right" />
+      </div>
+    </q-form>
   </q-page>
 </template>
 
 <script>
-import {defineComponent} from 'vue';
+import { defineComponent, ref } from 'vue';
+
 export default defineComponent({
   name: 'PageIndex',
-});
+  setup() {
+    const messages = ref([]);
+    const message = ref('ilkjl');
+    return {
+      messages,
+      message,
+      submit () {
+        messages.value.push(message.value);
+        let objDiv = document.getElementById('chat');
+        objDiv.scrollTop = objDiv.scrollHeight
+      }
+    };
+  }
+})
+;
 </script>
 
 <style>
-.almost-window-height {
-  height: 94vh !important;
+#chat {
+  height: 86%;
 }
-.chat {
-  height: 78vh;
+
+.container {
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 </style>
