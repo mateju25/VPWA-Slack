@@ -6,7 +6,7 @@
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title class="flex flex-center">
-          <p class="heading">Title</p>
+          <p class="q-ma-none">Title</p>
         </q-toolbar-title>
 
         <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
@@ -48,9 +48,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style>
-header div .heading {
-  margin: 0;
-}
-</style>
