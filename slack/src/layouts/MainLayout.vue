@@ -14,11 +14,11 @@
     </q-header>
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
-      <!-- drawer content -->
+      <ChannelList/>
     </q-drawer>
 
     <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
-      <!-- drawer content -->
+      <UserContactList/>
     </q-drawer>
 
     <q-page-container>
@@ -30,8 +30,16 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
+import UserContactList from 'src/components/UserContactList.vue';
+import ChannelList from 'src/components/ChannelList.vue';
+
 export default defineComponent({
   name: 'MainLayout',
+  components: {
+    UserContactList,
+    ChannelList
+  },
+
   setup () {
     const leftDrawerOpen = ref(false)
     const rightDrawerOpen = ref(false)
@@ -45,7 +53,7 @@ export default defineComponent({
         rightDrawerOpen.value = !rightDrawerOpen.value
       }
     }
-  }
+  },
 })
 </script>
 
