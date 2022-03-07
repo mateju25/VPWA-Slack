@@ -10,15 +10,15 @@
         </q-toolbar-title>
 
         <q-btn dense flat round icon="people" class="hide-users" @click="toggleRightDrawer" />
-        
+
         <q-btn
           dense
           flat
           round
           class="hide-avatar"
         >
-          <q-avatar 
-            color="blue-grey-11" 
+          <q-avatar
+            color="blue-grey-11"
             square
             text-color="primary"
             size="36px"
@@ -42,7 +42,7 @@
       bordered
     >
       <ChannelList/>
-      
+
       <div
         class="absolute-bottom-left mobile-avatar"
       >
@@ -51,8 +51,8 @@
           dense
           class="q-ma-sm"
         >
-          <q-avatar 
-            color="blue-grey-11" 
+          <q-avatar
+            color="blue-grey-11"
             square
             text-color="primary"
             size="36px"
@@ -66,7 +66,7 @@
           </q-avatar>
           {{ user.nick_name }}
         </q-btn>
-      </div>      
+      </div>
 
     </q-drawer>
 
@@ -140,7 +140,7 @@ export default defineComponent({
   },
 })
 </script>
-
+<style>
 @media (min-width: 992px) {
   .hide-users, .mobile-avatar{
     display: none;
