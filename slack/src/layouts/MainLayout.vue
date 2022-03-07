@@ -6,7 +6,7 @@
         <q-btn dense flat round icon="menu" class="hide-channels" @click="toggleLeftDrawer" />
 
         <q-toolbar-title class="flex flex-center">
-          <p class="heading">VoidMessenger</p>
+          <p class="q-ma-none">Title</p>
         </q-toolbar-title>
 
         <q-btn dense flat round icon="people" class="hide-users" @click="toggleRightDrawer" />
@@ -140,11 +140,6 @@ export default defineComponent({
   },
 })
 </script>
-
-<style>
-header div .heading {
-  margin: 0;
-}
 
 @media (min-width: 992px) {
   .hide-users, .mobile-avatar{

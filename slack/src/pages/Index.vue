@@ -23,7 +23,7 @@
       class="q-gutter-md chat-input"
     >
       <q-input
-        filled
+        square filled clearable
         type="text"
         v-model="message"
         placeholder="Message"
