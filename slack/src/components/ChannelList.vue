@@ -24,7 +24,7 @@
         >
           <q-badge 
             rounded
-            color="blue"
+            color="secondary"
           />
         </q-item-section>
       </q-item>
