@@ -30,7 +30,7 @@
       />
 
       <div>
-        <q-btn label="" icon="send" type="submit" color="primary" class="float-right" />
+        <q-btn label="" icon="send" type="submit" color="secondary" class="float-right" />
       </div>
     </q-form>
   </q-page>
@@ -38,12 +38,18 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'PageIndex',
   setup() {
     const messages = ref([]);
     const message = ref('ilkjl');
+
+    const $q = useQuasar()
+    // calling here; equivalent to when component is created
+    $q.dark.set(true)
+
     return {
       messages,
       message,
