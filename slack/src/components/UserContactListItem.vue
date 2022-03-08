@@ -1,15 +1,19 @@
 <template>
   <div>
     <q-item
-      v-for="contact in contacts" 
-      :key="contact.id" 
-      class="q-my-sm" 
-      clickable 
+      v-for="contact in contacts"
+      :key="contact.id"
+      class="q-my-sm cursor-pointer q-hoverable"
+      clickable
+      onclick=""
       v-ripple
     >
+      <q-card class="info">
+
+      </q-card>
       <q-item-section avatar>
-        <q-avatar 
-          color="primary" 
+        <q-avatar
+          color="primary"
           square
           text-color="white"
           size="36px"
@@ -25,7 +29,7 @@
       <q-item-section>
         <q-item-label>{{ contact.nick_name }}</q-item-label>
       </q-item-section>
-      
+
     </q-item>
   </div>
 </template>
@@ -57,7 +61,7 @@ export default defineComponent({
       return color;
     },
   },
-  
+
 })
 
 </script>
@@ -66,10 +70,10 @@ export default defineComponent({
   .badge-state {
     margin: 0 -4px -4px 0;
     padding: 0;
-    width: 16px; 
+    width: 16px;
     height: 16px;
     border: 2px solid white;
-    border-radius: 10px; 
+    border-radius: 10px;
   }
 
 </style>

@@ -6,6 +6,9 @@
         <q-btn dense flat round icon="menu" class="hide-channels" @click="toggleLeftDrawer" />
 
         <q-toolbar-title class="flex flex-center">
+          <q-icon size="lg">
+            <img src="~assets/icon3.svg" />
+          </q-icon>
           <p class="q-ma-none">Title</p>
         </q-toolbar-title>
 
@@ -102,6 +105,7 @@ export default defineComponent({
 
   data() {
     return {
+      iconPath: '/statics/icon.svg',
       user: { 'id': 1, 'nick_name': 'Jesse', 'state': 'Online' },
     }
   },
@@ -161,6 +165,10 @@ export default defineComponent({
 
 .mobile-avatar{
   width:100%;
+}
+
+.header {
+  background: url('~assets/icon.png');
 }
 
 </style>
