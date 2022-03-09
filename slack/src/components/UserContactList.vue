@@ -1,10 +1,10 @@
 <template>
   <div>
-    
+
     <div class="q-ma-md text-h6"># Channel</div>
     <q-separator />
 
-    <q-list>      
+    <q-list>
       <q-item-label header>Owner</q-item-label>
       <UserContactListItem
         :contacts="owner"
@@ -33,14 +33,14 @@ export default defineComponent({
   data() {
     return {
       owner: [
-        { 'id': 1, 'nick_name': 'Jesse', 'state': 'Online' },
+        { 'id': 1, 'nick_name': 'Jesse', 'fullName': 'Jesse Jones', 'state': 'Online' },
       ],
 
       contacts: [
-        { 'id': 2, 'nick_name': 'John', 'state': 'Online' },
-        { 'id': 4, 'nick_name': 'Clarence', 'state': 'DND' },
-        { 'id': 3, 'nick_name': 'Tina', 'state': 'Offline' },
-        { 'id': 5, 'nick_name': 'Anne', 'state': 'Offline' },
+        { 'id': 2, 'nick_name': 'John', 'fullName': 'John Jones', 'state': 'Online' },
+        { 'id': 4, 'nick_name': 'Clarence', 'fullName': 'Clarence Jones', 'state': 'DND' },
+        { 'id': 3, 'nick_name': 'Tina', 'fullName': 'Tina Jones', 'state': 'Offline' },
+        { 'id': 5, 'nick_name': 'Anne', 'fullName': 'Anne Jones', 'state': 'Offline' },
       ]
     }
   },
@@ -50,7 +50,7 @@ export default defineComponent({
   //     return this.contacts.filter(x => x.state == 'Online');
   //   }
   // },
-  
+
 })
 
 </script>
