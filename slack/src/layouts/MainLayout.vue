@@ -6,10 +6,10 @@
         <q-btn dense flat round icon="menu" class="hide-channels" @click="toggleLeftDrawer" />
 
         <q-toolbar-title class="flex flex-center">
-          <q-icon size="lg">
+          <q-icon size="lg" class="q-mr-sm">
             <img src="~assets/icon3.svg" />
           </q-icon>
-          <p class="q-ma-none">Title</p>
+          <p class="q-ma-none">VoidMessenger</p>
         </q-toolbar-title>
 
         <q-btn dense flat round icon="people" class="hide-users" @click="toggleRightDrawer" />
