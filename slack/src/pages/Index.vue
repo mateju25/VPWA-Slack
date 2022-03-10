@@ -43,7 +43,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import { useQuasar } from 'quasar'
+// import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'PageIndex',
@@ -51,9 +51,9 @@ export default defineComponent({
     const messages = ref([]);
     const message = ref('ilkjl');
 
-    const $q = useQuasar()
-    // calling here; equivalent to when component is created
-    $q.dark.set(true)
+    // const $q = useQuasar()
+    // // calling here; equivalent to when component is created
+    // $q.dark.set(true)
 
     return {
       messages,

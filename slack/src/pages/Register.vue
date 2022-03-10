@@ -1,6 +1,18 @@
 <template>
   <q-page class="window-height window-width row justify-center items-center">
-    <div class="column">
+    <div class="column q-mx-md text-center">
+      <q-icon size="12em" class="mobile-hide q-mx-auto">
+        <img src="~assets/icon3.svg" />
+      </q-icon>
+      <q-icon size="10em" class="desktop-hide q-mx-auto">
+        <img src="~assets/icon3.svg" />
+      </q-icon>
+      <h4 class="text-h4 q-my-md">
+          VoidMessenger
+      </h4>
+      <p class="text-subtitle-2 text-italic">Your best choice</p>
+    </div>
+    <div class="column q-mx-md">
       <div class="row">
         <q-card square class="q-pa-md register-card">
           <q-form class="q-gutter-md">
@@ -16,6 +28,11 @@
               <q-btn color="primary" class="full-width" label="Create account" type="submit"/>
             </q-card-actions>
           </q-form>
+          <q-card-section class="text-center q-pa-none q-mt-sm">
+            <a class="text-grey-6 cursor-pointer" @click="$router.replace('/login')">
+              Back to login
+            </a>
+          </q-card-section>
         </q-card>
       </div>
     </div>
@@ -48,6 +65,6 @@ export default {
 <style>
 .register-card {
   width: 300px;
-  height: 500px
+  height: 530px
 }
 </style>
