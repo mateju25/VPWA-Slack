@@ -1,11 +1,11 @@
 <template>
-  <div class="q-pa-sm q-gutter-md">  
+  <div class="q-pa-sm q-gutter-md">
     <q-item
       clickable
       v-ripple
     >
       <q-item-section>
-        <q-item-label 
+        <q-item-label
           lines="1"
           class
           :class="channelSeen(channels[0].seen)"
@@ -15,15 +15,15 @@
       </q-item-section>
 
       <q-item-section
-        v-if="!channels[0].seen" 
+        v-if="!channels[0].seen"
         side
       >
-        <q-badge 
+        <q-badge
           rounded
           color="secondary"
         />
       </q-item-section>
-    </q-item> 
+    </q-item>
 
     <q-list padding class="rounded-borders" style="max-width: 350px">
       <q-expansion-item
@@ -34,15 +34,16 @@
         label="PUBLIC"
         expand-icon="chevron_right"
         expanded-icon="expand_more"
+        class="expandable-icon"
       >
         <q-item
           v-for="channel in channels"
           :key="channel.id"
           clickable
-          v-ripple          
+          v-ripple
         >
           <q-item-section>
-            <q-item-label 
+            <q-item-label
               lines="1"
               class="q-pl-md"
               :class="channelSeen(channel.seen)"
@@ -52,16 +53,16 @@
           </q-item-section>
 
           <q-item-section
-            v-if="!channel.seen" 
+            v-if="!channel.seen"
             side
           >
-            <q-badge 
+            <q-badge
               rounded
               color="secondary"
             />
           </q-item-section>
         </q-item>
-      </q-expansion-item>      
+      </q-expansion-item>
     </q-list>
 
     <q-list padding class="rounded-borders" style="max-width: 350px">
@@ -73,6 +74,7 @@
         label="PRIVATE"
         expand-icon="chevron_right"
         expanded-icon="expand_more"
+        class="expandable-icon"
       >
         <q-item
           v-for="channel in channels"
@@ -81,7 +83,7 @@
           v-ripple
         >
           <q-item-section>
-            <q-item-label 
+            <q-item-label
               lines="1"
               class="q-pl-md"
               :class="channelSeen(channel.seen)"
@@ -91,16 +93,16 @@
           </q-item-section>
 
           <q-item-section
-            v-if="!channel.seen" 
+            v-if="!channel.seen"
             side
           >
-            <q-badge 
+            <q-badge
               rounded
               color="secondary"
             />
           </q-item-section>
         </q-item>
-      </q-expansion-item>      
+      </q-expansion-item>
     </q-list>
 
   </div>
@@ -142,6 +144,10 @@ export default defineComponent({
 
   .q-expansion-item__container .q-item {
     padding-left: 0;
+  }
+
+  .expandable-icon > div > div > .q-item__section--avatar {
+    min-width: 35px;
   }
 
 </style>

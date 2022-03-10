@@ -28,13 +28,13 @@
         autogrow
         v-model="message"
         placeholder="Message"
-        style="width: 85%"
+        style="width: 90%"
       />
 
       <div>
-        <q-btn label="" icon="send" type="submit" color="secondary" 
-        class="float-right q-mx-auto q-px-lg q-py-sm" 
-        style="width: 15%"
+        <q-btn label="" icon="send" type="submit" color="secondary"
+        class="float-right q-mx-auto q-px-lg q-py-sm"
+        style="width: 10%"
         />
       </div>
     </q-form>
@@ -83,8 +83,8 @@ export default defineComponent({
 
 .my-form {
   display: flex;
-  align-items: end;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: center;
 }
 
 </style>
