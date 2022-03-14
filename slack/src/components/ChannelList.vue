@@ -37,6 +37,7 @@
         class="expandable-icon"
       >
         <q-item
+          class="channel-item q-mt-sm"
           v-for="channel in channels"
           :key="channel.id"
           clickable
@@ -77,6 +78,7 @@
         class="expandable-icon"
       >
         <q-item
+          class="channel-item q-mt-sm"
           v-for="channel in channels"
           :key="channel.id"
           clickable
@@ -150,4 +152,7 @@ export default defineComponent({
     min-width: 35px;
   }
 
+  .channel-item {
+    background-color: rgba(38, 166, 154, 0.04);
+  }
 </style>

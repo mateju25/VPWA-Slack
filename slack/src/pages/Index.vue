@@ -20,11 +20,11 @@
     </q-infinite-scroll>
     <q-form
       @submit="submit"
-      class="chat-input my-form"
+      class="chat-input my-form q-mt-md"
     >
       <q-input
-        square filled clearable
-        type="text"
+        square filled
+        type="textarea"
         autogrow
         v-model="message"
         placeholder="Message"
@@ -66,7 +66,7 @@ export default defineComponent({
 
 <style>
 #chat {
-  height: 86%;
+  height: 92%;
 }
 
 .container {

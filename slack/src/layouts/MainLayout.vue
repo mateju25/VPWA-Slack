@@ -27,6 +27,9 @@
         >
           <Avatar v-bind:contact="user"  v-bind:inHeader="true"/>
         </q-btn>
+        <a class="text-grey-6 cursor-pointer underlined-text" @click="$router.replace('/login')">
+          Sign out
+        </a>
 
       </q-toolbar>
     </q-header>
@@ -140,7 +143,7 @@ export default defineComponent({
         case 'DND':
           color='bg-warning';
           break;
-      };
+      }
       return color;
     },
   },
