@@ -43,17 +43,12 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'PageIndex',
   setup() {
     const messages = ref([]);
     const message = ref('ilkjl');
-
-    const $q = useQuasar()
-    // calling here; equivalent to when component is created
-    $q.dark.set(true)
 
     return {
       messages,
