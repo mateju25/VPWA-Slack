@@ -14,14 +14,22 @@
 
         <q-btn dense flat round icon="people" class="hide-users" @click="toggleRightDrawer" />
 
+        <q-dialog v-model="dialogOpen" auto-close="auto-close">
+          <UserInfoDialogContent v-bind:selectedContact='user' v-bind:inHeader='true'/>
+        </q-dialog>
+
         <q-btn
           dense
           flat
           round
           class="hide-avatar"
+          @click="changeDialogOpen()"
         >
           <Avatar v-bind:contact="user"  v-bind:inHeader="true"/>
         </q-btn>
+        <a class="text-grey-6 cursor-pointer underlined-text" @click="$router.replace('/login')">
+          Sign out
+        </a>
 
       </q-toolbar>
     </q-header>
@@ -85,10 +93,12 @@ import { defineComponent, ref } from 'vue';
 import UserContactList from 'src/components/UserContactList.vue';
 import ChannelList from 'src/components/ChannelList.vue';
 import Avatar from 'components/Avatar.vue';
+import UserInfoDialogContent from 'components/UserInfoDialogContent.vue';
 
 export default defineComponent({
   name: 'MainLayout',
   components: {
+    UserInfoDialogContent,
     Avatar,
     UserContactList,
     ChannelList
@@ -96,6 +106,7 @@ export default defineComponent({
 
   data() {
     return {
+      dialogOpen: false,
       iconPath: '/statics/icon3.svg',
       user: { 'id': 1, 'nick_name': 'Jesse', 'state': 'Online' },
     }
@@ -117,6 +128,9 @@ export default defineComponent({
   },
 
   methods: {
+    changeDialogOpen() {
+      this.dialogOpen = !this.dialogOpen;
+    },
     userState(state: string): string {
       let color = 'bg-negative';
       switch(state){
@@ -129,7 +143,7 @@ export default defineComponent({
         case 'DND':
           color='bg-warning';
           break;
-      };
+      }
       return color;
     },
   },

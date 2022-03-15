@@ -1,36 +1,7 @@
 <template>
   <div>
     <q-dialog v-model="dialogOpen" auto-close="auto-close">
-      <q-card  class="dialog">
-        <q-card-section class="row items-center q-pb-none">
-          <Avatar v-bind:contact="selectedContact"/>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-
-        <q-card-section>
-          <q-list>
-              <q-item>
-                <q-item-section>
-                  <q-item-label>Nickname:</q-item-label>
-                </q-item-section>
-
-                <q-item-section>
-                  <q-item-label>{{ selectedContact.nick_name }}</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item>
-                <q-item-section>
-                  <q-item-label>Full name:</q-item-label>
-                </q-item-section>
-
-                <q-item-section>
-                  <q-item-label>{{ selectedContact.fullName }}</q-item-label>
-                </q-item-section>
-              </q-item>
-          </q-list>
-        </q-card-section>
-      </q-card>
+      <UserInfoDialogContent v-bind:selectedContact='selectedContact' v-bind:inHeader='false'/>
     </q-dialog>
 
     <q-item
@@ -55,9 +26,10 @@
 
 import { defineComponent } from 'vue';
 import Avatar from 'components/Avatar.vue';
+import UserInfoDialogContent from 'components/UserInfoDialogContent.vue';
 
 export default defineComponent({
-  components: { Avatar },
+  components: { UserInfoDialogContent, Avatar },
   // type inference enabled
   data() {
     return {

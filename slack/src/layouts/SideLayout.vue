@@ -2,7 +2,7 @@
   <q-layout view="hHh lpR fFf">
 
     <q-page-container>
-      <router-view />
+      <router-view class='background'/>
     </q-page-container>
 
   </q-layout>
@@ -14,3 +14,9 @@ export default defineComponent({
   name: 'SideLayout',
 })
 </script>
+
+<style>
+.background {
+  background-image: url('~assets/loginBackground.png');
+}
+</style>
