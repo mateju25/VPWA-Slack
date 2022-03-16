@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh LpR fFf">
 
     <q-header elevated class="bg-primary text-white">
       <q-toolbar class="content-center">
@@ -14,24 +14,25 @@
 
         <q-btn dense flat round icon="people" class="hide-users" @click="toggleRightDrawer" />
 
+        <q-dialog v-model="dialogOpen">
+          <UserInfoDialogContent 
+            :selectedContact='user' 
+            :inHeader='true'
+          />
+        </q-dialog>
+
         <q-btn
           dense
           flat
           round
           class="hide-avatar"
+          @click="changeDialogOpen()"
         >
-          <q-avatar
-            color="blue-grey-11"
-            square
-            text-color="primary"
-            size="36px"
-          >
-            {{ user.nick_name[0] }}
-            <q-badge
-              class="absolute-bottom-right badge-state"
-              :class="userState(user.state)"
-            />
-          </q-avatar>
+          <Avatar 
+            :contact="user"
+            :inHeader="true"
+            :size="'36px'"
+          />
         </q-btn>
 
       </q-toolbar>
@@ -41,7 +42,7 @@
       show-if-above
       v-model="leftDrawerOpen"
       side="left"
-      :breakpoint="768"
+      :breakpoint="992"
       bordered
     >
       <ChannelList/>
@@ -95,17 +96,22 @@
 import { defineComponent, ref } from 'vue';
 import UserContactList from 'src/components/UserContactList.vue';
 import ChannelList from 'src/components/ChannelList.vue';
+import Avatar from 'components/Avatar.vue';
+import UserInfoDialogContent from 'components/UserInfoDialogContent.vue';
 
 export default defineComponent({
   name: 'MainLayout',
   components: {
+    UserInfoDialogContent,
+    Avatar,
     UserContactList,
     ChannelList
   },
 
   data() {
     return {
-      iconPath: '/statics/icon.svg',
+      dialogOpen: false,
+      iconPath: '/statics/icon3.svg',
       user: { 'id': 1, 'nick_name': 'Jesse', 'state': 'Online' },
     }
   },
@@ -126,6 +132,9 @@ export default defineComponent({
   },
 
   methods: {
+    changeDialogOpen() {
+      this.dialogOpen = !this.dialogOpen;
+    },
     userState(state: string): string {
       let color = 'bg-negative';
       switch(state){
@@ -138,7 +147,7 @@ export default defineComponent({
         case 'DND':
           color='bg-warning';
           break;
-      };
+      }
       return color;
     },
   },
@@ -146,7 +155,7 @@ export default defineComponent({
 </script>
 <style>
 @media (min-width: 992px) {
-  .hide-users, .mobile-avatar{
+  .hide-users, .mobile-avatar, .hide-channels {
     display: none;
   }
 }
@@ -157,18 +166,9 @@ export default defineComponent({
   }
 }
 
-@media (min-width: 768px) {
-  .hide-channels{
-    display: none;
-  }
-}
-
 .mobile-avatar{
   width:100%;
-}
-
-.header {
-  background: url('~assets/icon.png');
+  background-color: var(--q-dark);
 }
 
 </style>

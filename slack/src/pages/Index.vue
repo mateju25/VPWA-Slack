@@ -20,21 +20,21 @@
     </q-infinite-scroll>
     <q-form
       @submit="submit"
-      class="chat-input my-form"
+      class="chat-input my-form q-mt-md"
     >
       <q-input
-        square filled clearable
-        type="text"
+        square filled
+        type="textarea"
         autogrow
         v-model="message"
         placeholder="Message"
-        style="width: 85%"
+        style="width: 90%"
       />
 
       <div>
-        <q-btn label="" icon="send" type="submit" color="secondary" 
-        class="float-right q-mx-auto q-px-lg q-py-sm" 
-        style="width: 15%"
+        <q-btn label="" icon="send" type="submit" color="secondary"
+        class="float-right q-mx-auto q-px-lg q-py-sm"
+        style="width: 10%"
         />
       </div>
     </q-form>
@@ -66,7 +66,7 @@ export default defineComponent({
 
 <style>
 #chat {
-  height: 86%;
+  height: 92%;
 }
 
 .container {
@@ -78,8 +78,8 @@ export default defineComponent({
 
 .my-form {
   display: flex;
-  align-items: end;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: center;
 }
 
 </style>

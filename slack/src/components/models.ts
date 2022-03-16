@@ -1,8 +1,7 @@
-export interface Todo {
+export interface User {
   id: number;
-  content: string;
-}
-
-export interface Meta {
-  totalCount: number;
+  nickname: string;
+  fullName: string;
+  email: string;
+  password: string;
 }
