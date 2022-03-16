@@ -28,13 +28,18 @@
         autogrow
         v-model="message"
         placeholder="Message"
-        style="width: 90%"
+        style="width: 100%"
       />
 
-      <div>
-        <q-btn label="" icon="send" type="submit" color="secondary"
-        class="float-right q-mx-auto q-px-lg q-py-sm"
-        style="width: 10%"
+      <div class="input-bottom">
+        <q-btn 
+          label=""
+          icon="send"
+          type="submit"
+          color="secondary"
+          size="md"
+          flat
+          class="float-right q-pa-xs q-pr-md"
         />
       </div>
     </q-form>
@@ -78,8 +83,13 @@ export default defineComponent({
 
 .my-form {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  /* align-items: center;
+  justify-content: center; */
+}
+
+.input-bottom{
+  background-color: var(--q-dark);
 }
 
 </style>
