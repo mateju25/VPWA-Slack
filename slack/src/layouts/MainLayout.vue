@@ -14,8 +14,11 @@
 
         <q-btn dense flat round icon="people" class="hide-users" @click="toggleRightDrawer" />
 
-        <q-dialog v-model="dialogOpen" auto-close="auto-close">
-          <UserInfoDialogContent v-bind:selectedContact='user' v-bind:inHeader='true'/>
+        <q-dialog v-model="dialogOpen">
+          <UserInfoDialogContent 
+            :selectedContact='user' 
+            :inHeader='true'
+          />
         </q-dialog>
 
         <q-btn
@@ -25,11 +28,12 @@
           class="hide-avatar"
           @click="changeDialogOpen()"
         >
-          <Avatar v-bind:contact="user"  v-bind:inHeader="true"/>
+          <Avatar 
+            :contact="user"
+            :inHeader="true"
+            :size="'36px'"
+          />
         </q-btn>
-        <a class="text-grey-6 cursor-pointer underlined-text" @click="$router.replace('/login')">
-          Sign out
-        </a>
 
       </q-toolbar>
     </q-header>
@@ -164,6 +168,7 @@ export default defineComponent({
 
 .mobile-avatar{
   width:100%;
+  background-color: var(--q-dark);
 }
 
 </style>

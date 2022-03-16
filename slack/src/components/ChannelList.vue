@@ -152,7 +152,11 @@ export default defineComponent({
     min-width: 35px;
   }
 
-  .channel-item {
-    background-color: rgba(38, 166, 154, 0.04);
+  .q-item:last-child{
+    margin-bottom: 48px;
+  }
+
+  .q-item:hover {
+    background-color: rgba(38, 166, 154, 0.11) !important;
   }
 </style>

@@ -1,10 +1,10 @@
 <template>
   <q-item-section avatar>
     <q-avatar
-      v-bind:color="isInHeader() ? 'blue-grey-11' : 'primary'"
+      :color="isInHeader() ? 'blue-grey-11' : 'primary'"
       square
-      v-bind:text-color="isInHeader() ? 'primary' : 'white'"
-      size="36px"
+      :text-color="isInHeader() ? 'primary' : 'white'"
+      :size="size"
     >
       {{ contact.nick_name[0] }}
       <q-badge
@@ -22,7 +22,8 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   props: {
     contact: Object,
-    inHeader: Boolean
+    inHeader: Boolean,
+    size: String
   },
   methods: {
     userState(state: string): string {

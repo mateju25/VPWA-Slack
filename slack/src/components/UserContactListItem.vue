@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-dialog v-model="dialogOpen" auto-close="auto-close">
+    <q-dialog v-model="dialogOpen">
       <UserInfoDialogContent v-bind:selectedContact='selectedContact' v-bind:inHeader='false'/>
     </q-dialog>
 
