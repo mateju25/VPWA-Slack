@@ -32,7 +32,7 @@
       />
 
       <div class="input-bottom">
-        <q-btn 
+        <q-btn
           label=""
           icon="send"
           type="submit"
@@ -47,23 +47,28 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'PageIndex',
-  setup() {
-    const messages = ref([]);
-    const message = ref('ilkjl');
-
+  data() {
     return {
-      messages,
-      message,
-      submit () {
-        messages.value.push(message.value);
-        let objDiv = document.getElementById('chat');
-        objDiv.scrollTop = objDiv.scrollHeight
-      }
-    };
+      message: '',
+      messages: []
+    }
+  },
+  methods: {
+    submit () {
+      this.messages.push(this.message);
+      let objDiv = document.getElementById('chat');
+      objDiv.scrollTop = objDiv.scrollHeight
+    },
+    onLoad (index, done) {
+      setTimeout(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        done()
+      }, 2000)
+    }
   }
 })
 ;

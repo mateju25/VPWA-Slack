@@ -1,32 +1,35 @@
 <template>
   <div>
-    <q-dialog v-model="dialogOpen">
-      <UserInfoDialogContent v-bind:selectedContact='selectedContact' v-bind:inHeader='false'/>
+    <q-dialog v-model='dialogOpen'>
+      <UserInfoDialogContent v-bind:selectedContact='selectedContact' v-bind:inHeader='false' />
     </q-dialog>
 
     <q-item
-      v-for="contact in contacts"
-      :key="contact.id"
-      class="q-my-sm cursor-pointer q-hoverable"
+      v-for='contact in contacts'
+      :key='contact.id'
+      class='q-my-sm cursor-pointer q-hoverable'
       clickable
-      @click="changeDialogOpen(contact)"
+      @click='changeDialogOpen(contact)'
       v-ripple
     >
-      <Avatar v-bind:contact="contact"  v-bind:inHeader="false"/>
+      <q-item-section avatar>
+        <Avatar v-bind:contact='contact' v-bind:inHeader='false' />
+      </q-item-section>
 
       <q-item-section>
-        <q-item-label>{{ contact.nick_name }}</q-item-label>
+        <q-item-label>{{ contact.nickname }}</q-item-label>
       </q-item-section>
 
     </q-item>
   </div>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
 
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import Avatar from 'components/Avatar.vue';
 import UserInfoDialogContent from 'components/UserInfoDialogContent.vue';
+import { User } from 'components/models';
 
 export default defineComponent({
   components: { UserInfoDialogContent, Avatar },
@@ -34,34 +37,18 @@ export default defineComponent({
   data() {
     return {
       dialogOpen: false,
-      selectedContact: {}
+      selectedContact: User
     };
   },
   props: {
-    contacts: Object
+    contacts: Array as PropType<Array<User>>
   },
   methods: {
-    changeDialogOpen(contact: object) {
+    changeDialogOpen(contact: typeof User) {
       if (!this.dialogOpen) {
         this.selectedContact = contact;
       }
       this.dialogOpen = !this.dialogOpen;
-    },
-    userState(state: string): string {
-      let color = 'bg-negative';
-      switch (state) {
-        case 'Online':
-          color = 'bg-positive';
-          break;
-        case 'Offline':
-          color = 'bg-negative';
-          break;
-        case 'DND':
-          color = 'bg-warning';
-          break;
-      }
-      ;
-      return color;
     }
   }
 
@@ -70,17 +57,5 @@ export default defineComponent({
 </script>
 
 <style>
-.badge-state {
-  margin: 0 -4px -4px 0;
-  padding: 0;
-  width: 16px;
-  height: 16px;
-  border: 2px solid white;
-  border-radius: 10px;
-}
-.dialog {
-  width: 400px;
-  height: 400px;
-}
 
 </style>
