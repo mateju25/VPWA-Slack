@@ -1,30 +1,13 @@
 <template>
   <div class='q-pa-sm q-gutter-md'>
     <q-item
+      class='q-ml-none'
       clickable
       v-ripple
+      @click="changeActiveModel(channels[0])"
     >
-      <q-item-section>
-        <q-item-label
-          lines='1'
-          class
-          :class='channelSeen(channels[0].seen)'
-        >
-          # General
-        </q-item-label>
-      </q-item-section>
-
-      <q-item-section
-        v-if='!channels[0].seen'
-        side
-      >
-        <q-badge
-          rounded
-          color='secondary'
-        />
-      </q-item-section>
+      <ChannelItem :channel='channels[0]' />
     </q-item>
-
     <q-list padding class='rounded-borders' style='max-width: 350px'>
       <q-expansion-item
         switch-toggle-side
@@ -42,26 +25,9 @@
           :key='channel.id'
           clickable
           v-ripple
+          @click="changeActiveModel(channel)"
         >
-          <q-item-section>
-            <q-item-label
-              lines='1'
-              class='q-pl-md'
-              :class='channelSeen(channel.seen)'
-            >
-              # {{ channel.name }}
-            </q-item-label>
-          </q-item-section>
-
-          <q-item-section
-            v-if='!channel.seen'
-            side
-          >
-            <q-badge
-              rounded
-              color='secondary'
-            />
-          </q-item-section>
+          <ChannelItem :channel='channel' />
         </q-item>
       </q-expansion-item>
     </q-list>
@@ -83,26 +49,9 @@
           :key='channel.id'
           clickable
           v-ripple
+          @click="changeActiveModel(channel)"
         >
-          <q-item-section>
-            <q-item-label
-              lines='1'
-              class='q-pl-md'
-              :class='channelSeen(channel.seen)'
-            >
-              # {{ channel.name }}
-            </q-item-label>
-          </q-item-section>
-
-          <q-item-section
-            v-if='!channel.seen'
-            side
-          >
-            <q-badge
-              rounded
-              color='secondary'
-            />
-          </q-item-section>
+          <ChannelItem :channel='channel' />
         </q-item>
       </q-expansion-item>
     </q-list>
@@ -114,20 +63,23 @@
 
 import { defineComponent, PropType } from 'vue';
 import { Channel } from 'components/models';
+import ChannelItem from 'components/ChannelItem.vue';
 
 export default defineComponent({
+  components: { ChannelItem },
   props: {
     channels: {
       type: Array as PropType<Array<Channel>>,
       required: true
+    },
+    activeChannel: {
+      type: Object as PropType<Channel>,
+      required: true
     }
   },
   methods: {
-    channelSeen(seen: boolean): string {
-      if (!seen) {
-        return 'text-bold';
-      }
-      return '';
+    changeActiveModel: function(channel: Channel): void {
+      this.$emit('updateActiveChannel', channel);
     },
     compare: function(a: Channel, b: Channel): number {
       if (!a.seen && b.seen) {

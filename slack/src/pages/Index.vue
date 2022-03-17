@@ -31,12 +31,12 @@
         style="width: 100%"
       />
 
-      <div class="input-bottom">
+      <div :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
         <q-btn
           v-for="btn in actions"
           :key="btn"
           flat
-          color="white"
+          :color="Dark.isActive ? 'white' : 'black'"
           :label="btn"
           @click="addCommandToInput(btn)"
         />
@@ -55,12 +55,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { Dark } from 'quasar'
 
 export default defineComponent({
   name: 'PageIndex',
   data() {
     let messages: string[] = [];
     return {
+      Dark: Dark,
       message: '',
       messages: messages,
       actions: ['@', '/join', '/invite', '/revoke', '/kick', '/quit', '/cancel']
@@ -79,7 +81,6 @@ export default defineComponent({
       }, 2000)
     },
     addCommandToInput(action: string): void {
-      console.log(action);
       this.message = this.message.concat(' ', action);
     }
   }
@@ -107,8 +108,11 @@ export default defineComponent({
   justify-content: center; */
 }
 
-.input-bottom{
+.input-bottom-dark{
   background-color: var(--q-dark);
+}
+.input-bottom-white{
+  background-color: #d9d9d9;
 }
 
 </style>

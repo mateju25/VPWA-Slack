@@ -28,9 +28,9 @@ export class Relation {
 export class RelationUserChannel {
   constructor(
     public id: number,
-    public user_id: number,
-    public channel_id: number,
-    public relation_id: number,
+    public user: User,
+    public channel: Channel,
+    public relation: Relation,
   ) {}
 }
 
