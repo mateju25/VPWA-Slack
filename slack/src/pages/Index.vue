@@ -33,20 +33,27 @@
 
       <div class="input-bottom">
         <q-btn 
-          label=""
+          v-for="btn in actions"
+          :key="btn"
+          flat
+          color="white"
+          :label="btn"
+          @click="addCommandToInput(btn)"
+        />        
+        <q-btn 
           icon="send"
           type="submit"
           color="secondary"
           size="md"
           flat
-          class="float-right q-pa-xs q-pr-md"
+          class="float-right q-pa-xs q-px-md"
         />
       </div>
     </q-form>
   </q-page>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
@@ -58,13 +65,21 @@ export default defineComponent({
     return {
       messages,
       message,
+      actions: ['@', '/join', '/invite', '/revoke', '/kick', '/quit', '/cancel'],
       submit () {
         messages.value.push(message.value);
         let objDiv = document.getElementById('chat');
         objDiv.scrollTop = objDiv.scrollHeight
       }
     };
+  },
+
+  methods: {
+    addCommandToInput(action: string): void {
+      this.message.concat(' ', action);
+    }
   }
+  
 })
 ;
 </script>
