@@ -1,18 +1,18 @@
 <template>
-  <div>
+  <div class='q-pa-sm q-gutter-md'>
 
-    <div class="q-ma-md text-h6"># {{activeChannel.name}}</div>
+    <div class="q-ma-lg text-h6"># {{activeChannel.name}}</div>
     <q-separator />
 
     <q-list>
-      <q-item-label header>Owner</q-item-label>
+      <q-item-label header v-if='owners.length > 0'>Owners</q-item-label>
       <UserContactListItem
         :contacts="owners"
       />
 
-      <q-item-label header>Users</q-item-label>
+      <q-item-label header  v-if='users.length > 0'>Users</q-item-label>
       <UserContactListItem
-        :contacts="contacts"
+        :contacts="users"
       />
     </q-list>
 
@@ -23,7 +23,7 @@
 
 import { defineComponent, PropType } from 'vue';
 import UserContactListItem from 'src/components/UserContactListItem.vue';
-import { Channel, User } from './models';
+import { Channel, RelationUserChannel, User } from './models';
 
 export default defineComponent({
   // type inference enabled
@@ -31,15 +31,27 @@ export default defineComponent({
     UserContactListItem
   },
   props: {
-    contacts: Array as PropType<Array<User>>,
-    activeChannel: Object as PropType<Channel>
-  },
-  data() {
-    let owners: User[] = [(this.contacts as Array<User>)[0]];
-    return {
-      owners: owners
+    contacts: {
+      type: Array as PropType<Array < RelationUserChannel >>,
+      required: true
+    },
+    activeChannel: {
+      type: Object as PropType<Channel>,
+      required: true
     }
   },
+  computed: {
+    owners: function(): User[] {
+      let owners: User[] = [];
+      this.contacts.filter(item => item.relation.id == 1).forEach(item => owners.push(item.user));
+      return owners;
+    },
+    users: function(): User[] {
+      let users: User[] = [];
+      this.contacts.filter(item => item.relation.id == 2).forEach(item => users.push(item.user));
+      return users;
+    }
+  }
 })
 
 </script>

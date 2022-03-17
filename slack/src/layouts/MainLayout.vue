@@ -45,9 +45,10 @@
       :breakpoint="992"
       bordered
     >
-      <ChannelList :channels='channels'/>
+      <ChannelList :channels='channels' :activeChannel='activeChannel' @updateActiveChannel="changeActiveChannel"/>
 
       <div
+        :class="Dark.isActive ? 'background-dark' : 'background-white'"
         class="absolute-bottom-left mobile-avatar"
       >
         <q-dialog v-model="dialogOpen">
@@ -78,7 +79,7 @@
       icon="people"
       bordered
     >
-      <UserContactList :contacts='users' :activeChannel='activeChannel'/>
+      <UserContactList :contacts='filteredRelations' :active-channel='activeChannel'/>
     </q-drawer>
 
     <q-page-container>
@@ -94,7 +95,8 @@ import UserContactList from 'src/components/UserContactList.vue';
 import ChannelList from 'src/components/ChannelList.vue';
 import Avatar from 'components/Avatar.vue';
 import UserInfoDialogContent from 'components/UserInfoDialogContent.vue';
-import { Channel, User } from 'src/components/models';
+import { Channel, Relation, RelationUserChannel, User } from 'src/components/models';
+import {Dark} from 'quasar';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -108,33 +110,81 @@ export default defineComponent({
   data() {
     let users: User[] = [];
     let channels: Channel[] = [];
-    let activeChannel: Channel = new Channel(1, 'General', false, true);
-    channels.push(activeChannel);
+    let userChannelRelations: RelationUserChannel[] = [];
+    let typeRelations: Relation[] = [];
+    typeRelations.push(new Relation(1, 'Owner'));
+    typeRelations.push(new Relation(2, 'User'));
+
+    let activeChannel: Channel;
+    channels.push(new Channel(1, 'General', false, true));
     channels.push(new Channel(2, 'Studovna', false, true));
     channels.push(new Channel(3, 'Klietka', false, true));
     channels.push(new Channel(4, 'Opicarna', false, false));
     channels.push(new Channel(5, 'Medzi 4 ocami', true, true));
     channels.push(new Channel(6, 'Porada', true, true));
     channels.push(new Channel(7, 'Porada sefovia', true, false));
+    activeChannel = channels[0];
+
     let loggedUser: User;
-    users.push(new User(1, 'Jesse', 'Jesse Jones', 'Jesse@Jones.com', 'online'));
-    users.push(new User(2, 'John', 'John Jones', 'John@Jones.com', 'online'));
-    users.push(new User(3, 'Clarence', 'Clarence Jones', 'Clarence@Jones.com', 'online'));
-    users.push(new User(4, 'Tina', 'Tina Jones', 'Tina@Jones.com', 'online'));
-    users.push(new User(5, 'Anne', 'Anne Jones', 'Anne@Jones.com', 'online'));
+    users.push(new User(1, 'Jesse', 'Jesse Jones', 'Jesse@Jones.com', 'Online'));
+    users.push(new User(2, 'John', 'John Jones', 'John@Jones.com', 'Online'));
+    users.push(new User(3, 'Clarence', 'Clarence Jones', 'Clarence@Jones.com', 'DND'));
+    users.push(new User(4, 'Tina', 'Tina Jones', 'Tina@Jones.com', 'Offline'));
+    users.push(new User(5, 'Anne', 'Anne Jones', 'Anne@Jones.com', 'Offline'));
     loggedUser = users[0];
+
+    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[0], typeRelations[1]));
+    userChannelRelations.push(new RelationUserChannel(1, users[1], channels[0], typeRelations[1]));
+    userChannelRelations.push(new RelationUserChannel(1, users[2], channels[0], typeRelations[1]));
+    userChannelRelations.push(new RelationUserChannel(1, users[3], channels[0], typeRelations[1]));
+    userChannelRelations.push(new RelationUserChannel(1, users[4], channels[0], typeRelations[1]));
+
+    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[1], typeRelations[1]));
+    userChannelRelations.push(new RelationUserChannel(1, users[1], channels[1], typeRelations[1]));
+    userChannelRelations.push(new RelationUserChannel(1, users[2], channels[1], typeRelations[1]));
+    userChannelRelations.push(new RelationUserChannel(1, users[3], channels[1], typeRelations[1]));
+    userChannelRelations.push(new RelationUserChannel(1, users[4], channels[1], typeRelations[1]));
+
+    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[2], typeRelations[1]));
+    userChannelRelations.push(new RelationUserChannel(1, users[1], channels[2], typeRelations[1]));
+    userChannelRelations.push(new RelationUserChannel(1, users[2], channels[2], typeRelations[1]));
+
+    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[3], typeRelations[1]));
+    userChannelRelations.push(new RelationUserChannel(1, users[1], channels[3], typeRelations[1]));
+    userChannelRelations.push(new RelationUserChannel(1, users[2], channels[3], typeRelations[1]));
+
+    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[4], typeRelations[0]));
+    userChannelRelations.push(new RelationUserChannel(1, users[1], channels[4], typeRelations[1]));
+
+    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[5], typeRelations[0]));
+    userChannelRelations.push(new RelationUserChannel(1, users[2], channels[5], typeRelations[1]));
+    userChannelRelations.push(new RelationUserChannel(1, users[4], channels[5], typeRelations[1]));
+
+    userChannelRelations.push(new RelationUserChannel(1, users[1], channels[6], typeRelations[0]));
+    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[6], typeRelations[1]));
 
     return {
       users: users,
       loggedUser: loggedUser,
       activeChannel: activeChannel,
       channels: channels,
+      typeRelations: typeRelations,
+      userChannelRelations: userChannelRelations,
+      Dark: Dark,
       leftDrawerOpen: false,
       rightDrawerOpen: false,
       dialogOpen: false
     }
   },
+  computed: {
+    filteredRelations: function(): RelationUserChannel[] {
+      return this.userChannelRelations.filter(item => item.channel.id == this.activeChannel.id);
+    }
+  },
   methods: {
+    changeActiveChannel(channel: Channel) {
+      this.activeChannel = channel;
+    },
     changeDialogOpen() {
       this.dialogOpen = !this.dialogOpen;
     },
@@ -163,6 +213,13 @@ export default defineComponent({
 .mobile-avatar{
   width:100%;
   background-color: var(--q-dark);
+}
+
+.background-dark{
+  background-color: var(--q-dark);
+}
+.background-white{
+  background-color: #d9d9d9;
 }
 
 </style>

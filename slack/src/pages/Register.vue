@@ -14,8 +14,8 @@
     </div>
     <div class="column q-mx-xl">
       <div class="row">
-        <q-card square class="q-pa-md register-card">
-          <q-form class="q-gutter-md">
+        <q-card square class="q-pa-md register-card" >
+          <q-form class="q-gutter-md" @submit="$router.replace('/login')">
             <q-card-section>
               <q-input square standout="bg-grey-10 text-white" clearable v-model="username" type="text" label="username" />
               <q-input class="q-mt-lg" square standout="bg-grey-10 text-white" clearable v-model="fullname" type="text" label="full name" />
