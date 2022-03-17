@@ -32,8 +32,15 @@
       />
 
       <div class="input-bottom">
-        <q-btn
-          label=""
+        <q-btn 
+          v-for="btn in actions"
+          :key="btn"
+          flat
+          color="white"
+          :label="btn"
+          @click="addCommandToInput(btn)"
+        />        
+        <q-btn 
           icon="send"
           type="submit"
           color="secondary"
@@ -46,7 +53,7 @@
   </q-page>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -54,7 +61,8 @@ export default defineComponent({
   data() {
     return {
       message: '',
-      messages: []
+      messages: [],
+      actions: ['@', '/join', '/invite', '/revoke', '/kick', '/quit', '/cancel']
     }
   },
   methods: {
@@ -68,8 +76,12 @@ export default defineComponent({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         done()
       }, 2000)
+    },
+    addCommandToInput(action: string): void {
+      this.message.concat(' ', action);
     }
   }
+  
 })
 ;
 </script>
