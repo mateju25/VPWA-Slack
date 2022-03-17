@@ -34,17 +34,12 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-
 export default {
   name: 'PageLogin',
-  setup() {
-    const username = ref('');
-    const password = ref('');
-
+  data() {
     return {
-      username,
-      password
+      username: '',
+      password: ''
     }
   }
 };
