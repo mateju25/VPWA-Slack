@@ -39,7 +39,7 @@
           color="secondary"
           size="md"
           flat
-          class="float-right q-pa-xs q-pr-md"
+          class="float-right q-pa-xs q-px-md"
         />
       </div>
     </q-form>
