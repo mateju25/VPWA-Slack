@@ -1,67 +1,53 @@
 <template>
   <q-card class="dialog">
-    <q-card-section 
+    <q-card-section
       class="absolute-top-right"
     >
       <q-btn icon="close" flat round dense v-close-popup />
     </q-card-section>
 
-    <q-card-section 
+    <q-card-section
       class="q-mt-lg header"
     >
-      <Avatar 
+      <Avatar
         :contact="selectedContact"
         :inHeader="inHeader"
         :size="'50px'"
       />
-      <div 
-        class="column"
+      <div
+        class="column q-ml-lg"
       >
         <h6
           class="q-ma-none"
         >
-          {{ selectedContact.nick_name }}
+          {{ selectedContact.nickname }}
         </h6>
         <div
-          v-if="isEditing"
+          v-if='inHeader'
           class="header"
         >
-          <q-select          
+          <q-select
             dense
             options-dense
             hide-bottom-space
-            v-model="model"
+            v-model="stateModel.state"
             :options="options"
-            label="Online"
+            label="State"
             style="width:100px"
           />
-          <q-btn
-            icon="close"
-            flat
-            round
-            dense
-            clickable
-            @click="changeEdit()"
-          />
         </div>
-        <p
+        <div
           v-else
           class="q-mb-none"
         >
-          Online 
-          <q-icon
-            v-if="isInHeader()"
-            name="settings" 
-            color="grey-8"
-            style="cursor:pointer"
-            @click="changeEdit()"
-          />
-        </p>
-      </div>  
+          {{stateModel.state}}
+        </div>
+
+      </div>
     </q-card-section>
 
     <q-card-section
-      v-if="isInHeader()"
+      v-if="inHeader"
     >
       <q-toggle
         v-model="darkMode"
@@ -73,12 +59,12 @@
         keep-color
       />
     </q-card-section>
-    
+
     <q-card-section
-      v-if="isInHeader()"
+      v-if="inHeader"
     >
       <q-separator/>
-      <q-btn 
+      <q-btn
         flat
         :color="darkMode ? 'white' : 'black'"
         class="full-width q-my-sm"
@@ -93,58 +79,36 @@
 
 <script lang="ts">
 
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import Avatar from 'components/Avatar.vue';
-import { ref } from 'vue'
 import { Dark } from 'quasar'
+import { User } from 'components/models';
 
 export default defineComponent({
   components: { Avatar },
   props: {
-    selectedContact: Object,
+    selectedContact: Object as PropType<User>,
     inHeader: Boolean
   },
-  setup () {
+  data() {
     return {
-      model: ref(null),
-      value: ref(true),
       options: [
         'Online', 'Offline', 'DND'
       ]
     }
   },
-  data() {
-    return {
-      isEditing: false,
-      darkMode: true,
+  computed: {
+    stateModel: {
+      get (): User  { return this.selectedContact as User },
+      set (value: User) { this.$emit('update:selectedContact', value) },
+    },
+    darkMode: function() {
+      return Dark.isActive;
     }
   },
   methods: {
-    userState(state: string): string {
-      let color = 'bg-negative';
-      switch (state) {
-        case 'Online':
-          color = 'bg-positive';
-          break;
-        case 'Offline':
-          color = 'bg-negative';
-          break;
-        case 'DND':
-          color = 'bg-warning';
-          break;
-      }
-      ;
-      return color;
-    },
-    isInHeader(): boolean {
-      return this.inHeader;
-    },
-    changeEdit():void{
-      this.isEditing = !this.isEditing;
-    },
     switchDarkMode(): void {
       Dark.toggle();
-      console.log(this.darkMode);
     }
   }
 

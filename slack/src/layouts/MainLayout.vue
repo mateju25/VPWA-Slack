@@ -15,8 +15,8 @@
         <q-btn dense flat round icon="people" class="hide-users" @click="toggleRightDrawer" />
 
         <q-dialog v-model="dialogOpen">
-          <UserInfoDialogContent 
-            :selectedContact='user' 
+          <UserInfoDialogContent
+            :selectedContact='loggedUser'
             :inHeader='true'
           />
         </q-dialog>
@@ -28,8 +28,8 @@
           class="hide-avatar"
           @click="changeDialogOpen()"
         >
-          <Avatar 
-            :contact="user"
+          <Avatar
+            :contact="loggedUser"
             :inHeader="true"
             :size="'36px'"
           />
@@ -45,30 +45,26 @@
       :breakpoint="992"
       bordered
     >
-      <ChannelList/>
+      <ChannelList :channels='channels'/>
 
       <div
         class="absolute-bottom-left mobile-avatar"
       >
+        <q-dialog v-model="dialogOpen">
+          <UserInfoDialogContent
+            :selectedContact='loggedUser'
+            :inHeader='true'
+          />
+        </q-dialog>
+
         <q-separator/>
         <q-btn
           dense
           class="q-ma-sm"
+          @click="changeDialogOpen()"
         >
-          <q-avatar
-            color="blue-grey-11"
-            square
-            text-color="primary"
-            size="36px"
-            class="q-mr-sm"
-          >
-            {{ user.nick_name[0] }}
-            <q-badge
-              class="absolute-bottom-right badge-state"
-              :class="userState(user.state)"
-            />
-          </q-avatar>
-          {{ user.nick_name }}
+          <Avatar class='q-mr-md' :contact='loggedUser' :in-header='true' :size="'36px'"/>
+          {{ loggedUser.nickname }}
         </q-btn>
       </div>
 
@@ -82,7 +78,7 @@
       icon="people"
       bordered
     >
-      <UserContactList/>
+      <UserContactList :contacts='users' :activeChannel='activeChannel'/>
     </q-drawer>
 
     <q-page-container>
@@ -93,11 +89,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import UserContactList from 'src/components/UserContactList.vue';
 import ChannelList from 'src/components/ChannelList.vue';
 import Avatar from 'components/Avatar.vue';
 import UserInfoDialogContent from 'components/UserInfoDialogContent.vue';
+import { Channel, User } from 'src/components/models';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -109,46 +106,43 @@ export default defineComponent({
   },
 
   data() {
+    let users: User[] = [];
+    let channels: Channel[] = [];
+    let activeChannel: Channel = new Channel(1, 'General', false, true);
+    channels.push(activeChannel);
+    channels.push(new Channel(2, 'Studovna', false, true));
+    channels.push(new Channel(3, 'Klietka', false, true));
+    channels.push(new Channel(4, 'Opicarna', false, false));
+    channels.push(new Channel(5, 'Medzi 4 ocami', true, true));
+    channels.push(new Channel(6, 'Porada', true, true));
+    channels.push(new Channel(7, 'Porada sefovia', true, false));
+    let loggedUser: User;
+    users.push(new User(1, 'Jesse', 'Jesse Jones', 'Jesse@Jones.com', 'online'));
+    users.push(new User(2, 'John', 'John Jones', 'John@Jones.com', 'online'));
+    users.push(new User(3, 'Clarence', 'Clarence Jones', 'Clarence@Jones.com', 'online'));
+    users.push(new User(4, 'Tina', 'Tina Jones', 'Tina@Jones.com', 'online'));
+    users.push(new User(5, 'Anne', 'Anne Jones', 'Anne@Jones.com', 'online'));
+    loggedUser = users[0];
+
     return {
-      dialogOpen: false,
-      iconPath: '/statics/icon3.svg',
-      user: { 'id': 1, 'nick_name': 'Jesse', 'state': 'Online' },
+      users: users,
+      loggedUser: loggedUser,
+      activeChannel: activeChannel,
+      channels: channels,
+      leftDrawerOpen: false,
+      rightDrawerOpen: false,
+      dialogOpen: false
     }
   },
-
-  setup () {
-    const leftDrawerOpen = ref(false)
-    const rightDrawerOpen = ref(false)
-    return {
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      },
-      rightDrawerOpen,
-      toggleRightDrawer () {
-        rightDrawerOpen.value = !rightDrawerOpen.value
-      }
-    }
-  },
-
   methods: {
     changeDialogOpen() {
       this.dialogOpen = !this.dialogOpen;
     },
-    userState(state: string): string {
-      let color = 'bg-negative';
-      switch(state){
-        case 'Online':
-          color='bg-positive';
-          break;
-        case 'Offline':
-          color='bg-negative';
-          break;
-        case 'DND':
-          color='bg-warning';
-          break;
-      }
-      return color;
+    toggleRightDrawer () {
+      this.rightDrawerOpen = !this.rightDrawerOpen
+    },
+    toggleLeftDrawer () {
+      this.leftDrawerOpen = !this.leftDrawerOpen
     },
   },
 })

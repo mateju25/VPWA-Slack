@@ -54,27 +54,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'PageIndex',
-  setup() {
-    const messages = ref([]);
-    const message = ref('ilkjl');
-
+  data() {
     return {
-      messages,
-      message,
-      actions: ['@', '/join', '/invite', '/revoke', '/kick', '/quit', '/cancel'],
-      submit () {
-        messages.value.push(message.value);
-        let objDiv = document.getElementById('chat');
-        objDiv.scrollTop = objDiv.scrollHeight
-      }
-    };
+      message: '',
+      messages: [],
+      actions: ['@', '/join', '/invite', '/revoke', '/kick', '/quit', '/cancel']
+    }
   },
-
   methods: {
+    submit () {
+      this.messages.push(this.message);
+      let objDiv = document.getElementById('chat');
+      objDiv.scrollTop = objDiv.scrollHeight
+    },
+    onLoad (index, done) {
+      setTimeout(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        done()
+      }, 2000)
+    },
     addCommandToInput(action: string): void {
       this.message.concat(' ', action);
     }

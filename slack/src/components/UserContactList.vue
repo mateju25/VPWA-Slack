@@ -1,13 +1,13 @@
 <template>
   <div>
 
-    <div class="q-ma-md text-h6"># Channel</div>
+    <div class="q-ma-md text-h6"># {{activeChannel.name}}</div>
     <q-separator />
 
     <q-list>
       <q-item-label header>Owner</q-item-label>
       <UserContactListItem
-        :contacts="owner"
+        :contacts="owners"
       />
 
       <q-item-label header>Users</q-item-label>
@@ -21,36 +21,25 @@
 
 <script lang="ts">
 
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue';
 import UserContactListItem from 'src/components/UserContactListItem.vue';
+import { Channel, User } from './models';
 
 export default defineComponent({
   // type inference enabled
   components: {
     UserContactListItem
   },
-
+  props: {
+    contacts: Array as PropType<Array<User>>,
+    activeChannel: Object as PropType<Channel>
+  },
   data() {
+    let owners: User[] = [(this.contacts as Array<User>)[0]];
     return {
-      owner: [
-        { 'id': 1, 'nick_name': 'Jesse', 'fullName': 'Jesse Jones', 'state': 'Online' },
-      ],
-
-      contacts: [
-        { 'id': 2, 'nick_name': 'John', 'fullName': 'John Jones', 'state': 'Online' },
-        { 'id': 4, 'nick_name': 'Clarence', 'fullName': 'Clarence Jones', 'state': 'DND' },
-        { 'id': 3, 'nick_name': 'Tina', 'fullName': 'Tina Jones', 'state': 'Offline' },
-        { 'id': 5, 'nick_name': 'Anne', 'fullName': 'Anne Jones', 'state': 'Offline' },
-      ]
+      owners: owners
     }
   },
-
-  // computed: {
-  //   onlineContacts(){
-  //     return this.contacts.filter(x => x.state == 'Online');
-  //   }
-  // },
-
 })
 
 </script>

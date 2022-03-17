@@ -1,27 +1,28 @@
 <template>
-  <q-item-section avatar>
+  <div>
     <q-avatar
-      :color="isInHeader() ? 'blue-grey-11' : 'primary'"
+      :color="inHeader ? 'blue-grey-11' : 'primary'"
       square
-      :text-color="isInHeader() ? 'primary' : 'white'"
+      :text-color="inHeader ? 'primary' : 'white'"
       :size="size"
     >
-      {{ contact.nick_name[0] }}
+      {{ contact.nickname[0] }}
       <q-badge
         class="absolute-bottom-right badge-state"
         :class="userState(contact.state)"
       />
     </q-avatar>
-  </q-item-section>
+  </div>
 </template>
 
 <script lang="ts">
 
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
+import { User } from './models';
 
 export default defineComponent({
   props: {
-    contact: Object,
+    contact: Object as PropType<User>,
     inHeader: Boolean,
     size: String
   },
@@ -41,9 +42,6 @@ export default defineComponent({
       }
       ;
       return color;
-    },
-    isInHeader(): boolean {
-      return this.inHeader;
     }
   }
 
