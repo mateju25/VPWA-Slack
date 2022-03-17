@@ -32,15 +32,15 @@
       />
 
       <div class="input-bottom">
-        <q-btn 
+        <q-btn
           v-for="btn in actions"
           :key="btn"
           flat
           color="white"
           :label="btn"
           @click="addCommandToInput(btn)"
-        />        
-        <q-btn 
+        />
+        <q-btn
           icon="send"
           type="submit"
           color="secondary"
@@ -59,29 +59,31 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'PageIndex',
   data() {
+    let messages: string[] = [];
     return {
       message: '',
-      messages: [],
+      messages: messages,
       actions: ['@', '/join', '/invite', '/revoke', '/kick', '/quit', '/cancel']
     }
   },
   methods: {
     submit () {
       this.messages.push(this.message);
-      let objDiv = document.getElementById('chat');
+      let objDiv = document.getElementById('chat') as HTMLElement;
       objDiv.scrollTop = objDiv.scrollHeight
     },
-    onLoad (index, done) {
+    onLoad (index: number, done: () => void) {
       setTimeout(() => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         done()
       }, 2000)
     },
     addCommandToInput(action: string): void {
-      this.message.concat(' ', action);
+      console.log(action);
+      this.message = this.message.concat(' ', action);
     }
   }
-  
+
 })
 ;
 </script>
