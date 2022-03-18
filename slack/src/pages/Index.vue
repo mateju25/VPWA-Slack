@@ -14,16 +14,24 @@
           avatar='https://cdn.quasar.dev/img/avatar4.jpg'
           :text='[message.text]'
           sent
-          stamp='7 minutes ago'
-        />
+          :stamp="date.formatDate(message.created, 'HH:mm DD.MM.YYYY')"
+        >
+          <template v-slot:avatar>
+            <Avatar class='q-mx-md' :contact='message.writtenBy' :in-header='false'/>
+          </template>
+        </q-chat-message>
         <q-chat-message
           v-else
           :name='message.writtenBy.nickname'
           avatar='https://cdn.quasar.dev/img/avatar4.jpg'
           :text='[message.text]'
           received
-          stamp='7 minutes ago'
-        />
+          :stamp="date.formatDate(message.created, 'HH:mm DD.MM.YYYY')"
+        >
+          <template v-slot:avatar>
+            <Avatar class='q-mx-md' :contact='message.writtenBy' :in-header='false'/>
+          </template>
+        </q-chat-message>
 
       </div>
     </q-infinite-scroll>
@@ -99,11 +107,14 @@
 
 <script lang='ts'>
 import { defineComponent, PropType } from 'vue';
-import { Dark } from 'quasar';
+import { Dark, date } from 'quasar';
 import { Message, User } from 'components/models';
+import Avatar from 'components/Avatar.vue';
+
 
 export default defineComponent({
   name: 'PageIndex',
+  components: { Avatar },
   props: {
     loggedUser: Object as PropType<User>,
     messages: {
@@ -114,6 +125,7 @@ export default defineComponent({
   data() {
     return {
       Dark: Dark,
+      date: date,
       myMessage: '',
       actions: ['@', '/join', '/invite', '/revoke', '/kick', '/quit', '/cancel']
     };
