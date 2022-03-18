@@ -1,10 +1,12 @@
+import { User } from 'components/models';
+
 export interface ExampleStateInterface {
-  prop: boolean;
+  loggedUser: User | null;
 }
 
 function state(): ExampleStateInterface {
   return {
-    prop: false,
+    loggedUser: null,
   };
 }
 

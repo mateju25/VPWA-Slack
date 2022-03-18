@@ -11,25 +11,23 @@
         <q-chat-message
           v-if='message.writtenBy.nickname === loggedUser.nickname'
           :name='message.writtenBy.nickname'
-          avatar='https://cdn.quasar.dev/img/avatar4.jpg'
           :text='[message.text]'
           sent
           :stamp="date.formatDate(message.created, 'HH:mm DD.MM.YYYY')"
         >
           <template v-slot:avatar>
-            <Avatar class='q-mx-md' :contact='message.writtenBy' :in-header='false'/>
+            <Avatar class='q-mx-md' :contact='message.writtenBy' :in-header='false' showBadge='false'/>
           </template>
         </q-chat-message>
         <q-chat-message
           v-else
           :name='message.writtenBy.nickname'
-          avatar='https://cdn.quasar.dev/img/avatar4.jpg'
           :text='[message.text]'
           received
           :stamp="date.formatDate(message.created, 'HH:mm DD.MM.YYYY')"
         >
           <template v-slot:avatar>
-            <Avatar class='q-mx-md' :contact='message.writtenBy' :in-header='false'/>
+            <Avatar class='q-mx-md' :contact='message.writtenBy' :in-header='false' showBadge='false'/>
           </template>
         </q-chat-message>
 
@@ -53,12 +51,12 @@
       class='my-form'
     >
       <q-input
+        class='chat-input'
         square filled
         type='textarea'
         autogrow
         v-model='myMessage'
         placeholder='Message'
-        style='width: 100%'
       />
 
       <div :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
@@ -109,7 +107,7 @@
 <script lang='ts'>
 import { defineComponent, PropType } from 'vue';
 import { Dark, date } from 'quasar';
-import { Message, User } from 'components/models';
+import { Message } from 'components/models';
 import Avatar from 'components/Avatar.vue';
 
 
@@ -117,7 +115,6 @@ export default defineComponent({
   name: 'PageIndex',
   components: { Avatar},
   props: {
-    loggedUser: Object as PropType<User>,
     messages: {
       type: Array as PropType<Array<Message>>,
       required: true
@@ -125,6 +122,7 @@ export default defineComponent({
   },
   data() {
     return {
+      loggedUser: this.$store.state.chatModule.loggedUser,
       Dark: Dark,
       date: date,
       myMessage: '',
@@ -142,6 +140,7 @@ export default defineComponent({
   methods: {
     submit() {
       this.$emit('newMessage', this.myMessage);
+      this.myMessage = '';
       setTimeout(() => {
         let objDiv = document.getElementById('chat') as HTMLElement;
         objDiv.scrollTop = objDiv.scrollHeight;
@@ -249,5 +248,10 @@ export default defineComponent({
   visibility: visible;
   opacity: 1;
   transition: .3s;
+}
+.chat-input {
+  width: 100%;
+  max-height: 200px;
+  overflow-y: scroll;
 }
 </style>

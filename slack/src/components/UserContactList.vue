@@ -1,38 +1,109 @@
 <template>
   <div class='q-pa-sm q-gutter-md'>
+    <q-dialog v-model='confirm' persistent>
+      <q-card>
+        <q-card-section class='row items-center'>
+          <q-icon name='report_problem' size='xl' color='red' />
+          <div class='q-ml-sm column'>
+            <span class='text-weight-bold'>You are currently leaving this channel!</span>
+            <br/>
+            <span v-if='owners.includes(loggedUser)'>You are owner of this channel and it will be deleted!</span>
+            <span>Are you sure?</span>
+          </div>
+        </q-card-section>
 
-    <div class="q-ma-lg text-h6"># {{activeChannel.name}}</div>
+        <q-card-actions align='right'>
+          <q-btn flat label='Cancel' color='secondary' v-close-popup />
+          <q-btn flat label='Leave' color='primary' @click="this.$emit('deleteChannel', activeChannel)" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model='newChannel' persistent>
+      <q-card>
+        <q-card-section class='row items-center'>
+          <q-input square standout="bg-grey-10 text-white" clearable v-model="newChannelName" type="name" label="Channel name"/>
+          <q-toggle v-model='newChannelPrivate' label='Private'/>
+        </q-card-section>
+
+        <q-card-actions align='right'>
+          <q-btn flat label='Cancel' color='secondary' v-close-popup />
+          <q-btn flat label='Create' color='primary' @click="this.$emit('createNewChannel', newChannelName, newChannelPrivate)" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <div class='q-ma-lg text-h6 row justify-between'>
+      <p class='q-ma-none'># {{ activeChannel.name }}</p>
+      <q-btn color='q-white' icon='settings' flat>
+        <q-menu
+          class='menu-actions-channel'
+          transition-show='scale'
+          transition-hide='scale'
+        >
+          <q-list>
+            <q-btn
+              icon='add_circle_outline'
+              flat
+              :color="Dark.isActive ? 'white' : 'black'"
+              label='Create a new channel'
+              @click='newChannel = true'
+            />
+            <q-btn
+              v-if='activeChannel.name !== "General"'
+              icon='flight_takeoff'
+              flat
+              :color="Dark.isActive ? 'white' : 'black'"
+              label='Leave channel'
+              @click='confirm = true'
+            />
+          </q-list>
+        </q-menu>
+      </q-btn>
+    </div>
     <q-separator />
 
     <q-list>
       <q-item-label header v-if='owners.length > 0'>Owners</q-item-label>
       <UserContactListItem
-        :contacts="owners"
+        :contacts='owners'
       />
 
-      <q-item-label header  v-if='users.length > 0'>Users</q-item-label>
+      <q-item-label header v-if='users.length > 0'>Users</q-item-label>
       <UserContactListItem
-        :contacts="users"
+        :contacts='users'
       />
     </q-list>
 
   </div>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
 
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 import UserContactListItem from 'src/components/UserContactListItem.vue';
 import { Channel, RelationUserChannel, User } from './models';
+import { Dark } from 'quasar';
 
 export default defineComponent({
   // type inference enabled
   components: {
     UserContactListItem
   },
+  data() {
+    let channelPrivacy = ref(false);
+    return {
+      Dark: Dark,
+      newChannelName: '',
+      newChannelPrivate: channelPrivacy,
+      confirm: false,
+      newChannel: false,
+      loggedUser: this.$store.state.chatModule.loggedUser
+    };
+  },
   props: {
     contacts: {
-      type: Array as PropType<Array < RelationUserChannel >>,
+      type: Array as PropType<Array<RelationUserChannel>>,
       required: true
     },
     activeChannel: {
@@ -52,6 +123,12 @@ export default defineComponent({
       return users;
     }
   }
-})
+});
 
 </script>
+
+<style>
+.menu-actions-channel {
+  max-width: 250px;
+}
+</style>
