@@ -83,7 +83,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view :messages='filteredMessages' :loggedUser='loggedUser' @newMessage="addNewMessage"/>
     </q-page-container>
 
   </q-layout>
@@ -95,7 +95,7 @@ import UserContactList from 'src/components/UserContactList.vue';
 import ChannelList from 'src/components/ChannelList.vue';
 import Avatar from 'components/Avatar.vue';
 import UserInfoDialogContent from 'components/UserInfoDialogContent.vue';
-import { Channel, Relation, RelationUserChannel, User } from 'src/components/models';
+import { Channel, Message, Relation, RelationUserChannel, User } from 'src/components/models';
 import {Dark} from 'quasar';
 
 export default defineComponent({
@@ -109,6 +109,7 @@ export default defineComponent({
 
   data() {
     let users: User[] = [];
+    let messages: Message[] = [];
     let channels: Channel[] = [];
     let userChannelRelations: RelationUserChannel[] = [];
     let typeRelations: Relation[] = [];
@@ -132,6 +133,12 @@ export default defineComponent({
     users.push(new User(4, 'Tina', 'Tina Jones', 'Tina@Jones.com', 'Offline'));
     users.push(new User(5, 'Anne', 'Anne Jones', 'Anne@Jones.com', 'Offline'));
     loggedUser = users[0];
+
+    messages.push(new Message(1, 'Nieco pisem do chatu od prihlseneho usera', loggedUser, channels[0], false, Date.UTC(2022,3,17,18,51)));
+    messages.push(new Message(2, 'Nieco pisem do chatu od ineho usera', users[1], channels[0], false, Date.UTC(2022,3,17,18,52)));
+    messages.push(new Message(3, 'Nieco pisem do chatu od dalsieho usera', users[2], channels[0], false, Date.UTC(2022,3,17,18,59)));
+    messages.push(new Message(4, 'Nieco pisem akurat  do chatu, mozes to vidiet', users[1], channels[0], true, null));
+    messages.push(new Message(4, 'Nieco pisem akurat  do chatu, mozes to vidiet druhy krat', users[2], channels[0], true, null));
 
     userChannelRelations.push(new RelationUserChannel(1, users[0], channels[0], typeRelations[1]));
     userChannelRelations.push(new RelationUserChannel(1, users[1], channels[0], typeRelations[1]));
@@ -169,6 +176,7 @@ export default defineComponent({
       activeChannel: activeChannel,
       channels: channels,
       typeRelations: typeRelations,
+      messages: messages,
       userChannelRelations: userChannelRelations,
       Dark: Dark,
       leftDrawerOpen: false,
@@ -179,9 +187,15 @@ export default defineComponent({
   computed: {
     filteredRelations: function(): RelationUserChannel[] {
       return this.userChannelRelations.filter(item => item.channel.id == this.activeChannel.id);
+    },
+    filteredMessages: function(): Message[] {
+      return this.messages.filter(item => item.belongsTo.id === this.activeChannel.id);
     }
   },
   methods: {
+    addNewMessage(message: string) {
+      this.messages.push(new Message(-1, message, this.loggedUser, this.activeChannel, false, Date.now()));
+    },
     changeActiveChannel(channel: Channel) {
       this.activeChannel = channel;
     },
