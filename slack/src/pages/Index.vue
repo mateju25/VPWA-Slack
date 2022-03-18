@@ -62,8 +62,8 @@
       />
 
       <div :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
-        <div class='row content-between'>
-          <q-btn color="primary" label="Actions"  class='menu-actions'>
+        <div class='row justify-between'>
+          <q-btn color='secondary' class='menu-actions' icon='code' flat>
             <q-menu
               transition-show="scale"
               transition-hide="scale"
@@ -92,6 +92,7 @@
             />
           </div>
           <q-btn
+            :disable='this.myMessage.length === 0'
             icon='send'
             type='submit'
             color='secondary'
@@ -114,7 +115,7 @@ import Avatar from 'components/Avatar.vue';
 
 export default defineComponent({
   name: 'PageIndex',
-  components: { Avatar },
+  components: { Avatar},
   props: {
     loggedUser: Object as PropType<User>,
     messages: {
@@ -141,8 +142,10 @@ export default defineComponent({
   methods: {
     submit() {
       this.$emit('newMessage', this.myMessage);
-      let objDiv = document.getElementById('chat') as HTMLElement;
-      objDiv.scrollTop = objDiv.scrollHeight;
+      setTimeout(() => {
+        let objDiv = document.getElementById('chat') as HTMLElement;
+        objDiv.scrollTop = objDiv.scrollHeight;
+      },20)
     },
     onLoad(index: number, done: () => void) {
       // setTimeout(() => {
@@ -167,6 +170,10 @@ export default defineComponent({
 
 .menu-btns {
   display: none;
+}
+
+.menu-actions .q-btn__content {
+  margin-top: 2px;
 }
 
 @media (min-width: 1200px) {
