@@ -5,12 +5,12 @@ import actions from './actions';
 import getters from './getters';
 import mutations from './mutations';
 
-const exampleModule: Module<ExampleStateInterface, StateInterface> = {
+const chatModule: Module<ExampleStateInterface, StateInterface> = {
   namespaced: true,
   actions,
   getters,
   mutations,
-  state,
+  state
 };
 
-export default exampleModule;
+export default chatModule;

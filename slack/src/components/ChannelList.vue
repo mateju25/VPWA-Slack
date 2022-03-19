@@ -82,10 +82,10 @@ export default defineComponent({
       this.$emit('updateActiveChannel', channel);
     },
     compare: function(a: Channel, b: Channel): number {
-      if (!a.seen && b.seen) {
+      if (!a.topped && b.topped) {
         return -1;
       }
-      if (a.seen && !b.seen) {
+      if (a.topped && !b.topped) {
         return 1;
       }
       return 0;

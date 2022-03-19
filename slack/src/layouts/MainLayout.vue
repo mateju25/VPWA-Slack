@@ -79,11 +79,11 @@
       icon="people"
       bordered
     >
-      <UserContactList :contacts='filteredRelations' :active-channel='activeChannel'/>
+      <UserContactList :contacts='filteredRelations' :active-channel='activeChannel' @createNewChannel='createNewChannel' @deleteChannel='deleteChannel'/>
     </q-drawer>
 
     <q-page-container>
-      <router-view :messages='filteredMessages' :loggedUser='loggedUser' @newMessage="addNewMessage"/>
+      <router-view :messages='filteredMessages' @newMessage="addNewMessage"/>
     </q-page-container>
 
   </q-layout>
@@ -95,7 +95,7 @@ import UserContactList from 'src/components/UserContactList.vue';
 import ChannelList from 'src/components/ChannelList.vue';
 import Avatar from 'components/Avatar.vue';
 import UserInfoDialogContent from 'components/UserInfoDialogContent.vue';
-import { Channel, Message, Relation, RelationUserChannel, User } from 'src/components/models';
+import { Channel, Message, Relation, RelationUserChannel, UnreadMessage, User } from 'src/components/models';
 import {Dark} from 'quasar';
 
 export default defineComponent({
@@ -110,6 +110,7 @@ export default defineComponent({
   data() {
     let users: User[] = [];
     let messages: Message[] = [];
+    let unreadMessages: UnreadMessage[] = [];
     let channels: Channel[] = [];
     let userChannelRelations: RelationUserChannel[] = [];
     let typeRelations: Relation[] = [];
@@ -120,10 +121,10 @@ export default defineComponent({
     channels.push(new Channel(1, 'General', false, true));
     channels.push(new Channel(2, 'Studovna', false, true));
     channels.push(new Channel(3, 'Klietka', false, true));
-    channels.push(new Channel(4, 'Opicarna', false, false));
+    channels.push(new Channel(4, 'Opicarna', false, true));
     channels.push(new Channel(5, 'Medzi 4 ocami', true, true));
     channels.push(new Channel(6, 'Porada', true, true));
-    channels.push(new Channel(7, 'Porada sefovia', true, false));
+    channels.push(new Channel(7, 'Porada sefovia', true, true));
     activeChannel = channels[0];
 
     let loggedUser: User;
@@ -133,12 +134,25 @@ export default defineComponent({
     users.push(new User(4, 'Tina', 'Tina Jones', 'Tina@Jones.com', 'Offline'));
     users.push(new User(5, 'Anne', 'Anne Jones', 'Anne@Jones.com', 'Offline'));
     loggedUser = users[0];
+    this.$store.commit('chatModule/updateLoggedUser', loggedUser)
 
     messages.push(new Message(1, 'Nieco pisem do chatu od prihlseneho usera', loggedUser, channels[0], false, Date.UTC(2022,3,17,18,51)));
     messages.push(new Message(2, 'Nieco pisem do chatu od ineho usera', users[1], channels[0], false, Date.UTC(2022,3,17,18,52)));
     messages.push(new Message(3, 'Nieco pisem do chatu od dalsieho usera', users[2], channels[0], false, Date.UTC(2022,3,17,18,59)));
     messages.push(new Message(4, 'Nieco pisem akurat  do chatu, mozes to vidiet', users[1], channels[0], true, null));
-    messages.push(new Message(4, 'Nieco pisem akurat  do chatu, mozes to vidiet druhy krat', users[2], channels[0], true, null));
+    messages.push(new Message(5, 'Nieco pisem akurat  do chatu, mozes to vidiet druhy krat', users[2], channels[0], true, null));
+    messages.push(new Message(6, 'Nieco pisem do chatu, a clovek to este nevidel', users[2], channels[1], false, Date.UTC(2022,3,17,18,59)));
+    messages.push(new Message(7, 'Nieco pisem do chatu, a clovek to este nevidel v private kanali', users[4], channels[5], false, Date.UTC(2022,3,17,18,59)));
+
+    unreadMessages.push(new UnreadMessage(1, channels[1], users[0]));
+    unreadMessages.push(new UnreadMessage(2, channels[5], users[0]));
+
+    //nastav seen pre kanali
+    unreadMessages.forEach(item => {
+      if (item.user.id === loggedUser.id) {
+        item.channel.topped = false;
+      }
+    });
 
     userChannelRelations.push(new RelationUserChannel(1, users[0], channels[0], typeRelations[1]));
     userChannelRelations.push(new RelationUserChannel(1, users[1], channels[0], typeRelations[1]));
@@ -177,6 +191,7 @@ export default defineComponent({
       channels: channels,
       typeRelations: typeRelations,
       messages: messages,
+      unreadMessages: unreadMessages,
       userChannelRelations: userChannelRelations,
       Dark: Dark,
       leftDrawerOpen: false,
@@ -193,10 +208,20 @@ export default defineComponent({
     }
   },
   methods: {
+    deleteChannel(channel: Channel) {
+      this.channels.splice(this.channels.indexOf(channel), 1);
+      this.activeChannel = this.channels[0];
+    },
+    createNewChannel(channelName: string, isPrivate: boolean) {
+      let channel: Channel = new Channel(10, channelName, isPrivate, false);
+      this.channels.push(channel);
+      this.userChannelRelations.push(new RelationUserChannel(1, this.loggedUser, channel, this.typeRelations[0]));
+    },
     addNewMessage(message: string) {
       this.messages.push(new Message(-1, message, this.loggedUser, this.activeChannel, false, Date.now()));
     },
     changeActiveChannel(channel: Channel) {
+      channel.topped = true;
       this.activeChannel = channel;
     },
     changeDialogOpen() {

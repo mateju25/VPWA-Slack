@@ -3,14 +3,14 @@
     <q-item-label
       lines='1'
       class
-      :class='channelSeen(channel.seen)'
+      :class='channelSeen(channel.topped)'
     >
       # {{channel.name}}
     </q-item-label>
   </q-item-section>
 
   <q-item-section
-    v-if='!channel.seen'
+    v-if='!channel.topped'
     side
   >
     <q-badge

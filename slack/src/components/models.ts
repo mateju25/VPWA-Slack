@@ -4,7 +4,8 @@ export class User {
     public nickname: string,
     public fullName: string,
     public email: string,
-    public state: string
+    public state: string,
+    public notificationsOn: boolean = false
   ) {}
 }
 
@@ -13,8 +14,7 @@ export class Channel {
     public id: number,
     public name: string,
     public isPrivate: boolean,
-    //docasne + sa bude dorabat cez message
-    public seen: boolean,
+    public topped: boolean,
   ) {}
 }
 
@@ -42,6 +42,14 @@ export class Message {
     public belongsTo: Channel,
     public currentlyBeingTyped: boolean,
     public created: number | null,
+  ) {}
+}
+
+export class UnreadMessage {
+  constructor(
+    public id: number,
+    public channel: Channel,
+    public user: User,
   ) {}
 }
 

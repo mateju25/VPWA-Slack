@@ -30,7 +30,7 @@
             dense
             options-dense
             hide-bottom-space
-            v-model="stateModel.state"
+            v-model="userState"
             :options="options"
             label="State"
             style="width:100px"
@@ -40,7 +40,7 @@
           v-else
           class="q-mb-none"
         >
-          {{stateModel.state}}
+          {{userState}}
         </div>
 
       </div>
@@ -50,11 +50,21 @@
       v-if="inHeader"
     >
       <q-toggle
+        class='toggle'
         v-model="darkMode"
         color="primary"
         label="Dark mode"
         size="md"
-        @click="switchDarkMode()"
+        left-label
+        keep-color
+      />
+      <br/>
+      <q-toggle
+        class='toggle'
+        v-model="notifications"
+        color="primary"
+        :label="notifications ? 'Only mentions' : 'All notifications'"
+        size="md"
         left-label
         keep-color
       />
@@ -81,34 +91,39 @@
 
 import { defineComponent, PropType } from 'vue';
 import Avatar from 'components/Avatar.vue';
-import { Dark } from 'quasar'
+import { Dark } from 'quasar';
 import { User } from 'components/models';
 
 export default defineComponent({
   components: { Avatar },
   props: {
-    selectedContact: Object as PropType<User>,
+    selectedContact: {
+      type: Object as PropType<User>,
+      required: true
+    },
     inHeader: Boolean
   },
   data() {
     return {
+      userState: this.selectedContact.state,
+      notifications: this.selectedContact.notificationsOn,
       options: [
         'Online', 'Offline', 'DND'
       ]
     }
   },
   computed: {
-    stateModel: {
-      get (): User  { return this.selectedContact as User },
-      set (value: User) { this.$emit('update:selectedContact', value) },
+    darkMode: {
+      get (): boolean  { return Dark.isActive },
+      set (value: boolean) { Dark.set(value)},
     },
-    darkMode: function() {
-      return Dark.isActive;
-    }
   },
-  methods: {
-    switchDarkMode(): void {
-      Dark.toggle();
+  watch: {
+    userState: function(): void {
+      this.$store.commit('chatModule/updateLoggedUserState', this.userState);
+    },
+    notifications: function(): void {
+      this.$store.commit('chatModule/updateLoggedUserNotifications', this.notifications);
     }
   }
 
@@ -127,5 +142,8 @@ export default defineComponent({
   display: flex;
   align-items: center;
 }
-
+.toggle {
+  width: 200px;
+  justify-content: space-between;
+}
 </style>
