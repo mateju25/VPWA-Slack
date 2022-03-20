@@ -11,7 +11,15 @@ const mutation: MutationTree<ExampleStateInterface> = {
   },
   updateLoggedUserNotifications(state: ExampleStateInterface, notifications: boolean) {
     (state.loggedUser as User).notificationsOn = notifications;
+  },
+
+  updateAllUsers(state: ExampleStateInterface, users: User[]){
+    state.users = users;
+  },
+  pushNewUser(state: ExampleStateInterface, user: User){
+    state.users?.push(user);
   }
+  
 };
 
 export default mutation;

@@ -15,16 +15,19 @@
     <div class="column q-mx-xl">
       <div class="row">
         <q-card square class="q-pa-md register-card" >
-          <q-form class="q-gutter-md" @submit="$router.replace('/login')">
+          <q-form class="q-gutter-md" @submit.stop="onSubmit()">
             <q-card-section>
-              <q-input square standout="bg-grey-10 text-white" clearable v-model="username" type="text" label="username" />
-              <q-input class="q-mt-lg" square standout="bg-grey-10 text-white" clearable v-model="fullname" type="text" label="full name" />
-              <q-input class="q-mt-lg" square standout="bg-grey-10 text-white" clearable v-model="email" type="email" label="email" />
-              <q-input class="q-mt-lg" square standout="bg-grey-10 text-white" clearable v-model="password" type="password" label="password" />
-              <q-input class="q-mt-lg" square standout="bg-grey-10 text-white" clearable v-model="repeatpassword" type="password" label="repeat password" />
+              <q-input square standout="bg-grey-10 text-white" clearable v-model="username" type="text" label="username" :error="v$.password.$error"/>
+              <q-input class="q-mt-sm" square standout="bg-grey-10 text-white" clearable v-model="fullname" type="text" label="full name" :error="v$.password.$error"/>
+              <q-input class="q-mt-sm" square standout="bg-grey-10 text-white" clearable v-model="email" type="email" label="email" :error="v$.password.$error"/>
+              <q-input class="q-mt-sm" square standout="bg-grey-10 text-white" clearable v-model="password" type="password" label="password" :error="v$.password.$error"/>
+              <q-input class="q-mt-sm" square standout="bg-grey-10 text-white" clearable v-model="repeatpassword" type="password" label="repeat password" :error="v$.password.$error"/>
 
+              <p class="q-ma-none">
+                {{ message }}
+              </p>
             </q-card-section>
-            <q-card-actions class="q-px-md q-mt-sm">
+            <q-card-actions class="q-px-md q-mt-none">
               <q-btn color="primary" class="full-width" label="Create account" type="submit"/>
             </q-card-actions>
           </q-form>
@@ -39,32 +42,110 @@
   </q-page>
 </template>
 
-<script>
-import { ref } from 'vue';
+<script lang="ts">
+import { defineComponent } from 'vue';
+import useVuelidate from '@vuelidate/core'
+import { required, minLength, email, sameAs } from '@vuelidate/validators'
+import { User } from 'src/components/models';
 
-export default {
+export default defineComponent({
   name: 'PageLogin',
-  setup () {
-    const email = ref('');
-    const password = ref('');
-    const username = ref('');
-    const fullname = ref('');
-    const repeatpassword = ref('');
-
+  setup(){
+    return { 
+      v$: useVuelidate({ $autoDirty: true }) 
+    }
+  },
+  data () {
     return {
-      email,
-      password,
-      username,
-      fullname,
-      repeatpassword
-    };
+      email: '',
+      password: '',
+      username: '',
+      fullname: '',
+      repeatpassword: '',
+
+      message:''
+    }
+  },
+  validations(){
+    return{
+      email:{
+        required,
+        email
+      },
+      password:{
+        required,
+        minLength: minLength(8),
+      },
+      username:{
+        required
+      },
+      fullname:{
+        required
+      },
+      repeatpassword:{
+        required,
+        sameAsPassword: sameAs(this.password),
+      },
+    }
+  },
+  methods:{
+    async onSubmit(){
+      const isFormCorrect = await this.v$.$validate()
+
+      if (!isFormCorrect) {
+        this.$q.notify({
+          color: 'red-4',
+          textColor: 'white',
+          icon: 'warning',
+          message: this.v$.$errors.map(e => e.$message).join()
+        })
+      }else{
+        this.validateUniqueUsername();
+      }
+    },
+    validateUniqueUsername(){
+      // toto druhe asi zatial unsafe
+      let users: User[] = this.$store.state.chatModule.users as User[];
+      let user = users.find((x) => x.nickname === this.username );
+      if(user){
+        this.message = 'Username already exists';
+      }
+      else{
+        this.createNewUser(users);
+      }
+    },
+    createNewUser(users: User[]){
+      let index = users.length;
+      let loggedUser = new User(index, this.username, this.fullname, this.email, 'Online');
+      void this.$store.dispatch('chatModule/pushNewUserAction', loggedUser);
+      void this.$store.dispatch('chatModule/updateLoggedUserState', loggedUser);
+      localStorage.setItem('loggedUser', JSON.stringify(loggedUser));
+      void this.$router.replace('/');
+    }
+  },
+  watch:{
+    username(){
+      this.message='';
+    },
+    password(){
+      this.message='';
+    },
+    email(){
+      this.message='';
+    },
+    fullname(){
+      this.message='';
+    },
+    repeatpassword(){
+      this.message='';
+    }
   }
-}
+})
 </script>
 
 <style>
 .register-card {
   width: 300px;
-  height: 530px
+  height: 580px
 }
 </style>

@@ -81,7 +81,7 @@
         align="left"
         label="Sign out"
         icon="logout"
-        @click="$router.replace('/login')"
+        @click="logout()"
       />
     </q-card-section>
   </q-card>
@@ -124,6 +124,13 @@ export default defineComponent({
     },
     notifications: function(): void {
       this.$store.commit('chatModule/updateLoggedUserNotifications', this.notifications);
+    }
+  },
+  methods: {
+    logout(){
+      void this.$store.dispatch('chatModule/updateLoggedUserState', null);
+      localStorage.removeItem('loggedUser');
+      void this.$router.replace('/login');
     }
   }
 

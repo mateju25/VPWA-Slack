@@ -90,7 +90,7 @@
             />
           </div>
           <q-btn
-            :disable='this.myMessage.length === 0'
+            :disable='myMessage.length === 0'
             icon='send'
             type='submit'
             color='secondary'

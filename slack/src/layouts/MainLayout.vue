@@ -108,7 +108,6 @@ export default defineComponent({
   },
 
   data() {
-    let users: User[] = [];
     let messages: Message[] = [];
     let unreadMessages: UnreadMessage[] = [];
     let channels: Channel[] = [];
@@ -127,14 +126,9 @@ export default defineComponent({
     channels.push(new Channel(7, 'Porada sefovia', true, true));
     activeChannel = channels[0];
 
-    let loggedUser: User;
-    users.push(new User(1, 'Jesse', 'Jesse Jones', 'Jesse@Jones.com', 'Online'));
-    users.push(new User(2, 'John', 'John Jones', 'John@Jones.com', 'Online'));
-    users.push(new User(3, 'Clarence', 'Clarence Jones', 'Clarence@Jones.com', 'DND'));
-    users.push(new User(4, 'Tina', 'Tina Jones', 'Tina@Jones.com', 'Offline'));
-    users.push(new User(5, 'Anne', 'Anne Jones', 'Anne@Jones.com', 'Offline'));
-    loggedUser = users[0];
-    this.$store.commit('chatModule/updateLoggedUser', loggedUser)
+    let loggedUser = this.$store.state.chatModule.loggedUser as User;
+    // toto druhe asi zatial unsafe
+    let users: User[] = this.$store.state.chatModule.users as User[];
 
     messages.push(new Message(1, 'Nieco pisem do chatu od prihlseneho usera', loggedUser, channels[0], false, Date.UTC(2022,3,17,18,51)));
     messages.push(new Message(2, 'Nieco pisem do chatu od ineho usera', users[1], channels[0], false, Date.UTC(2022,3,17,18,52)));
@@ -147,7 +141,7 @@ export default defineComponent({
     unreadMessages.push(new UnreadMessage(1, channels[1], users[0]));
     unreadMessages.push(new UnreadMessage(2, channels[5], users[0]));
 
-    //nastav seen pre kanali
+    //nastav seen pre kanaly
     unreadMessages.forEach(item => {
       if (item.user.id === loggedUser.id) {
         item.channel.topped = false;
