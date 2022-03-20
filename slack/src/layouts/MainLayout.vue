@@ -137,7 +137,7 @@ export default defineComponent({
     this.$store.commit('chatModule/updateLoggedUser', loggedUser)
 
     messages.push(new Message(1, 'Nieco pisem do chatu od prihlseneho usera', loggedUser, channels[0], false, Date.UTC(2022,3,17,18,51)));
-    messages.push(new Message(2, 'Nieco pisem do chatu od ineho usera', users[1], channels[0], false, Date.UTC(2022,3,17,18,52)));
+    messages.push(new Message(2, 'Nieco pisem do chatu od ineho usera a oznacujem @Jesse', users[1], channels[0], false, Date.UTC(2022,3,17,18,52)));
     messages.push(new Message(3, 'Nieco pisem do chatu od dalsieho usera', users[2], channels[0], false, Date.UTC(2022,3,17,18,59)));
     messages.push(new Message(4, 'Nieco pisem akurat  do chatu, mozes to vidiet', users[1], channels[0], true, null));
     messages.push(new Message(5, 'Nieco pisem akurat  do chatu, mozes to vidiet druhy krat', users[2], channels[0], true, null));
