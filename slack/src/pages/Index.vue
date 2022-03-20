@@ -11,7 +11,8 @@
         <q-chat-message
           v-if='message.writtenBy.nickname === loggedUser.nickname'
           :name='message.writtenBy.nickname'
-          :text='[message.text]'
+          :text='[prepareMessage(message.text)]'
+          :text-html='true'
           sent
           :stamp="date.formatDate(message.created, 'HH:mm DD.MM.YYYY')"
         >
@@ -22,7 +23,8 @@
         <q-chat-message
           v-else
           :name='message.writtenBy.nickname'
-          :text='[message.text]'
+          :text='[prepareMessage(message.text)]'
+          :text-html='true'
           received
           :stamp="date.formatDate(message.created, 'HH:mm DD.MM.YYYY')"
         >
@@ -107,7 +109,7 @@
 <script lang='ts'>
 import { defineComponent, PropType } from 'vue';
 import { Dark, date } from 'quasar';
-import { Message } from 'components/models';
+import { Message, User } from 'components/models';
 import Avatar from 'components/Avatar.vue';
 
 
@@ -138,6 +140,9 @@ export default defineComponent({
     }
   },
   methods: {
+    prepareMessage(message: string): string {
+      return  message.replace('@'+(this.loggedUser as User).nickname , '<strong class="mention underlined-text">'+(this.loggedUser as User).nickname+'</strong>');
+    },
     submit() {
       this.$emit('newMessage', this.myMessage);
       this.myMessage = '';
@@ -253,5 +258,10 @@ export default defineComponent({
   width: 100%;
   max-height: 200px;
   overflow-y: scroll;
+}
+.mention {
+  background: var(--q-secondary);
+  border-radius: 5px;
+  padding: 2px;
 }
 </style>
