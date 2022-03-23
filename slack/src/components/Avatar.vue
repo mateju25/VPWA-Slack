@@ -8,7 +8,7 @@
     >
       {{ contact.nickname[0] }}
       <q-badge
-        v-if='showBadge === false'
+        v-if='noBadge === false'
         class="absolute-bottom-right badge-state"
         :class="userState(contact.state)"
       />
@@ -26,7 +26,7 @@ export default defineComponent({
     contact: Object as PropType<User>,
     inHeader: Boolean,
     size: String,
-    showBadge: Boolean
+    noBadge: Boolean
   },
   methods: {
     userState(state: string): string {

@@ -4,9 +4,10 @@
       class='q-ml-none'
       clickable
       v-ripple
+      :class='channels[0].id === activeChannel.id ? "channel-active" : ""'
       @click="changeActiveModel(channels[0])"
     >
-      <ChannelItem :channel='channels[0]' />
+      <ChannelItem  :channel='channels[0]' />
     </q-item>
     <q-list padding class='rounded-borders' style='max-width: 350px'>
       <q-expansion-item
@@ -25,6 +26,7 @@
           :key='channel.id'
           clickable
           v-ripple
+          :class='channel.id === activeChannel.id ? "channel-active" : ""'
           @click="changeActiveModel(channel)"
         >
           <ChannelItem :channel='channel' />
@@ -49,6 +51,7 @@
           :key='channel.id'
           clickable
           v-ripple
+          :class='channel.id === activeChannel.id ? "channel-active" : ""'
           @click="changeActiveModel(channel)"
         >
           <ChannelItem :channel='channel' />
@@ -80,15 +83,6 @@ export default defineComponent({
   methods: {
     changeActiveModel: function(channel: Channel): void {
       this.$emit('updateActiveChannel', channel);
-    },
-    compare: function(a: Channel, b: Channel): number {
-      if (!a.topped && b.topped) {
-        return -1;
-      }
-      if (a.topped && !b.topped) {
-        return 1;
-      }
-      return 0;
     }
   },
   computed: {
@@ -98,7 +92,6 @@ export default defineComponent({
         if (item.isPrivate && item.name !== 'General')
           privateChannels.push(item);
       });
-      privateChannels.sort(this.compare);
       return privateChannels;
     },
     publicChannels: function(): Channel[] {
@@ -107,7 +100,6 @@ export default defineComponent({
         if (!item.isPrivate && item.name !== 'General')
           publicChannels.push(item);
       });
-      publicChannels.sort(this.compare);
       return publicChannels;
     }
   }
@@ -133,6 +125,9 @@ export default defineComponent({
 }
 
 .q-item:hover {
+  background-color: rgba(38, 166, 154, 0.11) !important;
+}
+.channel-active {
   background-color: rgba(38, 166, 154, 0.11) !important;
 }
 </style>

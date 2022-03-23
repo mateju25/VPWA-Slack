@@ -17,24 +17,24 @@
         <q-card square class="q-pa-md login-card">
           <q-form class="q-gutter-md" @submit.stop="onSubmit()">
             <q-card-section>
-              <q-input 
-                square 
-                standout="bg-grey-10 text-white" 
-                clearable 
-                v-model="username" 
-                type="name" 
-                label="username" 
+              <q-input
+                square
+                standout="bg-grey-10 text-white"
+                clearable
+                v-model="username"
+                type="name"
+                label="username"
                 :input-style="{ color: 'white' }"
                 :error="v$.username.$error"
               />
-              <q-input 
-                class="q-mt-lg"  
-                square 
-                standout="bg-grey-10 text-white" 
-                clearable 
-                v-model="password" 
-                type="password" 
-                label="password" 
+              <q-input
+                class="q-mt-lg"
+                square
+                standout="bg-grey-10 text-white"
+                clearable
+                v-model="password"
+                type="password"
+                label="password"
                 :error="v$.password.$error"
               />
               <p>
@@ -63,14 +63,14 @@ import { required } from '@vuelidate/validators'
 export default defineComponent({
   name: 'PageLogin',
   setup(){
-    return { 
-      v$: useVuelidate({ $autoDirty: true }) 
+    return {
+      v$: useVuelidate({ $autoDirty: true })
     }
   },
   data() {
     return {
-      username: '',
-      password: '',
+      username: 'tmp',
+      password: 'tmp',
       message:''
     }
   },
@@ -102,20 +102,20 @@ export default defineComponent({
     validateUser(){
       // toto druhe asi zatial unsafe
       let users: User[] = this.$store.state.chatModule.users as User[];
-      let user = users.find((x) => 
-                            x.nickname === this.username
-                            // &&
-                            // x.password === this.password
-                          );
+      // let user = users.find((x) =>
+      //                       x.nickname === this.username
+      //                       // &&
+      //                       // x.password === this.password
+      //                     );
+      let user = users[0];
       if(user){
         void this.$store.dispatch('chatModule/updateLoggedUserState', user);
-        localStorage.setItem('loggedUser', JSON.stringify(user));
         void this.$router.replace('/');
       }
       else{
         this.message = 'Invalid username or password'
       }
-    }    
+    }
   },
   watch:{
     username(){

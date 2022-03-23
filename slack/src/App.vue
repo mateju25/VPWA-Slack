@@ -23,11 +23,7 @@ export default defineComponent({
     users.push(new User(4, 'Tina', 'Tina Jones', 'Tina@Jones.com', 'Offline'));
     users.push(new User(5, 'Anne', 'Anne Jones', 'Anne@Jones.com', 'Offline'));
     void this.$store.dispatch('chatModule/updateAllUsersState', users);
-
-    let loggedUser = localStorage.getItem('loggedUser');
-    if(loggedUser){
-      void this.$store.dispatch('chatModule/updateLoggedUserState', JSON.parse(loggedUser));
-    }
+    void this.$store.dispatch('chatModule/updateLoggedUserState', users[0]);
 
     return{
       users
