@@ -51,8 +51,8 @@ import { User } from 'src/components/models';
 export default defineComponent({
   name: 'PageLogin',
   setup(){
-    return { 
-      v$: useVuelidate({ $autoDirty: true }) 
+    return {
+      v$: useVuelidate({ $autoDirty: true })
     }
   },
   data () {
@@ -119,7 +119,6 @@ export default defineComponent({
       let loggedUser = new User(index, this.username, this.fullname, this.email, 'Online');
       void this.$store.dispatch('chatModule/pushNewUserAction', loggedUser);
       void this.$store.dispatch('chatModule/updateLoggedUserState', loggedUser);
-      localStorage.setItem('loggedUser', JSON.stringify(loggedUser));
       void this.$router.replace('/');
     }
   },

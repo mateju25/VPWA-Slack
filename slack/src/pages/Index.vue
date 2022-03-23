@@ -17,7 +17,7 @@
           :stamp="date.formatDate(message.created, 'HH:mm DD.MM.YYYY')"
         >
           <template v-slot:avatar>
-            <Avatar class='q-mx-md' :contact='message.writtenBy' :in-header='false' showBadge='false'/>
+            <Avatar class='q-mx-md' :contact='message.writtenBy' :in-header='false' :noBadge='true' />
           </template>
         </q-chat-message>
         <q-chat-message
@@ -29,7 +29,7 @@
           :stamp="date.formatDate(message.created, 'HH:mm DD.MM.YYYY')"
         >
           <template v-slot:avatar>
-            <Avatar class='q-mx-md' :contact='message.writtenBy' :in-header='false' showBadge='false'/>
+            <Avatar class='q-mx-md' :contact='message.writtenBy' :in-header='false' :noBadge='true' />
           </template>
         </q-chat-message>
 
