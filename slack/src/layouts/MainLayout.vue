@@ -45,7 +45,7 @@
       :breakpoint="992"
       bordered
     >
-      <ChannelList :channels='channels' :activeChannel='activeChannel' @updateActiveChannel="changeActiveChannel"/>
+      <ChannelList :channels='filteredChannels' :activeChannel='activeChannel' @updateActiveChannel="changeActiveChannel"/>
 
       <div
         :class="Dark.isActive ? 'background-dark' : 'background-white'"
@@ -194,6 +194,15 @@ export default defineComponent({
     }
   },
   computed: {
+    filteredChannels: function (): Channel[] {
+      let filteredChannels: Channel[] = [];
+      this.userChannelRelations.filter(item => {
+        if (item.user.id === this.loggedUser.id) {
+          filteredChannels.push(item.channel);
+        }
+      });
+      return filteredChannels;
+    },
     filteredRelations: function(): RelationUserChannel[] {
       return this.userChannelRelations.filter(item => item.channel.id == this.activeChannel.id);
     },
