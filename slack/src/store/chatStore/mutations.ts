@@ -17,9 +17,9 @@ const mutation: MutationTree<ExampleStateInterface> = {
     state.users = users;
   },
   pushNewUser(state: ExampleStateInterface, user: User){
-    state.users?.push(user);
+    (state.users as User[]).push(user);
   }
-  
+
 };
 
 export default mutation;
