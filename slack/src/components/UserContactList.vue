@@ -19,7 +19,7 @@
       </q-card>
     </q-dialog>
 
-    
+
 
     <div class='q-my-lg q-ml-lg q-mr-none text-h6 row justify-between'>
       <p class='q-ma-none'># {{ activeChannel.name }}</p>
@@ -28,7 +28,11 @@
         flat
         :color="Dark.isActive ? 'white' : 'black'"
         @click='confirm = true'
-      />
+      >
+        <q-tooltip>
+          Leave channel
+        </q-tooltip>
+      </q-btn>
     </div>
     <q-separator />
 

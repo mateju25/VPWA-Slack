@@ -59,7 +59,7 @@
       </q-expansion-item>
     </q-list>
 
-    <q-separator />
+    <q-separator/>
 
     <q-btn
       flat
@@ -67,7 +67,7 @@
       :color="Dark.isActive ? 'white' : 'black'"
       label='Create new channel'
       icon="add_circle_outline"
-      class="full-width q-pl-lg"
+      class="full-width q-pl-lg last-item"
       align="left"
       @click='newChannel = true'
     >
@@ -168,5 +168,12 @@ export default defineComponent({
 }
 .channel-active {
   background-color: rgba(38, 166, 154, 0.11) !important;
+}
+
+.last-item {
+  margin-bottom: 70px;
+}
+.q-field__control-container {
+  margin-left: 10px;
 }
 </style>

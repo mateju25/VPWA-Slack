@@ -37,7 +37,7 @@
     </q-infinite-scroll>
     <div v-if='currentlyTyping.length !== 0' class='typing q-mt-md'
          :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
-      <div :class="Dark.isActive ? 'yellow-text' : 'black-text'" class='typing-font q-ml-sm typing-hover'
+      <div :class="Dark.isActive ? 'yellow-text' : 'black-text'" class='typing-font q-ml-sm typing-hover cursor-pointer'
            v-for='(message, index) in currentlyTyping' v-bind:key='message.id'>
         <p>{{ message.writtenBy.nickname }} <span v-if='index !== currentlyTyping.length - 1'>,</span></p>
 
@@ -51,11 +51,11 @@
     <q-form
       @submit='submit'
       class='my-form'
-    >      
+    >
       <q-input
         class='chat-input'
         square filled
-        type='textarea'        
+        type='textarea'
         v-model='myMessage'
         placeholder='Message'
       />
@@ -216,7 +216,7 @@ export default defineComponent({
   max-width: 40%;
   font-size: 16px;
   position: absolute;
-  bottom: 135px;
+  bottom: 180px;
   color: white;
   background: var(--q-dark);
   box-shadow: 0 0px 8px var(--q-secondary), 0 2px 2px rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 12%) !important;
@@ -260,8 +260,11 @@ export default defineComponent({
 }
 .chat-input {
   width: 100%;
-  /* max-height: 200px;
-  overflow-y: scroll; */
+}
+.chat-input textarea {
+  height: 90px;
+  max-height: 200px;
+  resize: none !important;
 }
 .mention {
   background: var(--q-secondary);
