@@ -19,47 +19,16 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model='newChannel' persistent>
-      <q-card>
-        <q-card-section class='row items-center'>
-          <q-input square standout="bg-grey-10 text-white" clearable v-model="newChannelName" type="name" label="Channel name"/>
-          <q-toggle v-model='newChannelPrivate' label='Private'/>
-        </q-card-section>
+    
 
-        <q-card-actions align='right'>
-          <q-btn flat label='Cancel' color='secondary' v-close-popup />
-          <q-btn flat label='Create' color='primary' @click="this.$emit('createNewChannel', newChannelName, newChannelPrivate)" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <div class='q-ma-lg text-h6 row justify-between'>
+    <div class='q-my-lg q-ml-lg q-mr-none text-h6 row justify-between'>
       <p class='q-ma-none'># {{ activeChannel.name }}</p>
-      <q-btn color='q-white' icon='settings' flat>
-        <q-menu
-          class='menu-actions-channel'
-          transition-show='scale'
-          transition-hide='scale'
-        >
-          <q-list>
-            <q-btn
-              icon='add_circle_outline'
-              flat
-              :color="Dark.isActive ? 'white' : 'black'"
-              label='Create a new channel'
-              @click='newChannel = true'
-            />
-            <q-btn
-              v-if='activeChannel.name !== "General"'
-              icon='flight_takeoff'
-              flat
-              :color="Dark.isActive ? 'white' : 'black'"
-              label='Leave channel'
-              @click='confirm = true'
-            />
-          </q-list>
-        </q-menu>
-      </q-btn>
+      <q-btn
+        icon='flight_takeoff'
+        flat
+        :color="Dark.isActive ? 'white' : 'black'"
+        @click='confirm = true'
+      />
     </div>
     <q-separator />
 

@@ -42,7 +42,7 @@
       show-if-above
       v-model="leftDrawerOpen"
       side="left"
-      :breakpoint="992"
+      :breakpoint="768"
       bordered
     >
       <ChannelList :channels='filteredChannels' :activeChannel='activeChannel' @updateActiveChannel="changeActiveChannel"/>

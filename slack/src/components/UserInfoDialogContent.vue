@@ -46,6 +46,17 @@
       </div>
     </q-card-section>
 
+    <q-card-section class="q-pb-none">
+      <div class="row">
+        <p class="col">
+          Fullname:
+          </p>
+        <p class="col">
+          {{ selectedContact.fullName }}
+        </p>
+      </div>
+    </q-card-section>
+
     <q-card-section
       v-if="inHeader"
     >

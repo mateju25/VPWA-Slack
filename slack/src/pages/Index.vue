@@ -51,16 +51,14 @@
     <q-form
       @submit='submit'
       class='my-form'
-    >
+    >      
       <q-input
         class='chat-input'
         square filled
-        type='textarea'
-        autogrow
+        type='textarea'        
         v-model='myMessage'
         placeholder='Message'
       />
-
       <div :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
         <div class='row justify-between'>
           <q-btn color='secondary' class='menu-actions' icon='code' flat>
@@ -204,8 +202,14 @@ export default defineComponent({
 .my-form {
   display: flex;
   flex-direction: column;
-  /* align-items: center;
-  justify-content: center; */
+}
+
+.q-field__control{
+  padding: 0 !important;
+}
+
+.q-textarea .q-field__native {
+  padding: 0.8em;
 }
 
 .text {
@@ -256,8 +260,8 @@ export default defineComponent({
 }
 .chat-input {
   width: 100%;
-  max-height: 200px;
-  overflow-y: scroll;
+  /* max-height: 200px;
+  overflow-y: scroll; */
 }
 .mention {
   background: var(--q-secondary);
