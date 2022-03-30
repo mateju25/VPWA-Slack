@@ -152,7 +152,7 @@ export default defineComponent({
 <style>
 .dialog {
   width: 400px;
-  height: 400px;
+  height: 420px;
   padding: 1rem;
 }
 

@@ -23,11 +23,12 @@
   width: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--q-dark); 
+  background: rgba(124, 124, 124, 0.87);
 }
 ::-webkit-scrollbar-thumb {
-  // background: $secondary;
-  background: rgba(63, 63, 63, 0.867);
+   //background: $secondary;
+  background: rgba(63, 63, 63, 0.87);
+
   border-radius: 5px;
   cursor:pointer;
 }
