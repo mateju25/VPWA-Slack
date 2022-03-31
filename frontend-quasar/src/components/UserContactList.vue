@@ -24,6 +24,7 @@
     <div class='q-my-lg q-ml-lg q-mr-none text-h6 row justify-between'>
       <p class='q-ma-none'># {{ activeChannel.name }}</p>
       <q-btn
+        v-if="activeChannel.name !== 'General'"
         icon='flight_takeoff'
         flat
         :color="Dark.isActive ? 'white' : 'black'"
