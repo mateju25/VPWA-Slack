@@ -9,9 +9,9 @@
 |
 */
 
-import Ws from '@ioc:Ruby184/Socket.IO/Ws'
+import Ws from '@ioc:Ruby184/Socket.IO/Ws';
 
-Ws.middleware.register([() => import('App/Middleware/Auth')])
+Ws.middleware.register([() => import('App/Middleware/Auth')]);
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +23,7 @@ Ws.middleware.register([() => import('App/Middleware/Auth')])
 */
 Ws.middleware.register([
   // () => import('App/Middleware/Auth')
-])
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -43,4 +43,4 @@ Ws.middleware.register([
 */
 Ws.middleware.registerNamed({
   // auth: () => import('App/Middleware/Auth')
-})
+});

@@ -17,7 +17,7 @@ export default defineComponent({
 
   data() {
     let users: User[] = [];
-    users.push(new User(1, 'Jesse', 'Jesse Jones', 'Jesse@Jones.com', 'Online'));
+      users.push(new User(1, 'Jesse', 'Jesse Jones', 'Jesse@Jones.com', 'Online'));
     users.push(new User(2, 'John', 'John Jones', 'John@Jones.com', 'Online'));
     users.push(new User(3, 'Clarence', 'Clarence Jones', 'Clarence@Jones.com', 'DND'));
     users.push(new User(4, 'Tina', 'Tina Jones', 'Tina@Jones.com', 'Offline'));

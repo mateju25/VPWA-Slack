@@ -1,54 +1,58 @@
-import { DateTime } from 'luxon'
-import Hash from '@ioc:Adonis/Core/Hash'
+import { DateTime } from 'luxon';
+import Hash from '@ioc:Adonis/Core/Hash';
 import {
   column,
   beforeSave,
   BaseModel,
-  belongsTo,
-  BelongsTo,
   hasMany,
   HasMany,
   manyToMany,
   ManyToMany,
-} from '@ioc:Adonis/Lucid/Orm'
-import State from 'App/Models/State'
-import Message from 'App/Models/Message'
-import UnreadChannel from 'App/Models/UnreadChannel'
-import Channel from 'App/Models/Channel'
+  hasOne,
+  HasOne,
+} from '@ioc:Adonis/Lucid/Orm';
+import State from 'App/Models/State';
+import Message from 'App/Models/Message';
+import UnreadChannel from 'App/Models/UnreadChannel';
+import Channel from 'App/Models/Channel';
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
-  public id: number
+  public id: number;
 
   @column()
-  public email: string
+  public email: string;
 
   @column()
-  public username: string
+  public username: string;
 
   @column()
-  public fullname: string
+  public fullname: string;
 
   @column({ serializeAs: null })
-  public password: string
+  public password: string;
 
   @column()
-  public rememberMeToken?: string
+  public rememberMeToken?: string;
 
-  @belongsTo(() => State, {
-    foreignKey: 'state_id',
+  @column()
+  public state_id: number;
+
+  @hasOne(() => State, {
+    localKey: 'state_id',
+    foreignKey: 'id',
   })
-  public state: BelongsTo<typeof State>
+  public state: HasOne<typeof State>;
 
   @hasMany(() => Message, {
     foreignKey: 'written_by',
   })
-  public messages: HasMany<typeof Message>
+  public messages: HasMany<typeof Message>;
 
   @hasMany(() => UnreadChannel, {
     foreignKey: 'user_id',
   })
-  public unreadMessages: HasMany<typeof UnreadChannel>
+  public unreadMessages: HasMany<typeof UnreadChannel>;
 
   @manyToMany(() => Channel, {
     pivotTable: 'channel_users',
@@ -63,18 +67,18 @@ export default class User extends BaseModel {
       }
     },
   })
-  public channels: ManyToMany<typeof Channel>
+  public channels: ManyToMany<typeof Channel>;
 
   @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  public createdAt: DateTime;
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  public updatedAt: DateTime;
 
   @beforeSave()
   public static async hashPassword(user: User) {
     if (user.$dirty.password) {
-      user.password = await Hash.make(user.password)
+      user.password = await Hash.make(user.password);
     }
   }
 }
