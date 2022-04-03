@@ -19,9 +19,9 @@ export default class ChannelUsers extends BaseSchema {
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
-      table.timestamp('joined', { useTz: true });
-      table.timestamp('deleted', { useTz: true });
-      table.timestamp('invited', { useTz: true });
+      table.timestamp('joined');
+      table.timestamp('deleted');
+      table.timestamp('invited');
       table.timestamp('created_at', { useTz: true });
       table.timestamp('updated_at', { useTz: true });
     });
