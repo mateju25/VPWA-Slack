@@ -17,7 +17,7 @@
       </q-item-section>
 
       <q-item-section>
-        <q-item-label>{{ contact.nickname }}</q-item-label>
+        <q-item-label>{{ contact.username }}</q-item-label>
       </q-item-section>
 
     </q-item>

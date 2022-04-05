@@ -11,8 +11,6 @@
 
 import Ws from '@ioc:Ruby184/Socket.IO/Ws';
 
-Ws.middleware.register([() => import('App/Middleware/Auth')]);
-
 /*
 |--------------------------------------------------------------------------
 | Global middleware
@@ -21,9 +19,7 @@ Ws.middleware.register([() => import('App/Middleware/Auth')]);
 | An array of global middleware, that will be executed on all the registered namespaces
 |
 */
-Ws.middleware.register([
-  // () => import('App/Middleware/Auth')
-]);
+Ws.middleware.register([() => import('App/Middleware/Auth')]);
 
 /*
 |--------------------------------------------------------------------------

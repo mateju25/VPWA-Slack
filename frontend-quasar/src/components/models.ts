@@ -1,11 +1,13 @@
 export class User {
   constructor(
     public id: number,
-    public nickname: string,
-    public fullName: string,
+    public username: string,
+    public fullname: string,
     public email: string,
+    public state_id: number,
     public state: string,
-    public notificationsOn: boolean = false
+    public channels: Channel[],
+    public notificationsOn: boolean = true
   ) {}
 }
 
@@ -14,15 +16,12 @@ export class Channel {
     public id: number,
     public name: string,
     public isPrivate: boolean,
-    public topped: boolean,
+    public topped: boolean = false
   ) {}
 }
 
-export class Relation {
-  constructor(
-    public id: number,
-    public name: string,
-  ) {}
+export class Role {
+  constructor(public id: number, public name: string) {}
 }
 
 export class RelationUserChannel {
@@ -30,7 +29,7 @@ export class RelationUserChannel {
     public id: number,
     public user: User,
     public channel: Channel,
-    public relation: Relation,
+    public relation: Role
   ) {}
 }
 
@@ -41,16 +40,10 @@ export class Message {
     public writtenBy: User,
     public belongsTo: Channel,
     public currentlyBeingTyped: boolean,
-    public created: number | null,
+    public created: number | null
   ) {}
 }
 
 export class UnreadMessage {
-  constructor(
-    public id: number,
-    public channel: Channel,
-    public user: User,
-  ) {}
+  constructor(public id: number, public channel: Channel, public user: User) {}
 }
-
-

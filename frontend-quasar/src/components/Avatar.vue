@@ -6,7 +6,7 @@
       :text-color="inHeader ? 'primary' : 'white'"
       :size="size"
     >
-      {{ contact.nickname[0] }}
+      {{ contact.username[0] }}
       <q-badge
         v-if='noBadge === false'
         class="absolute-bottom-right badge-state"

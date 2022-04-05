@@ -21,6 +21,8 @@
                 square
                 standout="bg-grey-10 text-white"
                 clearable
+                name='username'
+                id='username'
                 v-model="username"
                 type="name"
                 label="username"
@@ -32,6 +34,8 @@
                 square
                 standout="bg-grey-10 text-white"
                 clearable
+                name='password'
+                id='password'
                 v-model="password"
                 type="password"
                 label="password"
@@ -42,10 +46,10 @@
               </p>
             </q-card-section>
             <q-card-actions class="q-px-md q-mt-xs">
-              <q-btn color="primary" class="full-width q-mx-lg" label="Login" type="submit" />
+              <q-btn color="primary" class="full-width q-mx-lg" label="Login" type="submit"  :loading="loading" />
             </q-card-actions>
             <q-card-section class="text-center q-pa-none q-mt-sm">
-              <a class="text-grey-6 cursor-pointer underlined-text" @click="$router.replace('/register')">Create an account</a>
+              <a class="text-grey-6 cursor-pointer underlined-text" @click="$router.replace('/auth/register')">Create an account</a>
             </q-card-section>
           </q-form>
         </q-card>
@@ -55,10 +59,10 @@
 </template>
 
 <script lang="ts">
-import { User } from 'src/components/models';
 import { defineComponent } from 'vue';
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
+import { RouteLocationRaw } from 'vue-router';
 
 export default defineComponent({
   name: 'PageLogin',
@@ -69,9 +73,17 @@ export default defineComponent({
   },
   data() {
     return {
-      username: 'tmp',
-      password: 'tmp',
+      username: 'jesse@jones.com',
+      password: 'password',
       message:''
+    }
+  },
+  computed: {
+    redirectTo (): RouteLocationRaw {
+      return (this.$route.query.redirect as string) || { name: 'home' }
+    },
+    loading (): boolean {
+      return this.$store.state.auth.status === 'pending'
     }
   },
   validations(){
@@ -96,24 +108,7 @@ export default defineComponent({
           message: this.v$.$errors.map(e => e.$message).join()
         })
       }else{
-        this.validateUser();
-      }
-    },
-    validateUser(){
-      // toto druhe asi zatial unsafe
-      let users: User[] = this.$store.state.chatModule.users as User[];
-      // let user = users.find((x) =>
-      //                       x.nickname === this.username
-      //                       // &&
-      //                       // x.password === this.password
-      //                     );
-      let user = users[0];
-      if(user){
-        void this.$store.dispatch('chatModule/updateLoggedUserState', user);
-        void this.$router.replace('/');
-      }
-      else{
-        this.message = 'Invalid username or password'
+        this.$store.dispatch('auth/login', {'email': this.username,'password': this.password}).then(() => this.$router.push(this.redirectTo))
       }
     }
   },

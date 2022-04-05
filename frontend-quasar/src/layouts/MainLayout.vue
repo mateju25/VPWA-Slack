@@ -45,7 +45,7 @@
       :breakpoint="768"
       bordered
     >
-      <ChannelList :channels='filteredChannels' :activeChannel='activeChannel' @updateActiveChannel="changeActiveChannel"/>
+      <ChannelList :channels='channels' :activeChannel='activeChannel' @updateActiveChannel="changeActiveChannel"/>
 
       <div
         :class="Dark.isActive ? 'background-dark' : 'background-white'"
@@ -65,7 +65,7 @@
           @click="changeDialogOpen()"
         >
           <Avatar class='q-mr-md' :contact='loggedUser' :in-header='true' :size="'36px'"/>
-          {{ loggedUser.nickname }}
+          {{ loggedUser.username }}
         </q-btn>
       </div>
 
@@ -95,7 +95,7 @@ import UserContactList from 'src/components/UserContactList.vue';
 import ChannelList from 'src/components/ChannelList.vue';
 import Avatar from 'components/Avatar.vue';
 import UserInfoDialogContent from 'components/UserInfoDialogContent.vue';
-import { Channel, Message, Relation, RelationUserChannel, UnreadMessage, User } from 'src/components/models';
+import { Channel, Message, Role, RelationUserChannel, UnreadMessage, User } from 'src/components/models';
 import {Dark} from 'quasar';
 
 export default defineComponent({
@@ -106,80 +106,22 @@ export default defineComponent({
     UserContactList,
     ChannelList
   },
-
   data() {
+    console.log(this.$store.state.auth.user)
+    let loggedUser = this.$store.state.auth.user as unknown as User;
+
+
     let messages: Message[] = [];
     let unreadMessages: UnreadMessage[] = [];
-    let channels: Channel[] = [];
+    let channels: Channel[] = loggedUser.channels;
     let userChannelRelations: RelationUserChannel[] = [];
-    let typeRelations: Relation[] = [];
-    typeRelations.push(new Relation(1, 'Owner'));
-    typeRelations.push(new Relation(2, 'User'));
+    let typeRelations: Role[] = [];
+    typeRelations.push(new Role(1, 'Owner'));
+    typeRelations.push(new Role(2, 'User'));
 
-    let activeChannel: Channel;
-    channels.push(new Channel(1, 'General', false, true));
-    channels.push(new Channel(2, 'Studovna', false, true));
-    channels.push(new Channel(3, 'Klietka', false, true));
-    channels.push(new Channel(4, 'Opicarna', false, true));
-    channels.push(new Channel(5, 'Medzi 4 ocami', true, true));
-    channels.push(new Channel(6, 'Porada', true, true));
-    channels.push(new Channel(7, 'Porada sefovia', true, true));
-    activeChannel = channels[0];
-
-    let loggedUser = this.$store.state.chatModule.loggedUser as User;
-    // toto druhe asi zatial unsafe
-    let users: User[] = this.$store.state.chatModule.users as User[];
-
-    messages.push(new Message(1, 'Nieco pisem do chatu od prihlseneho usera', loggedUser, channels[0], false, Date.UTC(2022,3,17,18,51)));
-    messages.push(new Message(2, 'Nieco pisem do chatu od ineho usera a oznacujem @Jesse', users[1], channels[0], false, Date.UTC(2022,3,17,18,52)));
-    messages.push(new Message(3, 'Nieco pisem do chatu od dalsieho usera', users[2], channels[0], false, Date.UTC(2022,3,17,18,59)));
-    messages.push(new Message(4, 'Nieco pisem akurat  do chatu, mozes to vidiet', users[1], channels[0], true, null));
-    messages.push(new Message(5, 'Nieco pisem akurat  do chatu, mozes to vidiet druhy krat', users[2], channels[0], true, null));
-    messages.push(new Message(6, 'Nieco pisem do chatu, a clovek to este nevidel', users[2], channels[1], false, Date.UTC(2022,3,17,18,59)));
-    messages.push(new Message(7, 'Nieco pisem do chatu, a clovek to este nevidel v private kanali', users[4], channels[5], false, Date.UTC(2022,3,17,18,59)));
-
-    unreadMessages.push(new UnreadMessage(1, channels[1], users[0]));
-    unreadMessages.push(new UnreadMessage(2, channels[5], users[0]));
-
-    //nastav seen pre kanaly
-    unreadMessages.forEach(item => {
-      if (item.user.id === loggedUser.id) {
-        item.channel.topped = false;
-      }
-    });
-
-    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[0], typeRelations[1]));
-    userChannelRelations.push(new RelationUserChannel(1, users[1], channels[0], typeRelations[1]));
-    userChannelRelations.push(new RelationUserChannel(1, users[2], channels[0], typeRelations[1]));
-    userChannelRelations.push(new RelationUserChannel(1, users[3], channels[0], typeRelations[1]));
-    userChannelRelations.push(new RelationUserChannel(1, users[4], channels[0], typeRelations[1]));
-
-    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[1], typeRelations[1]));
-    userChannelRelations.push(new RelationUserChannel(1, users[1], channels[1], typeRelations[1]));
-    userChannelRelations.push(new RelationUserChannel(1, users[2], channels[1], typeRelations[1]));
-    userChannelRelations.push(new RelationUserChannel(1, users[3], channels[1], typeRelations[1]));
-    userChannelRelations.push(new RelationUserChannel(1, users[4], channels[1], typeRelations[1]));
-
-    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[2], typeRelations[1]));
-    userChannelRelations.push(new RelationUserChannel(1, users[1], channels[2], typeRelations[1]));
-    userChannelRelations.push(new RelationUserChannel(1, users[2], channels[2], typeRelations[1]));
-
-    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[3], typeRelations[1]));
-    userChannelRelations.push(new RelationUserChannel(1, users[1], channels[3], typeRelations[1]));
-    userChannelRelations.push(new RelationUserChannel(1, users[2], channels[3], typeRelations[1]));
-
-    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[4], typeRelations[0]));
-    userChannelRelations.push(new RelationUserChannel(1, users[1], channels[4], typeRelations[1]));
-
-    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[5], typeRelations[0]));
-    userChannelRelations.push(new RelationUserChannel(1, users[2], channels[5], typeRelations[1]));
-    userChannelRelations.push(new RelationUserChannel(1, users[4], channels[5], typeRelations[1]));
-
-    userChannelRelations.push(new RelationUserChannel(1, users[1], channels[6], typeRelations[0]));
-    userChannelRelations.push(new RelationUserChannel(1, users[0], channels[6], typeRelations[1]));
+    let activeChannel: Channel = channels[0];
 
     return {
-      users: users,
       loggedUser: loggedUser,
       activeChannel: activeChannel,
       channels: channels,
@@ -194,15 +136,6 @@ export default defineComponent({
     }
   },
   computed: {
-    filteredChannels: function (): Channel[] {
-      let filteredChannels: Channel[] = [];
-      this.userChannelRelations.filter(item => {
-        if (item.user.id === this.loggedUser.id) {
-          filteredChannels.push(item.channel);
-        }
-      });
-      return filteredChannels;
-    },
     filteredRelations: function(): RelationUserChannel[] {
       return this.userChannelRelations.filter(item => item.channel.id == this.activeChannel.id);
     },

@@ -20,7 +20,7 @@
         <h6
           class="q-ma-none"
         >
-          {{ selectedContact.nickname }}
+          {{ selectedContact.username }}
         </h6>
         <div
           v-if='inHeader'
@@ -104,6 +104,7 @@ import { defineComponent, PropType } from 'vue';
 import Avatar from 'components/Avatar.vue';
 import { Dark } from 'quasar';
 import { User } from 'components/models';
+import { RouteLocationRaw } from 'vue-router';
 
 export default defineComponent({
   components: { Avatar },
@@ -128,6 +129,9 @@ export default defineComponent({
       get (): boolean  { return Dark.isActive },
       set (value: boolean) { Dark.set(value)},
     },
+    redirectTo (): RouteLocationRaw {
+      return { name: 'login' }
+    },
   },
   watch: {
     userState: function(): void {
@@ -139,6 +143,7 @@ export default defineComponent({
   },
   methods: {
     logout(){
+      this.$store.dispatch('auth/logout').then(() => this.$router.push(this.redirectTo))
       void this.$store.dispatch('chatModule/updateLoggedUserState', null);
       localStorage.removeItem('loggedUser');
       void this.$router.replace('/login');

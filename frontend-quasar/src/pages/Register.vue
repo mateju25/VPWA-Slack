@@ -28,11 +28,11 @@
               </p>
             </q-card-section>
             <q-card-actions class="q-px-md q-mt-none">
-              <q-btn color="primary" class="full-width" label="Create account" type="submit"/>
+              <q-btn color="primary" class="full-width" label="Create account" type="submit" :loading='loading'/>
             </q-card-actions>
           </q-form>
           <q-card-section class="text-center q-pa-none q-mt-sm">
-            <a class="text-grey-6 cursor-pointer underlined-text" @click="$router.replace('/login')">
+            <a class="text-grey-6 cursor-pointer underlined-text" @click="$router.replace('/auth/login')">
               Back to login
             </a>
           </q-card-section>
@@ -46,7 +46,7 @@
 import { defineComponent } from 'vue';
 import useVuelidate from '@vuelidate/core'
 import { required, minLength, email, sameAs } from '@vuelidate/validators'
-import { User } from 'src/components/models';
+import { RouteLocationRaw } from 'vue-router';
 
 export default defineComponent({
   name: 'PageLogin',
@@ -100,26 +100,16 @@ export default defineComponent({
           message: this.v$.$errors.map(e => e.$message).join()
         })
       }else{
-        this.validateUniqueUsername();
+        this.$store.dispatch('auth/register', {'email': this.email,'username': this.username,'fullname': this.fullname,'password': this.password,'passwordConfirmation': this.repeatpassword}).then(() => this.$router.push(this.redirectTo))
       }
     },
-    validateUniqueUsername(){
-      // toto druhe asi zatial unsafe
-      let users: User[] = this.$store.state.chatModule.users as User[];
-      let user = users.find((x) => x.nickname === this.username );
-      if(user){
-        this.message = 'Username already exists';
-      }
-      else{
-        this.createNewUser(users);
-      }
+  },
+  computed:{
+    redirectTo (): RouteLocationRaw {
+      return { name: 'login' }
     },
-    createNewUser(users: User[]){
-      let index = users.length;
-      let loggedUser = new User(index, this.username, this.fullname, this.email, 'Online');
-      void this.$store.dispatch('chatModule/pushNewUserAction', loggedUser);
-      void this.$store.dispatch('chatModule/updateLoggedUserState', loggedUser);
-      void this.$router.replace('/');
+    loading (): boolean {
+      return this.$store.state.auth.status === 'pending'
     }
   },
   watch:{

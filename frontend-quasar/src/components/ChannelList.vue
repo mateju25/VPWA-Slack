@@ -112,6 +112,9 @@ export default defineComponent({
   },
   data(){
     let channelPrivacy = ref(false);
+    console.log(this.channels);
+    console.log(this.activeChannel);
+
     return{
       newChannelName: '',
       newChannelPrivate: channelPrivacy,

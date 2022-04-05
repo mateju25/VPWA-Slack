@@ -6,8 +6,10 @@ import {
   useStore as vuexUseStore,
 } from 'vuex';
 
-import chatModule from './chatStore'
+import chatModule from './chatStore';
+import auth from './module-auth';
 import { ExampleStateInterface } from './chatStore/state';
+import { AuthStateInterface } from './module-auth/state';
 
 /*
  * If not building with SSR mode, you can
@@ -24,6 +26,7 @@ export interface StateInterface {
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   example: unknown;
   chatModule: ExampleStateInterface;
+  auth: AuthStateInterface;
 }
 
 // provide typings for `this.$store`
@@ -40,7 +43,8 @@ export const storeKey: InjectionKey<VuexStore<StateInterface>> =
 export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
-      chatModule
+      chatModule,
+      auth,
     },
 
     // enable strict mode (adds overhead!)

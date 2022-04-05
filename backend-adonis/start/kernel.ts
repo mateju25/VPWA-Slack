@@ -11,10 +11,6 @@
 
 import Server from '@ioc:Adonis/Core/Server';
 
-Server.middleware.registerNamed({
-  auth: () => import('App/Middleware/Auth'),
-});
-
 /*
 |--------------------------------------------------------------------------
 | Global middleware
@@ -42,4 +38,6 @@ Server.middleware.register([() => import('@ioc:Adonis/Core/BodyParser')]);
 | Route.get('dashboard', 'UserController.dashboard').middleware('auth')
 |
 */
-Server.middleware.registerNamed({});
+Server.middleware.registerNamed({
+  auth: () => import('App/Middleware/Auth'),
+});

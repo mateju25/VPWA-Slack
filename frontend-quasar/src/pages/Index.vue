@@ -9,8 +9,8 @@
 
       <div v-for='message in alreadyTyped' v-bind:key='message.id'>
         <q-chat-message
-          v-if='message.writtenBy.nickname === loggedUser.nickname'
-          :name='message.writtenBy.nickname'
+          v-if='message.writtenBy.username === loggedUser.username'
+          :name='message.writtenBy.username'
           :text='[prepareMessage(message.text)]'
           :text-html='true'
           sent
@@ -22,7 +22,7 @@
         </q-chat-message>
         <q-chat-message
           v-else
-          :name='message.writtenBy.nickname'
+          :name='message.writtenBy.username'
           :text='[prepareMessage(message.text)]'
           :text-html='true'
           received
@@ -39,7 +39,7 @@
          :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
       <div :class="Dark.isActive ? 'yellow-text' : 'black-text'" class='typing-font q-ml-sm typing-hover cursor-pointer'
            v-for='(message, index) in currentlyTyping' v-bind:key='message.id'>
-        <p>{{ message.writtenBy.nickname }} <span v-if='index !== currentlyTyping.length - 1'>,</span></p>
+        <p>{{ message.writtenBy.username }} <span v-if='index !== currentlyTyping.length - 1'>,</span></p>
 
         <div class='text' :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
           <p class='q-ma-lg' :class="Dark.isActive ? '' : 'black-text'">{{ message.text }}</p>
@@ -139,7 +139,7 @@ export default defineComponent({
   },
   methods: {
     prepareMessage(message: string): string {
-      return  message.replace('@'+(this.loggedUser as User).nickname , '<strong class="mention underlined-text">'+(this.loggedUser as User).nickname+'</strong>');
+      return  message.replace('@'+(this.loggedUser as User).username , '<strong class="mention underlined-text">'+(this.loggedUser as User).username+'</strong>');
     },
     submit() {
       this.$emit('newMessage', this.myMessage);
