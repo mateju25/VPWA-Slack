@@ -16,6 +16,9 @@ export default class Channel extends BaseModel {
 
   @hasMany(() => Message, {
     foreignKey: 'channel_id',
+    onQuery(query) {
+      query.preload('user');
+    },
   })
   public messages: HasMany<typeof Message>;
 

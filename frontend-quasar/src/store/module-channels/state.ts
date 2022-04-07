@@ -1,16 +1,20 @@
-import { Channel } from 'components/models';
+import { Channel, Message } from 'components/models';
 
 export interface ChannelStateInterface {
   channels: Channel[];
+  messages: Message[];
   activeChannel: Channel | null;
-  status: 'nothing' | 'pending' | 'success' | 'error';
+  statusChannel: 'nothing' | 'pending' | 'success' | 'error';
+  statusMessage: 'nothing' | 'pending' | 'success' | 'error';
 }
 
 function state(): ChannelStateInterface {
   return {
     channels: [],
+    messages: [],
     activeChannel: null,
-    status: 'nothing',
+    statusChannel: 'nothing',
+    statusMessage: 'nothing',
   };
 }
 

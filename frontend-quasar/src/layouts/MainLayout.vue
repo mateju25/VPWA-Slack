@@ -85,9 +85,9 @@
       <UserContactList v-if='channelsLoaded' />
     </q-drawer>
 
-<!--    <q-page-container>-->
-<!--      <router-view />-->
-<!--    </q-page-container>-->
+    <q-page-container>
+      <router-view v-if='messagesLoaded'/>
+    </q-page-container>
 
   </q-layout>
 </template>
@@ -126,7 +126,10 @@ export default defineComponent({
       return this.$store.state.auth.user as User;
     },
     channelsLoaded (): boolean {
-      return this.$store.state.channelModule.status === 'success'
+      return this.$store.state.channelModule.statusChannel === 'success'
+    },
+    messagesLoaded (): boolean {
+      return this.$store.state.channelModule.statusMessage === 'success'
     },
     userLoaded (): boolean {
       return this.$store.state.auth.user !== null
