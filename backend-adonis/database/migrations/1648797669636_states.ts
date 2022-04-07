@@ -1,12 +1,14 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
-export default class States extends BaseSchema {
-  protected tableName = 'states';
+export default class Prefences extends BaseSchema {
+  protected tableName = 'preferences';
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id');
-      table.string('name').notNullable().unique();
+      table.string('state_name').notNullable().defaultTo('Offline');
+      table.boolean('dark_mode').notNullable().defaultTo(true);
+      table.boolean('notifications_on').notNullable().defaultTo(true);
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

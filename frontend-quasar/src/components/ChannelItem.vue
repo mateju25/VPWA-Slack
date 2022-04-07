@@ -3,14 +3,14 @@
     <q-item-label
       lines='1'
       class
-      :class='channelSeen(channel.topped)'
+      :class='channelSeen(isSeen)'
     >
       # {{channel.name}}
     </q-item-label>
   </q-item-section>
 
   <q-item-section
-    v-if='!channel.topped'
+    v-if='!isSeen'
     side
   >
     <q-badge
@@ -26,7 +26,8 @@ import { Channel } from './models';
 export default {
   name: 'ChannelItem',
   props: {
-    channel: Channel
+    channel: Object as () => Channel,
+    isSeen: Boolean
   },
   methods: {
     channelSeen(seen: boolean): string {

@@ -31,8 +31,7 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     try {
       commit('AUTH_START');
       const apiToken = await authService.login(credentials);
-      const user = await authService.me();
-      commit('AUTH_SUCCESS', user);
+      commit('AUTH_SUCCESS', null);
       // save api token to local storage and notify listeners
       authManager.setToken(apiToken.token);
       return apiToken;

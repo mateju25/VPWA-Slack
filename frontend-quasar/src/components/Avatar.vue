@@ -10,7 +10,7 @@
       <q-badge
         v-if='noBadge === false'
         class="absolute-bottom-right badge-state"
-        :class="userState(contact.state)"
+        :class="userState(contact.preference.stateName)"
       />
     </q-avatar>
   </div>

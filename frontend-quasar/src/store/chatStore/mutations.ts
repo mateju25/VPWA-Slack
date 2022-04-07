@@ -7,19 +7,21 @@ const mutation: MutationTree<ExampleStateInterface> = {
     state.loggedUser = user;
   },
   updateLoggedUserState(state: ExampleStateInterface, userState: string) {
-    (state.loggedUser as User).state = userState;
+    (state.loggedUser as User).preference.stateName = userState;
   },
-  updateLoggedUserNotifications(state: ExampleStateInterface, notifications: boolean) {
-    (state.loggedUser as User).notificationsOn = notifications;
+  updateLoggedUserNotifications(
+    state: ExampleStateInterface,
+    notifications: boolean
+  ) {
+    (state.loggedUser as User).preference.notificationsOn = notifications;
   },
 
-  updateAllUsers(state: ExampleStateInterface, users: User[]){
+  updateAllUsers(state: ExampleStateInterface, users: User[]) {
     state.users = users;
   },
-  pushNewUser(state: ExampleStateInterface, user: User){
+  pushNewUser(state: ExampleStateInterface, user: User) {
     (state.users as User[]).push(user);
-  }
-
+  },
 };
 
 export default mutation;

@@ -7,7 +7,7 @@
           <div class='q-ml-sm column'>
             <span class='text-weight-bold'>You are currently leaving this channel!</span>
             <br/>
-            <span v-if='owners.includes(loggedUser)'>You are owner of this channel and it will be deleted!</span>
+            <span v-if='activeChannel.owners.includes(loggedUser)'>You are owner of this channel and it will be deleted!</span>
             <span>Are you sure?</span>
           </div>
         </q-card-section>
@@ -38,14 +38,14 @@
     <q-separator />
 
     <q-list>
-      <q-item-label header v-if='owners.length > 0'>Owners</q-item-label>
+      <q-item-label header v-if='activeChannel.owners.length > 0'>Owners</q-item-label>
       <UserContactListItem
-        :contacts='owners'
+        :contacts='activeChannel.owners'
       />
 
-      <q-item-label header v-if='users.length > 0'>Users</q-item-label>
+      <q-item-label header v-if='activeChannel.members.length > 0'>Users</q-item-label>
       <UserContactListItem
-        :contacts='users'
+        :contacts='activeChannel.members'
       />
     </q-list>
 
@@ -54,9 +54,9 @@
 
 <script lang='ts'>
 
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, ref } from 'vue';
 import UserContactListItem from 'src/components/UserContactListItem.vue';
-import { Channel, RelationUserChannel, User } from './models';
+import { Channel } from './models';
 import { Dark } from 'quasar';
 
 export default defineComponent({
@@ -75,27 +75,10 @@ export default defineComponent({
       loggedUser: this.$store.state.chatModule.loggedUser
     };
   },
-  props: {
-    contacts: {
-      type: Array as PropType<Array<RelationUserChannel>>,
-      required: true
-    },
-    activeChannel: {
-      type: Object as PropType<Channel>,
-      required: true
-    }
-  },
   computed: {
-    owners: function(): User[] {
-      let owners: User[] = [];
-      this.contacts.filter(item => item.relation.id == 1).forEach(item => owners.push(item.user));
-      return owners;
+    activeChannel (): Channel {
+      return this.$store.state.channelModule.activeChannel as Channel;
     },
-    users: function(): User[] {
-      let users: User[] = [];
-      this.contacts.filter(item => item.relation.id == 2).forEach(item => users.push(item.user));
-      return users;
-    }
   }
 });
 

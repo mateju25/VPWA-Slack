@@ -7,7 +7,7 @@
       :class='channels[0].id === activeChannel.id ? "channel-active" : ""'
       @click="changeActiveModel(channels[0])"
     >
-      <ChannelItem  :channel='channels[0]' />
+      <ChannelItem  :channel='channels[0]' :isSeen='true'/>
     </q-item>
     <q-list padding class='rounded-borders' style='max-width: 350px'>
       <q-expansion-item
@@ -29,7 +29,7 @@
           :class='channel.id === activeChannel.id ? "channel-active" : ""'
           @click="changeActiveModel(channel)"
         >
-          <ChannelItem :channel='channel' />
+          <ChannelItem :channel='channel' :isSeen='true'/>
         </q-item>
       </q-expansion-item>
     </q-list>
@@ -54,7 +54,7 @@
           :class='channel.id === activeChannel.id ? "channel-active" : ""'
           @click="changeActiveModel(channel)"
         >
-          <ChannelItem :channel='channel' />
+          <ChannelItem :channel='channel' :isSeen='true' />
         </q-item>
       </q-expansion-item>
     </q-list>
@@ -93,33 +93,23 @@
 
 <script lang='ts'>
 
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { Channel } from 'components/models';
 import ChannelItem from 'components/ChannelItem.vue';
 import { Dark } from 'quasar';
 
 export default defineComponent({
   components: { ChannelItem },
-  props: {
-    channels: {
-      type: Array as PropType<Array<Channel>>,
-      required: true
-    },
-    activeChannel: {
-      type: Object as PropType<Channel>,
-      required: true
-    }
-  },
   data(){
     let channelPrivacy = ref(false);
-    console.log(this.channels);
-    console.log(this.activeChannel);
 
     return{
       newChannelName: '',
       newChannelPrivate: channelPrivacy,
       newChannel: false,
       Dark: Dark,
+      channels: this.$store.state.channelModule.channels,
+      activeChannel: this.$store.state.channelModule.activeChannel,
     }
   },
   methods: {

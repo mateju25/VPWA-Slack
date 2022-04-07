@@ -2,15 +2,21 @@ import { DateTime } from 'luxon';
 import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm';
 import User from 'App/Models/User';
 
-export default class State extends BaseModel {
+export default class Preference extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
   @column()
-  public name: string;
+  public stateName: string;
+
+  @column()
+  public darkMode: boolean;
+
+  @column()
+  public notificationsOn: boolean;
 
   @belongsTo(() => User, {
-    foreignKey: 'state_id',
+    foreignKey: 'preference_id',
     localKey: 'id',
   })
   public user: BelongsTo<typeof User>;

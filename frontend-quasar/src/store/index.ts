@@ -7,9 +7,11 @@ import {
 } from 'vuex';
 
 import chatModule from './chatStore';
+import channelModule from './module-channels';
 import auth from './module-auth';
 import { ExampleStateInterface } from './chatStore/state';
 import { AuthStateInterface } from './module-auth/state';
+import { ChannelStateInterface } from './module-channels/state';
 
 /*
  * If not building with SSR mode, you can
@@ -27,6 +29,7 @@ export interface StateInterface {
   example: unknown;
   chatModule: ExampleStateInterface;
   auth: AuthStateInterface;
+  channelModule: ChannelStateInterface;
 }
 
 // provide typings for `this.$store`
@@ -45,6 +48,7 @@ export default store(function (/* { ssrContext } */) {
     modules: {
       chatModule,
       auth,
+      channelModule,
     },
 
     // enable strict mode (adds overhead!)

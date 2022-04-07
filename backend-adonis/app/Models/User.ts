@@ -1,20 +1,20 @@
 import { DateTime } from 'luxon';
-import Hash from '@ioc:Adonis/Core/Hash';
 import {
-  column,
-  beforeSave,
   BaseModel,
+  beforeSave,
+  column,
   hasMany,
   HasMany,
-  manyToMany,
-  ManyToMany,
   hasOne,
   HasOne,
+  manyToMany,
+  ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm';
-import State from 'App/Models/State';
+import Preference from 'App/Models/Preference';
 import Message from 'App/Models/Message';
 import UnreadChannel from 'App/Models/UnreadChannel';
 import Channel from 'App/Models/Channel';
+import Hash from '@ioc:Adonis/Core/Hash';
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -36,13 +36,13 @@ export default class User extends BaseModel {
   public rememberMeToken?: string;
 
   @column()
-  public state_id: number;
+  public preference_id: number;
 
-  @hasOne(() => State, {
-    localKey: 'state_id',
+  @hasOne(() => Preference, {
+    localKey: 'preference_id',
     foreignKey: 'id',
   })
-  public state: HasOne<typeof State>;
+  public preference: HasOne<typeof Preference>;
 
   @hasMany(() => Message, {
     foreignKey: 'written_by',
@@ -61,10 +61,8 @@ export default class User extends BaseModel {
     pivotTimestamps: true,
     pivotColumns: ['role_id', 'joined', 'deleted', 'invited'],
     onQuery(query) {
-      if (!query.isRelatedSubQuery) {
-        //TODO: treba sa spytat edka ako vytiahnut subselectom rolu
-        //   query.preload('role_id');
-      }
+      query.preload('owners');
+      query.preload('members');
     },
   })
   public channels: ManyToMany<typeof Channel>;

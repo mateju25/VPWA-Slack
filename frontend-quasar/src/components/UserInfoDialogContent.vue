@@ -49,10 +49,10 @@
     <q-card-section class="q-pb-none">
       <div class="row">
         <p class="col">
-          Fullname:
+          Full name:
           </p>
         <p class="col">
-          {{ selectedContact.fullName }}
+          {{ selectedContact.fullname }}
         </p>
       </div>
     </q-card-section>
@@ -117,8 +117,8 @@ export default defineComponent({
   },
   data() {
     return {
-      userState: this.selectedContact.state,
-      notifications: this.selectedContact.notificationsOn,
+      userState: this.selectedContact.preference.stateName,
+      notifications: this.selectedContact.preference.notificationsOn,
       options: [
         'Online', 'Offline', 'DND'
       ]
@@ -144,9 +144,6 @@ export default defineComponent({
   methods: {
     logout(){
       this.$store.dispatch('auth/logout').then(() => this.$router.push(this.redirectTo))
-      void this.$store.dispatch('chatModule/updateLoggedUserState', null);
-      localStorage.removeItem('loggedUser');
-      void this.$router.replace('/login');
     }
   }
 

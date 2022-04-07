@@ -16,6 +16,7 @@
 
         <q-dialog v-model="dialogOpen">
           <UserInfoDialogContent
+            v-if='userLoaded'
             :selectedContact='loggedUser'
             :inHeader='true'
           />
@@ -29,7 +30,8 @@
           @click="changeDialogOpen()"
         >
           <Avatar
-            :contact="loggedUser"
+            v-if='userLoaded'
+            :contact="this.$store.state.auth.user"
             :inHeader="true"
             :size="'36px'"
           />
@@ -45,9 +47,10 @@
       :breakpoint="768"
       bordered
     >
-      <ChannelList :channels='channels' :activeChannel='activeChannel' @updateActiveChannel="changeActiveChannel"/>
+      <ChannelList v-if='channelsLoaded' />
 
       <div
+        v-if='userLoaded'
         :class="Dark.isActive ? 'background-dark' : 'background-white'"
         class="absolute-bottom-left mobile-avatar"
       >
@@ -79,24 +82,24 @@
       icon="people"
       bordered
     >
-      <UserContactList :contacts='filteredRelations' :active-channel='activeChannel' @createNewChannel='createNewChannel' @deleteChannel='deleteChannel'/>
+      <UserContactList v-if='channelsLoaded' />
     </q-drawer>
 
-    <q-page-container>
-      <router-view :messages='filteredMessages' @newMessage="addNewMessage"/>
-    </q-page-container>
+<!--    <q-page-container>-->
+<!--      <router-view />-->
+<!--    </q-page-container>-->
 
   </q-layout>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import UserContactList from 'src/components/UserContactList.vue';
 import ChannelList from 'src/components/ChannelList.vue';
 import Avatar from 'components/Avatar.vue';
 import UserInfoDialogContent from 'components/UserInfoDialogContent.vue';
-import { Channel, Message, Role, RelationUserChannel, UnreadMessage, User } from 'src/components/models';
-import {Dark} from 'quasar';
+import UserContactList from 'components/UserContactList.vue';
+import { Dark } from 'quasar';
+import { User } from 'src/contracts';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -107,28 +110,11 @@ export default defineComponent({
     ChannelList
   },
   data() {
-    console.log(this.$store.state.auth.user)
-    let loggedUser = this.$store.state.auth.user as unknown as User;
-
-
-    let messages: Message[] = [];
-    let unreadMessages: UnreadMessage[] = [];
-    let channels: Channel[] = loggedUser.channels;
-    let userChannelRelations: RelationUserChannel[] = [];
-    let typeRelations: Role[] = [];
-    typeRelations.push(new Role(1, 'Owner'));
-    typeRelations.push(new Role(2, 'User'));
-
-    let activeChannel: Channel = channels[0];
+    if (this.$store.state.auth.user == null)
+      this.$store.dispatch('auth/check');
+    this.$store.dispatch('channelModule/loadChannels');
 
     return {
-      loggedUser: loggedUser,
-      activeChannel: activeChannel,
-      channels: channels,
-      typeRelations: typeRelations,
-      messages: messages,
-      unreadMessages: unreadMessages,
-      userChannelRelations: userChannelRelations,
       Dark: Dark,
       leftDrawerOpen: false,
       rightDrawerOpen: false,
@@ -136,30 +122,17 @@ export default defineComponent({
     }
   },
   computed: {
-    filteredRelations: function(): RelationUserChannel[] {
-      return this.userChannelRelations.filter(item => item.channel.id == this.activeChannel.id);
+    loggedUser(): User {
+      return this.$store.state.auth.user as User;
     },
-    filteredMessages: function(): Message[] {
-      return this.messages.filter(item => item.belongsTo.id === this.activeChannel.id);
-    }
+    channelsLoaded (): boolean {
+      return this.$store.state.channelModule.status === 'success'
+    },
+    userLoaded (): boolean {
+      return this.$store.state.auth.user !== null
+    },
   },
   methods: {
-    deleteChannel(channel: Channel) {
-      this.channels.splice(this.channels.indexOf(channel), 1);
-      this.activeChannel = this.channels[0];
-    },
-    createNewChannel(channelName: string, isPrivate: boolean) {
-      let channel: Channel = new Channel(10, channelName, isPrivate, false);
-      this.channels.push(channel);
-      this.userChannelRelations.push(new RelationUserChannel(1, this.loggedUser, channel, this.typeRelations[0]));
-    },
-    addNewMessage(message: string) {
-      this.messages.push(new Message(-1, message, this.loggedUser, this.activeChannel, false, Date.now()));
-    },
-    changeActiveChannel(channel: Channel) {
-      channel.topped = true;
-      this.activeChannel = channel;
-    },
     changeDialogOpen() {
       this.dialogOpen = !this.dialogOpen;
     },

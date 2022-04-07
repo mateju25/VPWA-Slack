@@ -17,15 +17,73 @@
         <q-card square class="q-pa-md register-card" >
           <q-form class="q-gutter-md" @submit.stop="onSubmit()">
             <q-card-section>
-              <q-input square standout="bg-grey-10 text-white" clearable v-model="username" type="text" label="username" :error="v$.password.$error"/>
-              <q-input class="q-mt-sm" square standout="bg-grey-10 text-white" clearable v-model="fullname" type="text" label="full name" :error="v$.password.$error"/>
-              <q-input class="q-mt-sm" square standout="bg-grey-10 text-white" clearable v-model="email" type="email" label="email" :error="v$.password.$error"/>
-              <q-input class="q-mt-sm" square standout="bg-grey-10 text-white" clearable v-model="password" type="password" label="password" :error="v$.password.$error"/>
-              <q-input class="q-mt-sm" square standout="bg-grey-10 text-white" clearable v-model="repeatpassword" type="password" label="repeat password" :error="v$.password.$error"/>
-
-              <p class="q-ma-none">
-                {{ message }}
-              </p>
+              <q-input
+                square
+                standout='bg-grey'
+                name='username'
+                id='username'
+                v-model='username'
+                type='text'
+                label='Username'
+                :error='v$.username.$error'
+                :error-message="usernameError"
+              />
+              <q-input
+                class="q-mt-md"
+                square
+                standout='bg-grey'
+                name='fullname'
+                id='fullname'
+                v-model='fullname'
+                type='text'
+                label='Full name'
+                :error='v$.fullname.$error'
+                :error-message="fullnameError"
+              />
+              <q-input
+                class="q-mt-md"
+                square
+                standout='bg-grey'
+                name='email'
+                id='email'
+                v-model='email'
+                type='email'
+                label='Email'
+                :error='v$.email.$error'
+                :error-message="emailError"
+              />
+              <q-input
+                class="q-mt-md"
+                square
+                standout='bg-grey'
+                name='password'
+                id='password'
+                v-model='password'
+                :type="isPwd ? 'password' : 'text'"
+                label='Password'
+                :error='v$.password.$error'
+                :error-message="passwordError"
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    class='cursor-pointer'
+                    @click='isPwd = !isPwd'
+                  />
+                </template>
+              </q-input>
+              <q-input
+                class="q-mt-md"
+                square
+                standout='bg-grey'
+                name='passwordConfirm'
+                id='passwordConfirm'
+                v-model='passwordConfirm'
+                type='password'
+                label='Confirm password'
+                :error='v$.passwordConfirm.$error'
+                :error-message="passwordConfirmError"
+              />
             </q-card-section>
             <q-card-actions class="q-px-md q-mt-none">
               <q-btn color="primary" class="full-width" label="Create account" type="submit" :loading='loading'/>
@@ -45,7 +103,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import useVuelidate from '@vuelidate/core'
-import { required, minLength, email, sameAs } from '@vuelidate/validators'
+import { required, minLength, email, sameAs, maxLength, alphaNum} from '@vuelidate/validators';
 import { RouteLocationRaw } from 'vue-router';
 
 export default defineComponent({
@@ -61,9 +119,8 @@ export default defineComponent({
       password: '',
       username: '',
       fullname: '',
-      repeatpassword: '',
-
-      message:''
+      passwordConfirm: '',
+      isPwd: true,
     }
   },
   validations(){
@@ -72,17 +129,23 @@ export default defineComponent({
         required,
         email
       },
-      password:{
+      password: {
         required,
-        minLength: minLength(8),
+        min: minLength(8),
+        max: maxLength(20)
       },
       username:{
-        required
+        required,
+        alphaNum,
+        min: minLength(5),
+        max: maxLength(30)
       },
       fullname:{
-        required
+        required,
+        min: minLength(5),
+        max: maxLength(50)
       },
-      repeatpassword:{
+      passwordConfirm:{
         required,
         sameAsPassword: sameAs(this.password),
       },
@@ -100,7 +163,20 @@ export default defineComponent({
           message: this.v$.$errors.map(e => e.$message).join()
         })
       }else{
-        this.$store.dispatch('auth/register', {'email': this.email,'username': this.username,'fullname': this.fullname,'password': this.password,'passwordConfirmation': this.repeatpassword}).then(() => this.$router.push(this.redirectTo))
+        this.$store.dispatch('auth/register',
+          {'email': this.email,
+            'username': this.username,
+            'fullname': this.fullname,
+            'password': this.password,
+            'passwordConfirmation': this.passwordConfirm})
+          .then(() => this.$router.push(this.redirectTo)).catch(() => {
+          this.$q.notify({
+            color: 'red-4',
+            textColor: 'white',
+            icon: 'warning',
+            message: 'User with same username or email already exists'
+          })
+        })
       }
     },
   },
@@ -110,23 +186,21 @@ export default defineComponent({
     },
     loading (): boolean {
       return this.$store.state.auth.status === 'pending'
-    }
-  },
-  watch:{
-    username(){
-      this.message='';
     },
-    password(){
-      this.message='';
+    usernameError(): string {
+      return 'Username should be between 5 and 30 alphanumeric letters';
     },
-    email(){
-      this.message='';
+    fullnameError(): string {
+      return 'Full name should be between 5 and 50 letters';
     },
-    fullname(){
-      this.message='';
+    passwordError(): string {
+      return 'Password should be between 8 and 20 letters';
     },
-    repeatpassword(){
-      this.message='';
+    emailError(): string {
+      return 'Email should have a valid format';
+    },
+    passwordConfirmError(): string {
+      return 'Passwords do not match';
     }
   }
 })

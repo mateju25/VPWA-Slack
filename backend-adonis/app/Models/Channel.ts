@@ -11,8 +11,8 @@ export default class Channel extends BaseModel {
   @column()
   public name: string;
 
-  @column()
-  public private: boolean;
+  @column({ columnName: 'private' })
+  public isPrivate: boolean;
 
   @hasMany(() => Message, {
     foreignKey: 'channel_id',
@@ -30,8 +30,23 @@ export default class Channel extends BaseModel {
     pivotRelatedForeignKey: 'channel_id',
     pivotTimestamps: true,
     pivotColumns: ['role_id', 'joined', 'deleted', 'invited'],
+    onQuery(query) {
+      query.preload('preference').wherePivot('role_id', '=', 2);
+    },
   })
-  public users: ManyToMany<typeof User>;
+  public members: ManyToMany<typeof User>;
+
+  @manyToMany(() => User, {
+    pivotTable: 'channel_users',
+    pivotForeignKey: 'user_id',
+    pivotRelatedForeignKey: 'channel_id',
+    pivotTimestamps: true,
+    pivotColumns: ['role_id', 'joined', 'deleted', 'invited'],
+    onQuery(query) {
+      query.preload('preference').wherePivot('role_id', '=', 1);
+    },
+  })
+  public owners: ManyToMany<typeof User>;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

@@ -4,10 +4,18 @@ export class User {
     public username: string,
     public fullname: string,
     public email: string,
-    public state_id: number,
-    public state: string,
-    public channels: Channel[],
-    public notificationsOn: boolean = true
+    public preference: Preference,
+    //TODO remove state
+    public state: string
+  ) {}
+}
+
+export class Preference {
+  constructor(
+    public id: number,
+    public stateName: string,
+    public darkMode: boolean,
+    public notificationsOn: boolean
   ) {}
 }
 
@@ -16,7 +24,8 @@ export class Channel {
     public id: number,
     public name: string,
     public isPrivate: boolean,
-    public topped: boolean = false
+    public owners: User[],
+    public members: User[],
   ) {}
 }
 
