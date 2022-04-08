@@ -9,27 +9,27 @@
 
       <div v-for='message in alreadyTyped' v-bind:key='message.id'>
         <q-chat-message
-          v-if='message.writtenBy.username === loggedUser.username'
-          :name='message.writtenBy.username'
+          v-if='message.user.username === loggedUser.username'
+          :name='message.user.username'
           :text='[prepareMessage(message.text)]'
           :text-html='true'
           sent
-          :stamp="date.formatDate(message.created, 'HH:mm DD.MM.YYYY')"
+          :stamp="date.formatDate(date.extractDate(message.createdAt, 'YYYY-MM-DDTHH:mm:ss.SSSZ'), 'HH:mm DD.MM.YYYY')"
         >
           <template v-slot:avatar>
-            <Avatar class='q-mx-md' :contact='message.writtenBy' :in-header='false' :noBadge='true' />
+            <Avatar class='q-mx-md' :contact='message.user' :in-header='false' :noBadge='true' />
           </template>
         </q-chat-message>
         <q-chat-message
           v-else
-          :name='message.writtenBy.username'
+          :name='message.user.username'
           :text='[prepareMessage(message.text)]'
           :text-html='true'
           received
-          :stamp="date.formatDate(message.created, 'HH:mm DD.MM.YYYY')"
+          :stamp="date.formatDate(date.extractDate(message.createdAt, 'YYYY-MM-DDTHH:mm:ss.SSSZ'), 'HH:mm DD.MM.YYYY')"
         >
           <template v-slot:avatar>
-            <Avatar class='q-mx-md' :contact='message.writtenBy' :in-header='false' :noBadge='true' />
+            <Avatar class='q-mx-md' :contact='message.user' :in-header='false' :noBadge='true' />
           </template>
         </q-chat-message>
 
@@ -39,7 +39,7 @@
          :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
       <div :class="Dark.isActive ? 'yellow-text' : 'black-text'" class='typing-font q-ml-sm typing-hover cursor-pointer'
            v-for='(message, index) in currentlyTyping' v-bind:key='message.id'>
-        <p>{{ message.writtenBy.username }} <span v-if='index !== currentlyTyping.length - 1'>,</span></p>
+        <p>{{ message.user.username }} <span v-if='index !== currentlyTyping.length - 1'>,</span></p>
 
         <div class='text' :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
           <p class='q-ma-lg' :class="Dark.isActive ? '' : 'black-text'">{{ message.text }}</p>
@@ -105,7 +105,7 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, PropType } from 'vue';
+import { defineComponent } from 'vue';
 import { Dark, date } from 'quasar';
 import { Message, User } from 'components/models';
 import Avatar from 'components/Avatar.vue';
@@ -114,15 +114,8 @@ import Avatar from 'components/Avatar.vue';
 export default defineComponent({
   name: 'PageIndex',
   components: { Avatar},
-  props: {
-    messages: {
-      type: Array as PropType<Array<Message>>,
-      required: true
-    }
-  },
   data() {
     return {
-      loggedUser: this.$store.state.chatModule.loggedUser,
       Dark: Dark,
       date: date,
       myMessage: '',
@@ -130,11 +123,14 @@ export default defineComponent({
     };
   },
   computed: {
+    loggedUser() {
+      return this.$store.state.auth.user as unknown as User;
+    },
     alreadyTyped: function(): Message[] {
-      return this.messages.filter(item => !item.currentlyBeingTyped);
+      return this.$store.state.channelModule.messages;
     },
     currentlyTyping: function(): Message[] {
-      return this.messages.filter(item => item.currentlyBeingTyped);
+      return [];
     }
   },
   methods: {

@@ -46,10 +46,8 @@ export class Message {
   constructor(
     public id: number,
     public text: string,
-    public writtenBy: User,
-    public belongsTo: Channel,
-    public currentlyBeingTyped: boolean,
-    public created: number | null
+    public user: User,
+    public createdAt: string
   ) {}
 }
 
