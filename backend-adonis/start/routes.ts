@@ -33,4 +33,5 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('channels', 'ChannelController.getChannelsAndRelations').middleware('auth');
+  Route.get('messages/:id', 'ChannelController.getMessages').middleware('auth');
 }).prefix('data');
