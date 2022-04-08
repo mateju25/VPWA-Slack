@@ -11,10 +11,20 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
       const channels = await channelService.loadChannels();
       commit('LOAD_SUCCESS', channels);
       commit('SET_ACTIVE_GENERAL', channels);
-      dispatch('loadMessages');
+      await dispatch('loadMessages');
       return channels !== null;
     } catch (err) {
       commit('LOAD_ERROR', err);
+      throw err;
+    }
+  },
+  async setActiveChannel({ state, commit, dispatch }, { channel }) {
+    try {
+      commit('SET_ACTIVE_CHANNEL', channel);
+      console.log(state.activeChannel);
+      await dispatch('loadMessages');
+      return state.activeChannel !== null;
+    } catch (err) {
       throw err;
     }
   },

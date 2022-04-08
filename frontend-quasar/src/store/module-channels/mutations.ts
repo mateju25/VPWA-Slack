@@ -22,6 +22,9 @@ const mutation: MutationTree<ChannelStateInterface> = {
       (item) => item.name === 'General'
     ) as Channel;
   },
+  SET_ACTIVE_CHANNEL(state, channel: Channel) {
+    state.activeChannel = channel;
+  },
   LOAD_ERROR(state) {
     state.statusChannel = 'error';
     state.statusMessage = 'error';

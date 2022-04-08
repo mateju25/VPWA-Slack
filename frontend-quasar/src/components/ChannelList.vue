@@ -109,15 +109,17 @@ export default defineComponent({
       newChannel: false,
       Dark: Dark,
       channels: this.$store.state.channelModule.channels,
-      activeChannel: this.$store.state.channelModule.activeChannel,
     }
   },
   methods: {
     changeActiveModel: function(channel: Channel): void {
-      this.$emit('updateActiveChannel', channel);
+      this.$store.dispatch('channelModule/setActiveChannel', {channel});
     }
   },
   computed: {
+    activeChannel: function(): Channel | null {
+      return this.$store.state.channelModule.activeChannel;
+    },
     privateChannels: function(): Channel[] {
       let privateChannels: Channel[] = [];
       this.channels.forEach(item => {

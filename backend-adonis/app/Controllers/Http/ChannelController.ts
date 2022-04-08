@@ -4,9 +4,8 @@ import Channel from 'App/Models/Channel';
 export default class ChannelController {
   public async getChannelsAndRelations({ auth }: HttpContextContract) {
     // if invalid, exception
-    const channels = (await auth.user?.related('channels').query()) as Channel[];
-
-    return channels;
+    await auth.user?.load('channels');
+    return auth.user?.channels;
   }
 
   public async getMessages({ params }: HttpContextContract) {

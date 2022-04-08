@@ -4,9 +4,9 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     meta: { requiresAuth: true },
-    name: 'home',
+
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/Index.vue') }],
+    children: [{ path: '', name: 'home', component: () => import('pages/Index.vue') }],
   },
   {
     path: '/auth',

@@ -11,31 +11,31 @@ export default class ChannelSeeder extends BaseSeeder {
     let channels = await Channel.createMany([
       {
         name: 'General',
-        private: false,
+        isPrivate: false,
       },
       {
         name: 'Studovna',
-        private: false,
+        isPrivate: false,
       },
       {
         name: 'Klietka',
-        private: false,
+        isPrivate: false,
       },
       {
         name: 'Opicarna',
-        private: false,
+        isPrivate: false,
       },
       {
         name: 'Medzi 4 ocami',
-        private: true,
+        isPrivate: true,
       },
       {
         name: 'Porada',
-        private: true,
+        isPrivate: true,
       },
       {
         name: 'Porada sefovia',
-        private: true,
+        isPrivate: true,
       },
     ]);
     for (let user of users) {

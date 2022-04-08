@@ -86,7 +86,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view v-if='messagesLoaded'/>
+      <router-view/>
     </q-page-container>
 
   </q-layout>
@@ -127,9 +127,6 @@ export default defineComponent({
     },
     channelsLoaded (): boolean {
       return this.$store.state.channelModule.statusChannel === 'success'
-    },
-    messagesLoaded (): boolean {
-      return this.$store.state.channelModule.statusMessage === 'success'
     },
     userLoaded (): boolean {
       return this.$store.state.auth.user !== null

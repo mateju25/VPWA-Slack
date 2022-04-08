@@ -1,5 +1,5 @@
 <template>
-  <q-page class='q-pa-md container'>
+  <q-page class='q-pa-md container'  v-if='userLoaded && messagesLoaded'>
     <q-infinite-scroll id='chat' @load='onLoad' class='full-width overflow-auto' reverse>
       <template v-slot:loading>
         <div class='row justify-center q-my-md'>
@@ -123,6 +123,12 @@ export default defineComponent({
     };
   },
   computed: {
+    messagesLoaded (): boolean {
+      return this.$store.state.channelModule.statusMessage === 'success'
+    },
+    userLoaded (): boolean {
+      return this.$store.state.auth.user !== null
+    },
     loggedUser() {
       return this.$store.state.auth.user as unknown as User;
     },
