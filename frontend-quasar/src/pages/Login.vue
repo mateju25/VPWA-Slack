@@ -65,7 +65,7 @@
 <script lang='ts'>
 import { defineComponent } from 'vue';
 import useVuelidate from '@vuelidate/core';
-import { required, minLength, maxLength, alphaNum} from '@vuelidate/validators';
+import { alphaNum, maxLength, minLength, required } from '@vuelidate/validators';
 import { RouteLocationRaw } from 'vue-router';
 
 export default defineComponent({
@@ -126,7 +126,9 @@ export default defineComponent({
         this.$store.dispatch('auth/login', {
           'username': this.username,
           'password': this.password
-        }).then(() => this.$router.push(this.redirectTo)).catch(() => {
+        }).then(() => {
+          this.$router.push(this.redirectTo)
+        }).catch(() => {
           this.$q.notify({
             color: 'red-4',
             textColor: 'white',

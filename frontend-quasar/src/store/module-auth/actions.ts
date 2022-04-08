@@ -3,12 +3,15 @@ import { StateInterface } from '../index';
 import { AuthStateInterface } from './state';
 import { authService, authManager } from 'src/services';
 import { LoginCredentials, RegisterData } from 'src/contracts';
+import { Dark } from 'quasar';
+import { User } from 'components/models';
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
   async check({ commit }) {
     try {
       commit('AUTH_START');
       const user = await authService.me();
+      Dark.set((user as User).preference.darkMode);
       commit('AUTH_SUCCESS', user);
       return user !== null;
     } catch (err) {

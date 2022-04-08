@@ -1,6 +1,7 @@
 import type { AxiosError, AxiosRequestConfig } from 'axios';
 import { api } from 'src/boot/axios';
 import { Channel, Message } from 'components/models';
+import { PreferenceData, User } from 'src/contracts';
 
 class AuthService {
   async loadChannels(dontTriggerLogout = false): Promise<Channel[] | null> {
@@ -27,6 +28,11 @@ class AuthService {
 
         return Promise.reject(error);
       });
+  }
+
+  async savePreference(data: PreferenceData): Promise<User> {
+    const response = await api.post<User>('data/preference', data);
+    return response.data;
   }
 }
 

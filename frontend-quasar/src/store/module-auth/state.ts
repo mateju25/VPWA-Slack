@@ -1,4 +1,5 @@
-import { User } from 'src/contracts';
+import { User } from 'components/models';
+
 
 export interface AuthStateInterface {
   user: User | null;

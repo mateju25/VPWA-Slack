@@ -1,3 +1,5 @@
+import { Preference } from 'components/models';
+
 export interface ApiToken {
   type: 'bearer';
   token: string;
@@ -18,13 +20,18 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface PreferenceData {
+  darkMode: boolean;
+  notificationsOn: boolean;
+}
+
 export interface User {
   id: number;
   email: string;
   username: string;
   fullname: string;
   channels: [];
-  state_id: number;
+  preference: Preference;
   createdAt: string;
   updatedAt: string;
 }

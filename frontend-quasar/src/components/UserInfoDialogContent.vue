@@ -118,6 +118,7 @@ export default defineComponent({
   data() {
     return {
       userState: this.selectedContact.preference.stateName,
+      darkMode: this.selectedContact.preference.darkMode,
       notifications: this.selectedContact.preference.notificationsOn,
       options: [
         'Online', 'Offline', 'DND'
@@ -125,21 +126,27 @@ export default defineComponent({
     }
   },
   computed: {
-    darkMode: {
-      get (): boolean  { return Dark.isActive },
-      set (value: boolean) { Dark.set(value)},
-    },
     redirectTo (): RouteLocationRaw {
       return { name: 'login' }
     },
   },
   watch: {
+    darkMode: function(): void {
+      Dark.toggle();
+      this.$store.dispatch('channelModule/savePreference', {
+        notificationsOn: this.notifications,
+        darkMode: this.darkMode
+      });
+    },
+    notifications: function(): void {
+      this.$store.dispatch('channelModule/savePreference', {
+        notificationsOn: this.notifications,
+        darkMode: this.darkMode
+      });
+    },
     userState: function(): void {
       this.$store.commit('chatModule/updateLoggedUserState', this.userState);
     },
-    notifications: function(): void {
-      this.$store.commit('chatModule/updateLoggedUserNotifications', this.notifications);
-    }
   },
   methods: {
     logout(){

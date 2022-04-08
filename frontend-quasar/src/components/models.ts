@@ -5,8 +5,6 @@ export class User {
     public fullname: string,
     public email: string,
     public preference: Preference,
-    //TODO remove state
-    public state: string
   ) {}
 }
 
