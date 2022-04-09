@@ -11,7 +11,8 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     try {
       commit('AUTH_START');
       const user = await authService.me();
-      Dark.set((user as User).preference.darkMode);
+      if (user !== null)
+        Dark.set((user as User).preference.darkMode);
       commit('AUTH_SUCCESS', user);
       return user !== null;
     } catch (err) {
