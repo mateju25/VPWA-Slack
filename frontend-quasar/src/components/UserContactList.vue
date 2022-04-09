@@ -1,7 +1,7 @@
 <template>
   <div class='q-pa-sm q-gutter-md'>
     <q-dialog v-model='confirm' persistent>
-      <q-card>
+      <q-card class='new-channel'>
         <q-card-section class='row items-center'>
           <q-icon name='report_problem' size='xl' color='red' />
           <div class='q-ml-sm column'>
@@ -14,7 +14,7 @@
 
         <q-card-actions align='right'>
           <q-btn flat label='Cancel' color='secondary' v-close-popup />
-          <q-btn flat label='Leave' color='primary' @click="this.$emit('deleteChannel', activeChannel)" v-close-popup />
+          <q-btn flat label='Leave' color='primary' @click="deleteChannel()" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -73,6 +73,19 @@ export default defineComponent({
       confirm: false,
       newChannel: false
     };
+  },
+  methods: {
+    deleteChannel() {
+      this.$store.dispatch('channelModule/deleteChannel', {channel: this.activeChannel}).then(() => {
+
+          this.$q.notify({
+            color: 'blue-4',
+            textColor: 'white',
+            icon: 'info',
+            message: 'Channel succesfully deleted'
+          });
+      });
+    },
   },
   computed: {
     loggedUser() {

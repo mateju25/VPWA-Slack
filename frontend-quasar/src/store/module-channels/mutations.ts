@@ -17,10 +17,17 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.statusMessage = 'success';
     state.messages = messages;
   },
-  SET_ACTIVE_GENERAL(state, channels: Channel[]) {
-    state.activeChannel = channels.find(
+  SET_ACTIVE_GENERAL(state) {
+    state.activeChannel = state.channels.find(
       (item) => item.name === 'General'
     ) as Channel;
+  },
+  REMOVE_CHANNEL(state, channel: Channel) {
+    state.channels = state.channels.filter(
+      (item) => item.id !== channel.id
+    );
+    console.log(state.channels);
+    state.statusChannel = 'success';
   },
   ADD_CHANNEL(state, channel: Channel) {
     state.channels.push(channel);

@@ -40,6 +40,11 @@ class AuthService {
     const response = await api.post<User>('data/channel', data);
     return response.data;
   }
+
+  async deleteChannel(id: number): Promise<User> {
+    const response = await api.delete<User>('data/channel/'+id);
+    return response.data;
+  }
 }
 
 export default new AuthService();

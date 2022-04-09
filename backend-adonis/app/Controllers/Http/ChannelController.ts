@@ -3,6 +3,7 @@ import Channel from 'App/Models/Channel';
 import PreferenceUserValidator from 'App/Validators/PreferenceUserValidator';
 import ChannelValidator from 'App/Validators/ChannelValidator';
 import { DateTime } from 'luxon';
+import User from 'App/Models/User';
 
 export default class ChannelController {
   public async getChannelsAndRelations({ auth }: HttpContextContract) {
@@ -47,6 +48,20 @@ export default class ChannelController {
     await channel.load('owners');
     await channel.load('members');
 
+    return channel;
+  }
+
+  public async deleteChannel({ auth, params }: HttpContextContract) {
+    // if invalid, exception
+    const channel = await Channel.findBy('id', params.id);
+    await channel?.load('owners');
+    await channel?.load('members');
+    if (channel?.members.find((item) => item.id === auth.user?.id)) {
+      await channel?.related('members').detach([(auth.user as User).id]);
+    }
+    if (channel?.owners.find((item) => item.id === auth.user?.id)) {
+      await channel?.delete();
+    }
     return channel;
   }
 }

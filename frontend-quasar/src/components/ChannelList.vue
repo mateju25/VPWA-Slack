@@ -75,10 +75,14 @@
 
 
     <q-dialog v-model='newChannel' persistent>
-      <q-card>
+      <q-card class='new-channel'>
+        <q-card-section>
+          <h2>Create new channel</h2>
+        </q-card-section>
         <q-card-section class='row items-center'>
-          <q-input square standout='bg-grey' clearable v-model='newChannelName' type='name' label='Channel name' />
-          <q-toggle v-model='newChannelPrivate' label='Private' />
+          <q-input class='full-width' square standout='bg-grey' clearable v-model='newChannelName' type='name' label='Channel name' />
+          <br/>
+          <q-toggle class='q-mt-md' v-model='newChannelPrivate' :label='newChannelPrivate ? "Private" : "Public"' />
         </q-card-section>
 
         <q-card-actions align='right'>
@@ -106,7 +110,6 @@ export default defineComponent({
       newChannelPrivate: false,
       newChannel: false,
       Dark: Dark,
-      channels: this.$store.state.channelModule.channels
     };
   },
   methods: {
@@ -132,6 +135,9 @@ export default defineComponent({
     }
   },
   computed: {
+    channels: function(): Channel[] {
+      return this.$store.state.channelModule.channels;
+    },
     activeChannel: function(): Channel | null {
       return this.$store.state.channelModule.activeChannel;
     },
@@ -171,7 +177,16 @@ export default defineComponent({
 
 .new-channel {
   margin-bottom: 60px;
+  width: 350px;
 }
+
+.new-channel h2 {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1;
+  margin: 0;
+}
+
 
 .q-item:hover {
   background-color: rgba(38, 166, 154, 0.11) !important;

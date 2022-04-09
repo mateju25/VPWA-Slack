@@ -11,7 +11,7 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
       commit('LOAD_START_CHANNEL');
       const channels = await channelService.loadChannels();
       commit('LOAD_SUCCESS', channels);
-      commit('SET_ACTIVE_GENERAL', channels);
+      commit('SET_ACTIVE_GENERAL');
       await dispatch('loadMessages');
       return channels !== null;
     } catch (err) {
@@ -51,6 +51,17 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
       const channel = await channelService.addChannel(data);
       commit('ADD_CHANNEL', channel);
       return channel !== null;
+    } catch (err) {
+      throw err;
+    }
+  },
+  async deleteChannel({ commit }, { channel }) {
+    try {
+      const deletedChannel = await channelService.deleteChannel(channel.id);
+      console.log(deletedChannel);
+      commit('REMOVE_CHANNEL', deletedChannel);
+      commit('SET_ACTIVE_GENERAL');
+      return deletedChannel !== null;
     } catch (err) {
       throw err;
     }

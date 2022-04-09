@@ -23,14 +23,14 @@ export default class UserSeeder extends BaseSeeder {
       },
       {
         email: 'john@jones.com',
-        username: 'john',
+        username: 'johns',
         fullname: 'John Jones',
         preference_id: 2,
         password: 'password',
       },
       {
         email: 'tina@jones.com',
-        username: 'tina',
+        username: 'tinas',
         fullname: 'Tina Jones',
         preference_id: 3,
         password: 'password',
@@ -44,7 +44,7 @@ export default class UserSeeder extends BaseSeeder {
       },
       {
         email: 'anne@jones.com',
-        username: 'anne',
+        username: 'annes',
         fullname: 'Anne Jones',
         preference_id: 5,
         password: 'password',
