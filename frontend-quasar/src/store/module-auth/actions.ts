@@ -4,7 +4,7 @@ import { AuthStateInterface } from './state';
 import { authService, authManager } from 'src/services';
 import { LoginCredentials, RegisterData } from 'src/contracts';
 import { Dark } from 'quasar';
-import { User } from 'components/models';
+import { User } from 'src/contracts';
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
   async check({ commit }) {

@@ -29,7 +29,7 @@
 import { defineComponent, PropType } from 'vue';
 import Avatar from 'components/Avatar.vue';
 import UserInfoDialogContent from 'components/UserInfoDialogContent.vue';
-import { User } from 'components/models';
+import { User } from 'src/contracts';
 
 export default defineComponent({
   components: { UserInfoDialogContent, Avatar },
@@ -37,14 +37,14 @@ export default defineComponent({
   data() {
     return {
       dialogOpen: false,
-      selectedContact: User
+      selectedContact: {} as User,
     };
   },
   props: {
     contacts: Array as PropType<Array<User>>
   },
   methods: {
-    changeDialogOpen(contact: typeof User) {
+    changeDialogOpen(contact: User) {
       if (!this.dialogOpen) {
         this.selectedContact = contact;
       }

@@ -1,6 +1,8 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import Channel from 'App/Models/Channel';
 import PreferenceUserValidator from 'App/Validators/PreferenceUserValidator';
+import ChannelValidator from 'App/Validators/ChannelValidator';
+import { DateTime } from 'luxon';
 
 export default class ChannelController {
   public async getChannelsAndRelations({ auth }: HttpContextContract) {
@@ -29,5 +31,22 @@ export default class ChannelController {
     await auth.user?.preference?.save();
 
     return auth.user;
+  }
+
+  public async createChannel({ auth, request }: HttpContextContract) {
+    // if invalid, exception
+    const data = await request.validate(ChannelValidator);
+    const channel = await Channel.create(data);
+    await auth.user?.related('channels').attach({
+      [channel.id]: {
+        role_id: 1,
+        joined: DateTime.now(),
+        invited: DateTime.now(),
+      },
+    });
+    await channel.load('owners');
+    await channel.load('members');
+
+    return channel;
   }
 }

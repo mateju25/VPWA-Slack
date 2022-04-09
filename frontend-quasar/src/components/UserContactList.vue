@@ -7,7 +7,7 @@
           <div class='q-ml-sm column'>
             <span class='text-weight-bold'>You are currently leaving this channel!</span>
             <br/>
-            <span v-if='activeChannel.owners.includes(loggedUser)'>You are owner of this channel and it will be deleted!</span>
+            <span v-if='activeChannel.owners.find(value => value.id === loggedUser.id)'>You are owner of this channel and it will be deleted!</span>
             <span>Are you sure?</span>
           </div>
         </q-card-section>
@@ -71,11 +71,13 @@ export default defineComponent({
       newChannelName: '',
       newChannelPrivate: channelPrivacy,
       confirm: false,
-      newChannel: false,
-      loggedUser: this.$store.state.chatModule.loggedUser
+      newChannel: false
     };
   },
   computed: {
+    loggedUser() {
+      return this.$store.state.auth.user;
+    },
     activeChannel (): Channel {
       return this.$store.state.channelModule.activeChannel as Channel;
     },

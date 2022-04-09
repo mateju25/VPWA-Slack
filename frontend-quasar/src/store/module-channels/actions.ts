@@ -3,7 +3,7 @@ import { StateInterface } from '../index';
 import { ChannelStateInterface } from './state';
 import { channelService } from 'src/services';
 import { Channel } from 'components/models';
-import { PreferenceData } from 'src/contracts';
+import { ChannelData, PreferenceData } from 'src/contracts';
 
 const actions: ActionTree<ChannelStateInterface, StateInterface> = {
   async loadChannels({ commit, dispatch }) {
@@ -42,6 +42,15 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
   async savePreference({}, data: PreferenceData) {
     try {
       return await channelService.savePreference(data);
+    } catch (err) {
+      throw err;
+    }
+  },
+  async addChannel({ commit }, data: ChannelData) {
+    try {
+      const channel = await channelService.addChannel(data);
+      commit('ADD_CHANNEL', channel);
+      return channel !== null;
     } catch (err) {
       throw err;
     }

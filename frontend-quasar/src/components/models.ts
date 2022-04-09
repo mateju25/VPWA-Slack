@@ -1,12 +1,13 @@
-export class User {
-  constructor(
-    public id: number,
-    public username: string,
-    public fullname: string,
-    public email: string,
-    public preference: Preference,
-  ) {}
-}
+// export class User {
+//   constructor(
+//     public id: number,
+//     public username: string,
+//     public fullname: string,
+//     public email: string,
+//     public preference: Preference,
+//   ) {}
+// }
+import { User } from 'src/contracts';
 
 export class Preference {
   constructor(

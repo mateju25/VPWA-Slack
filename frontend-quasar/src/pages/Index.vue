@@ -107,7 +107,8 @@
 <script lang='ts'>
 import { defineComponent } from 'vue';
 import { Dark, date } from 'quasar';
-import { Message, User } from 'components/models';
+import { Message } from 'components/models';
+import { User } from 'src/contracts';
 import Avatar from 'components/Avatar.vue';
 
 

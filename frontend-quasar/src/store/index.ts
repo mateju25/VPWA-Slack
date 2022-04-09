@@ -6,10 +6,8 @@ import {
   useStore as vuexUseStore,
 } from 'vuex';
 
-import chatModule from './chatStore';
 import channelModule from './module-channels';
 import auth from './module-auth';
-import { ExampleStateInterface } from './chatStore/state';
 import { AuthStateInterface } from './module-auth/state';
 import { ChannelStateInterface } from './module-channels/state';
 
@@ -27,7 +25,6 @@ export interface StateInterface {
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   example: unknown;
-  chatModule: ExampleStateInterface;
   auth: AuthStateInterface;
   channelModule: ChannelStateInterface;
 }
@@ -46,7 +43,6 @@ export const storeKey: InjectionKey<VuexStore<StateInterface>> =
 export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
-      chatModule,
       auth,
       channelModule,
     },

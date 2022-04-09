@@ -103,7 +103,7 @@
 import { defineComponent, PropType } from 'vue';
 import Avatar from 'components/Avatar.vue';
 import { Dark } from 'quasar';
-import { User } from 'components/models';
+import { User } from 'src/contracts';
 import { RouteLocationRaw } from 'vue-router';
 
 export default defineComponent({

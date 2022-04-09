@@ -5,9 +5,9 @@
       clickable
       v-ripple
       :class='channels[0].id === activeChannel.id ? "channel-active" : ""'
-      @click="changeActiveModel(channels[0])"
+      @click='changeActiveModel(channels[0])'
     >
-      <ChannelItem  :channel='channels[0]' :isSeen='true'/>
+      <ChannelItem :channel='channels[0]' :isSeen='true' />
     </q-item>
     <q-list padding class='rounded-borders' style='max-width: 350px'>
       <q-expansion-item
@@ -27,9 +27,9 @@
           clickable
           v-ripple
           :class='channel.id === activeChannel.id ? "channel-active" : ""'
-          @click="changeActiveModel(channel)"
+          @click='changeActiveModel(channel)'
         >
-          <ChannelItem :channel='channel' :isSeen='true'/>
+          <ChannelItem :channel='channel' :isSeen='true' />
         </q-item>
       </q-expansion-item>
     </q-list>
@@ -52,23 +52,23 @@
           clickable
           v-ripple
           :class='channel.id === activeChannel.id ? "channel-active" : ""'
-          @click="changeActiveModel(channel)"
+          @click='changeActiveModel(channel)'
         >
           <ChannelItem :channel='channel' :isSeen='true' />
         </q-item>
       </q-expansion-item>
     </q-list>
 
-    <q-separator/>
+    <q-separator />
 
     <q-btn
       flat
       dense
       :color="Dark.isActive ? 'white' : 'black'"
       label='Create new channel'
-      icon="add_circle_outline"
-      class="full-width q-pl-lg last-item"
-      align="left"
+      icon='add_circle_outline'
+      class='full-width q-pl-lg last-item'
+      align='left'
       @click='newChannel = true'
     >
     </q-btn>
@@ -77,13 +77,13 @@
     <q-dialog v-model='newChannel' persistent>
       <q-card>
         <q-card-section class='row items-center'>
-          <q-input square standout="bg-grey-10 text-white" clearable v-model="newChannelName" type="name" label="Channel name"/>
-          <q-toggle v-model='newChannelPrivate' label='Private'/>
+          <q-input square standout='bg-grey' clearable v-model='newChannelName' type='name' label='Channel name' />
+          <q-toggle v-model='newChannelPrivate' label='Private' />
         </q-card-section>
 
         <q-card-actions align='right'>
           <q-btn flat label='Cancel' color='secondary' v-close-popup />
-          <q-btn flat label='Create' color='primary' @click="this.$emit('createNewChannel', newChannelName, newChannelPrivate)" v-close-popup />
+          <q-btn flat label='Create' color='primary' @click='createNewChannel()' v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -93,27 +93,42 @@
 
 <script lang='ts'>
 
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import { Channel } from 'components/models';
 import ChannelItem from 'components/ChannelItem.vue';
 import { Dark } from 'quasar';
 
 export default defineComponent({
   components: { ChannelItem },
-  data(){
-    let channelPrivacy = ref(false);
-
-    return{
+  data() {
+    return {
       newChannelName: '',
-      newChannelPrivate: channelPrivacy,
+      newChannelPrivate: false,
       newChannel: false,
       Dark: Dark,
-      channels: this.$store.state.channelModule.channels,
-    }
+      channels: this.$store.state.channelModule.channels
+    };
   },
   methods: {
+    createNewChannel() {
+      if (this.newChannelName.length > 0) {
+        this.$store.dispatch('channelModule/addChannel', {
+          name: this.newChannelName,
+          isPrivate: this.newChannelPrivate
+        }).catch(() => {
+          this.$q.notify({
+            color: 'red-4',
+            textColor: 'white',
+            icon: 'warning',
+            message: 'Channel name already exists'
+          });
+        });
+        this.newChannelName = '';
+        this.newChannelPrivate = false;
+      }
+    },
     changeActiveModel: function(channel: Channel): void {
-      this.$store.dispatch('channelModule/setActiveChannel', {channel});
+      this.$store.dispatch('channelModule/setActiveChannel', { channel });
     }
   },
   computed: {
@@ -161,6 +176,7 @@ export default defineComponent({
 .q-item:hover {
   background-color: rgba(38, 166, 154, 0.11) !important;
 }
+
 .channel-active {
   background-color: rgba(38, 166, 154, 0.11) !important;
 }
@@ -168,6 +184,7 @@ export default defineComponent({
 .last-item {
   margin-bottom: 70px;
 }
+
 .q-field__control-container {
   margin-left: 10px;
 }

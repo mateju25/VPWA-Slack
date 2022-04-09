@@ -25,6 +25,11 @@ export interface PreferenceData {
   notificationsOn: boolean;
 }
 
+export interface ChannelData {
+  name: string;
+  isPrivate: boolean;
+}
+
 export interface User {
   id: number;
   email: string;
