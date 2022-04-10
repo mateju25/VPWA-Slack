@@ -163,7 +163,7 @@ export default defineComponent({
           message: this.v$.$errors.map(e => e.$message).join()
         })
       }else{
-        this.$store.dispatch('auth/register',
+        this.$store.dispatch('authStore/register',
           {'email': this.email,
             'username': this.username,
             'fullname': this.fullname,
@@ -185,7 +185,7 @@ export default defineComponent({
       return { name: 'login' }
     },
     loading (): boolean {
-      return this.$store.state.auth.status === 'pending'
+      return this.$store.state.authStore.status === 'pending'
     },
     usernameError(): string {
       return 'Username should be between 5 and 30 alphanumeric letters';

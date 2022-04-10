@@ -1,4 +1,13 @@
-import { User } from 'src/contracts';
+export interface User {
+  id: number;
+  email: string;
+  username: string;
+  fullname: string;
+  channels: [];
+  preference: Preference;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export class Preference {
   constructor(

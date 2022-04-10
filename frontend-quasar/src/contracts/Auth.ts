@@ -1,5 +1,3 @@
-import { Preference } from 'components/models';
-
 export interface ApiToken {
   type: 'bearer';
   token: string;
@@ -30,13 +28,3 @@ export interface ChannelData {
   isPrivate: boolean;
 }
 
-export interface User {
-  id: number;
-  email: string;
-  username: string;
-  fullname: string;
-  channels: [];
-  preference: Preference;
-  createdAt: string;
-  updatedAt: string;
-}

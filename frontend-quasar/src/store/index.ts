@@ -6,10 +6,12 @@ import {
   useStore as vuexUseStore,
 } from 'vuex';
 
-import channelModule from './module-channels';
-import auth from './module-auth';
+import channelStore from './module-channels';
+import authStore from './module-auth';
+import preferenceStore from './module-preference';
 import { AuthStateInterface } from './module-auth/state';
 import { ChannelStateInterface } from './module-channels/state';
+import { PreferenceStateInterface } from './module-preference/state';
 
 /*
  * If not building with SSR mode, you can
@@ -25,8 +27,9 @@ export interface StateInterface {
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   example: unknown;
-  auth: AuthStateInterface;
-  channelModule: ChannelStateInterface;
+  authStore: AuthStateInterface;
+  channelStore: ChannelStateInterface;
+  preferenceStore: PreferenceStateInterface;
 }
 
 // provide typings for `this.$store`
@@ -43,8 +46,9 @@ export const storeKey: InjectionKey<VuexStore<StateInterface>> =
 export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
-      auth,
-      channelModule,
+      authStore,
+      channelStore,
+      preferenceStore
     },
 
     // enable strict mode (adds overhead!)

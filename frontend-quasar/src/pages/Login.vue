@@ -87,7 +87,7 @@ export default defineComponent({
       return (this.$route.query.redirect as string) || { name: 'home' };
     },
     loading(): boolean {
-      return this.$store.state.auth.status === 'pending';
+      return this.$store.state.authStore.status === 'pending';
     },
     usernameError(): string {
       return 'Username should be between 5 and 30 alphanumeric letters';
@@ -123,7 +123,7 @@ export default defineComponent({
           message: this.v$.$errors.map(e => e.$message).join()
         });
       } else {
-        this.$store.dispatch('auth/login', {
+        this.$store.dispatch('authStore/login', {
           'username': this.username,
           'password': this.password
         }).then(() => {

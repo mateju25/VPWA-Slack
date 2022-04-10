@@ -1,6 +1,6 @@
 import { boot } from 'quasar/wrappers'
 import { Manager } from 'socket.io-client'
-import { SocketManager } from 'src/services/SocketManager'
+import { SocketManager } from 'src/services/managers/SocketManager'
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {

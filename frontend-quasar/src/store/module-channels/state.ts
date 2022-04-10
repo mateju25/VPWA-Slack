@@ -3,12 +3,10 @@ import { Channel, Message } from 'components/models';
 export interface ChannelStateInterface {
   loading: boolean,
   error: Error | null,
-  active: string | null,
   channels: Channel[];
   messages: { [channel: string]: Message[] }
   activeChannel: Channel | null;
-  statusChannel: 'nothing' | 'pending' | 'success' | 'error';
-  statusMessage: 'nothing' | 'pending' | 'success' | 'error';
+  statusChannel: 'pending' | 'success' | 'error';
 }
 
 function state(): ChannelStateInterface {
@@ -16,11 +14,9 @@ function state(): ChannelStateInterface {
     channels: [],
     messages: {},
     activeChannel: null,
-    statusChannel: 'nothing',
-    statusMessage: 'nothing',
+    statusChannel: 'pending',
     loading: false,
     error: null,
-    active: null,
   };
 }
 

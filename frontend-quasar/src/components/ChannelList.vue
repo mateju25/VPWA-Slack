@@ -115,7 +115,7 @@ export default defineComponent({
   methods: {
     createNewChannel() {
       if (this.newChannelName.length > 0) {
-        this.$store.dispatch('channelModule/addChannel', {
+        this.$store.dispatch('channelStore/addChannel', {
           name: this.newChannelName,
           isPrivate: this.newChannelPrivate
         }).catch(() => {
@@ -131,15 +131,15 @@ export default defineComponent({
       }
     },
     changeActiveModel: function(channel: Channel): void {
-      this.$store.dispatch('channelModule/setActiveChannel', { channel });
+      this.$store.dispatch('channelStore/setActiveChannel', { channel });
     }
   },
   computed: {
     channels: function(): Channel[] {
-      return this.$store.state.channelModule.channels;
+      return this.$store.state.channelStore.channels;
     },
     activeChannel: function(): Channel | null {
-      return this.$store.state.channelModule.activeChannel;
+      return this.$store.state.channelStore.activeChannel;
     },
     privateChannels: function(): Channel[] {
       let privateChannels: Channel[] = [];

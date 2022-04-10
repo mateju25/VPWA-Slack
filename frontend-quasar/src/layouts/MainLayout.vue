@@ -31,7 +31,7 @@
         >
           <Avatar
             v-if='userLoaded'
-            :contact="this.$store.state.auth.user"
+            :contact="this.$store.state.authStore.user"
             :inHeader="true"
             :size="'36px'"
           />
@@ -99,7 +99,7 @@ import Avatar from 'components/Avatar.vue';
 import UserInfoDialogContent from 'components/UserInfoDialogContent.vue';
 import UserContactList from 'components/UserContactList.vue';
 import { Dark } from 'quasar';
-import { User } from 'src/contracts';
+import { User } from 'src/components/models';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -110,9 +110,9 @@ export default defineComponent({
     ChannelList
   },
   created() {
-    if (this.$store.state.auth.user == null)
-      this.$store.dispatch('auth/check');
-    this.$store.dispatch('channelModule/loadChannels');
+    if (this.$store.state.authStore.user == null)
+      this.$store.dispatch('authStore/check');
+    this.$store.dispatch('channelStore/loadChannels');
   },
   data() {
     return {
@@ -124,13 +124,15 @@ export default defineComponent({
   },
   computed: {
     loggedUser(): User {
-      return this.$store.state.auth.user as User;
+      console.log(this.$store.state.authStore.user);
+      return this.$store.state.authStore.user as User;
     },
     channelsLoaded (): boolean {
-      return this.$store.state.channelModule.statusChannel === 'success'
+      return this.$store.state.channelStore.statusChannel === 'success'
     },
     userLoaded (): boolean {
-      return this.$store.state.auth.user !== null
+      console.log(this.$store.state.authStore.user);
+      return this.$store.state.authStore.user !== null
     },
   },
   methods: {

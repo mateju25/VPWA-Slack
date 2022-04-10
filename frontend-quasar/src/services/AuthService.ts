@@ -3,9 +3,9 @@ import type {
   ApiToken,
   LoginCredentials,
   RegisterData,
-  User,
 } from 'src/contracts';
 import { api } from 'src/boot/axios';
+import { User } from 'components/models';
 
 class AuthService {
   async me(dontTriggerLogout = false): Promise<User | null> {
@@ -28,7 +28,6 @@ class AuthService {
 
   async login(credentials: LoginCredentials): Promise<ApiToken> {
     const response = await api.post<ApiToken>('auth/login', credentials);
-    console.log(response);
     return response.data;
   }
 

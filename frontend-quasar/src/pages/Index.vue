@@ -109,7 +109,7 @@
 import { defineComponent } from 'vue';
 import { Dark, date } from 'quasar';
 import { Message } from 'components/models';
-import { User } from 'src/contracts';
+import { User } from 'src/components/models';
 import Avatar from 'components/Avatar.vue';
 import { mapActions } from 'vuex';
 
@@ -128,19 +128,19 @@ export default defineComponent({
   },
   computed: {
     messagesLoaded (): boolean {
-      return !this.$store.state.channelModule.loading && this.$store.state.channelModule.statusChannel === 'success';
+      return !this.$store.state.channelStore.loading && this.$store.state.channelStore.statusChannel === 'success';
     },
     userLoaded (): boolean {
-      return this.$store.state.auth.user !== null
+      return this.$store.state.authStore.user !== null
     },
     loggedUser() {
-      return this.$store.state.auth.user as unknown as User;
+      return this.$store.state.authStore.user as unknown as User;
     },
     alreadyTyped: function(): Message[] {
-      if (this.$store.state.channelModule.activeChannel === null) {
+      if (this.$store.state.channelStore.activeChannel === null) {
         return [];
       }
-      return this.$store.state.channelModule.messages[this.$store.state.channelModule.activeChannel!.name];
+      return this.$store.state.channelStore.messages[this.$store.state.channelStore.activeChannel!.name];
     },
     currentlyTyping: function(): Message[] {
       return [];
@@ -152,7 +152,7 @@ export default defineComponent({
     },
     async submit() {
       this.loading = true
-      await this.addMessage({ channel: this.$store.state.channelModule.activeChannel!.name, message: this.myMessage })
+      await this.addMessage({ channel: this.$store.state.channelStore.activeChannel!.name, message: this.myMessage })
       this.myMessage = ''
       this.loading = false
     },
@@ -164,7 +164,7 @@ export default defineComponent({
         }
       },20)
     },
-    ...mapActions('channelModule', ['addMessage']),
+    ...mapActions('channelStore', ['addMessage']),
     onLoad(index: number, done: () => void) {
       // setTimeout(() => {
       //   // eslint-disable-next-line @typescript-eslint/no-unsafe-call

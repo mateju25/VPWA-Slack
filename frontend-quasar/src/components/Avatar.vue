@@ -19,7 +19,7 @@
 <script lang="ts">
 
 import { defineComponent, PropType } from 'vue';
-import { User } from 'src/contracts';
+import { User } from 'src/components/models';
 
 export default defineComponent({
   props: {

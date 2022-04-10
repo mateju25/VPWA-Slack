@@ -29,7 +29,7 @@
 import { defineComponent, PropType } from 'vue';
 import Avatar from 'components/Avatar.vue';
 import UserInfoDialogContent from 'components/UserInfoDialogContent.vue';
-import { User } from 'src/contracts';
+import { User } from 'src/components/models';
 
 export default defineComponent({
   components: { UserInfoDialogContent, Avatar },

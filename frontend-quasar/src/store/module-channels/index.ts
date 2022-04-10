@@ -5,7 +5,7 @@ import actions from './actions';
 import getters from './getters';
 import mutations from './mutations';
 
-const channelModule: Module<ChannelStateInterface, StateInterface> = {
+const channelStore: Module<ChannelStateInterface, StateInterface> = {
   namespaced: true,
   actions,
   getters,
@@ -13,4 +13,4 @@ const channelModule: Module<ChannelStateInterface, StateInterface> = {
   state,
 };
 
-export default channelModule;
+export default channelStore;

@@ -103,7 +103,7 @@
 import { defineComponent, PropType } from 'vue';
 import Avatar from 'components/Avatar.vue';
 import { Dark } from 'quasar';
-import { User } from 'src/contracts';
+import { User } from 'src/components/models';
 import { RouteLocationRaw } from 'vue-router';
 
 export default defineComponent({
@@ -133,19 +133,16 @@ export default defineComponent({
   watch: {
     darkMode: function(): void {
       Dark.toggle();
-      this.$store.dispatch('channelModule/savePreference', {
+      this.$store.dispatch('preferenceStore/savePreference', {
         notificationsOn: this.notifications,
         darkMode: this.darkMode
       });
     },
     notifications: function(): void {
-      this.$store.dispatch('channelModule/savePreference', {
+      this.$store.dispatch('preferenceStore/savePreference', {
         notificationsOn: this.notifications,
         darkMode: this.darkMode
       });
-    },
-    userState: function(): void {
-      this.$store.commit('chatModule/updateLoggedUserState', this.userState);
     },
   },
   methods: {

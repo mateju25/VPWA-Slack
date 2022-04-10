@@ -76,7 +76,7 @@ export default defineComponent({
   },
   methods: {
     deleteChannel() {
-      this.$store.dispatch('channelModule/deleteChannel', {channel: this.activeChannel}).then(() => {
+      this.$store.dispatch('channelStore/deleteChannel', {channel: this.activeChannel}).then(() => {
 
           this.$q.notify({
             color: 'blue-4',
@@ -89,10 +89,10 @@ export default defineComponent({
   },
   computed: {
     loggedUser() {
-      return this.$store.state.auth.user;
+      return this.$store.state.authStore.user;
     },
     activeChannel (): Channel {
-      return this.$store.state.channelModule.activeChannel as Channel;
+      return this.$store.state.channelStore.activeChannel as Channel;
     },
   }
 });

@@ -1,16 +1,16 @@
-import { User } from 'src/contracts';
+import { User } from 'src/components/models';
 
 
 export interface AuthStateInterface {
   user: User | null;
-  status: 'nothing' | 'pending' | 'success' | 'error';
+  status: 'pending' | 'success' | 'error';
   errors: { message: string; field?: string }[];
 }
 
 function state(): AuthStateInterface {
   return {
     user: null,
-    status: 'nothing',
+    status: 'pending',
     errors: [],
   };
 }

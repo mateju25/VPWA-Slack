@@ -1,4 +1,4 @@
-import { User } from 'src/contracts';
+import { User } from 'src/components/models';
 import { MutationTree } from 'vuex';
 import { AuthStateInterface } from './state';
 

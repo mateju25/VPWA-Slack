@@ -9,6 +9,10 @@ export default class AppProvider {
       // just make instance of app/Repositories/MessageRepository class
       return container.make('App/Repositories/MessageRepository');
     });
+    this.app.container.singleton('Repositories/ChannelRepository', (container) => {
+      // just make instance of app/Repositories/ChannelRepository class
+      return container.make('App/Repositories/ChannelRepository');
+    });
   }
   public async boot() {
     // IoC container is ready

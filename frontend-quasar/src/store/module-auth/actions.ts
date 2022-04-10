@@ -4,18 +4,18 @@ import { AuthStateInterface } from './state';
 import { authService, authManager } from 'src/services';
 import { LoginCredentials, RegisterData } from 'src/contracts';
 import { Dark } from 'quasar';
-import { User } from 'src/contracts';
+import { User } from 'src/components/models';
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
-  async check({ commit, state, dispatch }) {
+  async check({ commit }) {
     try {
       commit('AUTH_START');
       const user = await authService.me();
+
+      //set dark mode based on preference
       if (user !== null)
         Dark.set((user as User).preference.darkMode);
-      if (user?.id !== state.user?.id) {
-        await dispatch('channelModule/connect', 'General', { root: true })
-      }
+
       commit('AUTH_SUCCESS', user);
       return user !== null;
     } catch (err) {
@@ -51,7 +51,7 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     try {
       commit('AUTH_START');
       await authService.logout();
-      await dispatch('channelModule/disconnect', null, { root: true })
+      await dispatch('channelStore/disconnect', null, { root: true })
       commit('AUTH_SUCCESS', null);
       // remove api token and notify listeners
       authManager.removeToken();
