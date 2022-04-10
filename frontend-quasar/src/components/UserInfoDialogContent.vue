@@ -147,7 +147,7 @@ export default defineComponent({
   },
   methods: {
     logout(){
-      this.$store.dispatch('auth/logout').then(() => this.$router.push(this.redirectTo))
+      this.$store.dispatch('authStore/logout').then(() => this.$router.push(this.redirectTo))
     }
   }
 
