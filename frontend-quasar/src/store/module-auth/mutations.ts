@@ -15,6 +15,10 @@ const mutation: MutationTree<AuthStateInterface> = {
     state.status = 'error';
     state.errors = errors;
   },
+  SET_PREFERENCE(state, {preference}) {
+    if (state.user)
+      state.user.preference = preference;
+  },
 };
 
 export default mutation;

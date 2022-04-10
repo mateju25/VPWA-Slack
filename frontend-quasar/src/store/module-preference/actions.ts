@@ -5,9 +5,11 @@ import { PreferenceData } from 'src/contracts';
 import { preferenceService } from 'src/services';
 
 const actions: ActionTree<PreferenceStateInterface, StateInterface> = {
-  async savePreference({}, data: PreferenceData) {
+  async savePreference({commit}, data: PreferenceData) {
     try {
-      return await preferenceService.savePreference(data);
+      const preference = await preferenceService.savePreference(data);
+      commit('authStore/SET_PREFERENCE', {preference}, {root: true});
+      return preference;
     } catch (err) {
       throw err;
     }

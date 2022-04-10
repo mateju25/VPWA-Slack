@@ -81,6 +81,7 @@ export default defineComponent({
           this.$q.notify({
             color: 'blue-4',
             textColor: 'white',
+            position: 'top',
             icon: 'info',
             message: 'Channel succesfully deleted'
           });

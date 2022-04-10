@@ -11,6 +11,6 @@ export default class PreferenceController {
 
     await auth.user?.preference?.save();
 
-    return auth.user;
+    return auth.user?.preference;
   }
 }

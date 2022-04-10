@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex';
 import { ChannelStateInterface } from './state';
-import { Channel, Message } from 'components/models';
+import { Channel, Message, User } from 'components/models';
 
 const mutation: MutationTree<ChannelStateInterface> = {
   // MUTATIONS FOR CHANNEL LOADING
@@ -41,8 +41,14 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.loading = false
     state.error = error
   },
-  NEW_MESSAGE (state, { channel, message }: { channel: string, message: Message }) {
+  NEW_MESSAGE (state, { channel, message }: { channel: string, message: Message}) {
     state.messages[channel].push(message)
+  },
+  NEW_NOTIFICATION (state, { channel, message }: { channel: string, message: Message }) {
+    state.notifications.push(message);
+  },
+  REMOVE_NOTIFICATIONS (state) {
+    state.notifications = [];
   }
 };
 

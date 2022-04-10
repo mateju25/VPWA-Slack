@@ -122,6 +122,7 @@ export default defineComponent({
           this.$q.notify({
             color: 'red-4',
             textColor: 'white',
+            position: 'top',
             icon: 'warning',
             message: 'Channel name already exists'
           });

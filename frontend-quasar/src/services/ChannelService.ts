@@ -13,7 +13,8 @@ class ChannelSocketManager extends SocketManager {
     const channel = this.namespace.split('/').pop() as string
 
     this.socket.on('message', (message: Message) => {
-      store.commit('channelStore/NEW_MESSAGE', { channel, message })
+      store.commit('channelStore/NEW_MESSAGE', { channel, message});
+      store.commit('channelStore/NEW_NOTIFICATION', { channel, message});
     })
   }
 

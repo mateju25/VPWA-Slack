@@ -1,5 +1,5 @@
 <template>
-  <q-page class='q-pa-md container'  v-if='userLoaded && messagesLoaded'>
+  <q-page class='q-pa-md container' v-if='userLoaded && messagesLoaded'>
     <q-infinite-scroll id='chat' @load='onLoad' class='full-width overflow-auto' reverse>
       <template v-slot:loading>
         <div class='row justify-center q-my-md'>
@@ -52,28 +52,32 @@
       @submit='submit'
       class='my-form'
     >
-      <q-input
-        class='chat-input'
-        square filled
-        type='textarea'
-        v-model='myMessage'
-        placeholder='Message'
-      />
+      <div>
+        <q-input
+          class='chat-input'
+          square filled
+          type='textarea'
+          v-model='myMessage'
+          placeholder='Message'
+          @keyup.ctrl.enter='submit'
+        />
+        <p class='sent-hint'>Ctrl + Enter to send message</p>
+      </div>
       <div :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
         <div class='row justify-between'>
           <q-btn color='secondary' class='menu-actions' icon='code' flat>
             <q-menu
-              transition-show="scale"
-              transition-hide="scale"
+              transition-show='scale'
+              transition-hide='scale'
             >
               <q-list class='menu-actions'>
                 <q-btn
-                  v-for="btn in actions"
-                  :key="btn"
+                  v-for='btn in actions'
+                  :key='btn'
                   flat
                   :color="Dark.isActive ? 'white' : 'black'"
-                  :label="btn"
-                  @click="addCommandToInput(btn)"
+                  :label='btn'
+                  @click='addCommandToInput(btn)'
                 />
               </q-list>
             </q-menu>
@@ -116,7 +120,7 @@ import { mapActions } from 'vuex';
 
 export default defineComponent({
   name: 'PageIndex',
-  components: { Avatar},
+  components: { Avatar },
   data() {
     return {
       Dark: Dark,
@@ -127,11 +131,14 @@ export default defineComponent({
     };
   },
   computed: {
-    messagesLoaded (): boolean {
+    notifications(): Message[] {
+      return this.$store.state.channelStore.notifications;
+    },
+    messagesLoaded(): boolean {
       return !this.$store.state.channelStore.loading && this.$store.state.channelStore.statusChannel === 'success';
     },
-    userLoaded (): boolean {
-      return this.$store.state.authStore.user !== null
+    userLoaded(): boolean {
+      return this.$store.state.authStore.user !== null;
     },
     loggedUser() {
       return this.$store.state.authStore.user as unknown as User;
@@ -148,13 +155,13 @@ export default defineComponent({
   },
   methods: {
     prepareMessage(message: string): string {
-      return  message.replace('@'+(this.loggedUser as User).username , '<strong class="mention underlined-text">'+(this.loggedUser as User).username+'</strong>');
+      return message.replace('@' + (this.loggedUser as User).username, '<strong class="mention underlined-text">' + (this.loggedUser as User).username + '</strong>');
     },
     async submit() {
-      this.loading = true
-      await this.addMessage({ channel: this.$store.state.channelStore.activeChannel!.name, message: this.myMessage })
-      this.myMessage = ''
-      this.loading = false
+      this.loading = true;
+      await this.addMessage({ channel: this.$store.state.channelStore.activeChannel!.name, message: this.myMessage });
+      this.myMessage = '';
+      this.loading = false;
     },
     scrollToBottom() {
       setTimeout(() => {
@@ -162,7 +169,7 @@ export default defineComponent({
           let objDiv = document.getElementById('chat') as HTMLElement;
           objDiv.scrollTop = objDiv.scrollHeight;
         }
-      },20)
+      }, 20);
     },
     ...mapActions('channelStore', ['addMessage']),
     onLoad(index: number, done: () => void) {
@@ -177,13 +184,35 @@ export default defineComponent({
     }
   },
   watch: {
+    notifications: {
+      handler() {
+        this.notifications.forEach(notification => {
+          let message =
+            `<b style='color: black'>Channel: ${notification.channel.name}</b></br>
+             <b style='color: black'>User: ${notification.user.username}</b></br>
+             <p style='color: black' class='q-mt-md'>${notification.text}</p>`;
+          this.$q.notify({
+            color: 'blue-4',
+            textColor: 'white',
+            position: 'top',
+            html: true,
+            type: 'info',
+            message: message
+          });
+        });
+        if (this.notifications.length > 0) {
+          this.$store.commit('channelStore/REMOVE_NOTIFICATIONS');
+        }
+      },
+      deep: true
+    },
     alreadyTyped: {
-      handler () {
-        this.$nextTick(() => this.scrollToBottom())
+      handler() {
+        this.$nextTick(() => this.scrollToBottom());
       },
       deep: true
     }
-  },
+  }
 
 })
 ;
@@ -228,7 +257,7 @@ export default defineComponent({
   flex-direction: column;
 }
 
-.q-field__control{
+.q-field__control {
   padding: 0 !important;
 }
 
@@ -282,17 +311,26 @@ export default defineComponent({
   opacity: 1;
   transition: .3s;
 }
+
 .chat-input {
   width: 100%;
 }
+
 .chat-input textarea {
   height: 90px;
   max-height: 200px;
   resize: none !important;
 }
+
 .mention {
   background: var(--q-secondary);
   border-radius: 5px;
   padding: 2px;
+}
+.sent-hint {
+  color: rgba(128, 128, 128, 0.45);
+  position: absolute;
+  right: 5px;
+  top: 70px;
 }
 </style>
