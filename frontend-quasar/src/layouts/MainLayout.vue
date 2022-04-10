@@ -109,11 +109,12 @@ export default defineComponent({
     UserContactList,
     ChannelList
   },
-  data() {
+  created() {
     if (this.$store.state.auth.user == null)
       this.$store.dispatch('auth/check');
     this.$store.dispatch('channelModule/loadChannels');
-
+  },
+  data() {
     return {
       Dark: Dark,
       leftDrawerOpen: false,
