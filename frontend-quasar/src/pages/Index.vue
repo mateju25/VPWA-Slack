@@ -90,9 +90,10 @@
             />
           </div>
           <q-btn
-            :disable='myMessage.length === 0'
+            :disable='myMessage.length === 0 || loading'
             icon='send'
             type='submit'
+            v-on:keypress.ctrl.enter='submit'
             color='secondary'
             size='md'
             flat
@@ -110,6 +111,7 @@ import { Dark, date } from 'quasar';
 import { Message } from 'components/models';
 import { User } from 'src/contracts';
 import Avatar from 'components/Avatar.vue';
+import { mapActions } from 'vuex';
 
 
 export default defineComponent({
@@ -120,12 +122,13 @@ export default defineComponent({
       Dark: Dark,
       date: date,
       myMessage: '',
+      loading: false,
       actions: ['@', '/join', '/invite', '/revoke', '/kick', '/quit', '/cancel']
     };
   },
   computed: {
     messagesLoaded (): boolean {
-      return this.$store.state.channelModule.statusMessage === 'success'
+      return !this.$store.state.channelModule.loading && this.$store.state.channelModule.statusChannel === 'success';
     },
     userLoaded (): boolean {
       return this.$store.state.auth.user !== null
@@ -134,7 +137,10 @@ export default defineComponent({
       return this.$store.state.auth.user as unknown as User;
     },
     alreadyTyped: function(): Message[] {
-      return this.$store.state.channelModule.messages;
+      if (this.$store.state.channelModule.activeChannel === null) {
+        return [];
+      }
+      return this.$store.state.channelModule.messages[this.$store.state.channelModule.activeChannel!.name];
     },
     currentlyTyping: function(): Message[] {
       return [];
@@ -144,14 +150,21 @@ export default defineComponent({
     prepareMessage(message: string): string {
       return  message.replace('@'+(this.loggedUser as User).username , '<strong class="mention underlined-text">'+(this.loggedUser as User).username+'</strong>');
     },
-    submit() {
-      this.$emit('newMessage', this.myMessage);
-      this.myMessage = '';
+    async submit() {
+      this.loading = true
+      await this.addMessage({ channel: this.$store.state.channelModule.activeChannel!.name, message: this.myMessage })
+      this.myMessage = ''
+      this.loading = false
+    },
+    scrollToBottom() {
       setTimeout(() => {
-        let objDiv = document.getElementById('chat') as HTMLElement;
-        objDiv.scrollTop = objDiv.scrollHeight;
+        if (document.getElementById('chat') !== null) {
+          let objDiv = document.getElementById('chat') as HTMLElement;
+          objDiv.scrollTop = objDiv.scrollHeight;
+        }
       },20)
     },
+    ...mapActions('channelModule', ['addMessage']),
     onLoad(index: number, done: () => void) {
       // setTimeout(() => {
       //   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -162,7 +175,15 @@ export default defineComponent({
     addCommandToInput(action: string): void {
       this.myMessage = this.myMessage.concat(' ', action);
     }
-  }
+  },
+  watch: {
+    alreadyTyped: {
+      handler () {
+        this.$nextTick(() => this.scrollToBottom())
+      },
+      deep: true
+    }
+  },
 
 })
 ;

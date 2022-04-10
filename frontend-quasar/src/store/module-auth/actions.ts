@@ -7,12 +7,15 @@ import { Dark } from 'quasar';
 import { User } from 'src/contracts';
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
-  async check({ commit }) {
+  async check({ commit, state, dispatch }) {
     try {
       commit('AUTH_START');
       const user = await authService.me();
       if (user !== null)
         Dark.set((user as User).preference.darkMode);
+      if (user?.id !== state.user?.id) {
+        await dispatch('channelModule/connect', 'General', { root: true })
+      }
       commit('AUTH_SUCCESS', user);
       return user !== null;
     } catch (err) {
@@ -44,10 +47,11 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       throw err;
     }
   },
-  async logout({ commit }) {
+  async logout({ commit , dispatch}) {
     try {
       commit('AUTH_START');
       await authService.logout();
+      await dispatch('channelModule/disconnect', null, { root: true })
       commit('AUTH_SUCCESS', null);
       // remove api token and notify listeners
       authManager.removeToken();

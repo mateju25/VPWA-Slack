@@ -15,7 +15,7 @@ const mutation: MutationTree<ChannelStateInterface> = {
   },
   LOAD_SUCCESS_MESSAGES(state, messages: Message[]) {
     state.statusMessage = 'success';
-    state.messages = messages;
+    state.messages[state.activeChannel!.name] = messages;
   },
   SET_ACTIVE_GENERAL(state) {
     state.activeChannel = state.channels.find(
@@ -40,6 +40,28 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.statusChannel = 'error';
     state.statusMessage = 'error';
   },
+  LOADING_START (state) {
+    state.loading = true
+    state.error = null
+  },
+  LOADING_SUCCESS (state, { channel, messages }: { channel: string, messages: Message[] }) {
+    state.loading = false
+    state.messages[channel] = messages
+  },
+  LOADING_ERROR (state, error) {
+    state.loading = false
+    state.error = error
+  },
+  CLEAR_CHANNEL (state, channel) {
+    state.active = null
+    delete state.messages[channel]
+  },
+  SET_ACTIVE (state, channel: string) {
+    state.active = channel
+  },
+  NEW_MESSAGE (state, { channel, message }: { channel: string, message: Message }) {
+    state.messages[channel].push(message)
+  }
 };
 
 export default mutation;

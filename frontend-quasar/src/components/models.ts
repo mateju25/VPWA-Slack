@@ -1,12 +1,3 @@
-// export class User {
-//   constructor(
-//     public id: number,
-//     public username: string,
-//     public fullname: string,
-//     public email: string,
-//     public preference: Preference,
-//   ) {}
-// }
 import { User } from 'src/contracts';
 
 export class Preference {
@@ -46,6 +37,7 @@ export class Message {
     public id: number,
     public text: string,
     public user: User,
+    public channel: Channel,
     public createdAt: string
   ) {}
 }

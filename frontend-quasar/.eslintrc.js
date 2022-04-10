@@ -72,6 +72,7 @@ module.exports = {
   rules: {
     'vue/multi-word-component-names': 'off',
     'prefer-promise-reject-errors': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
 
     quotes: ['warn', 'single', { avoidEscape: true }],
 

@@ -6,23 +6,23 @@ import { Channel } from 'components/models';
 import { ChannelData, PreferenceData } from 'src/contracts';
 
 const actions: ActionTree<ChannelStateInterface, StateInterface> = {
-  async loadChannels({ commit, dispatch }) {
+  async loadChannels({ commit }) {
     try {
       commit('LOAD_START_CHANNEL');
       const channels = await channelService.loadChannels();
       commit('LOAD_SUCCESS', channels);
       commit('SET_ACTIVE_GENERAL');
-      await dispatch('loadMessages');
+      // await dispatch('loadMessages');
       return channels !== null;
     } catch (err) {
       commit('LOAD_ERROR', err);
       throw err;
     }
   },
-  async setActiveChannel({ state, commit, dispatch }, { channel }) {
+  async setActiveChannel({ state, commit }, { channel }) {
     try {
       commit('SET_ACTIVE_CHANNEL', channel);
-      await dispatch('loadMessages');
+      // await dispatch('loadMessages');
       return state.activeChannel !== null;
     } catch (err) {
       throw err;
@@ -66,6 +66,30 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
       throw err;
     }
   },
+  async connect ({ commit }, channel: string) {
+    try {
+      commit('LOADING_START')
+
+      const messages = await channelService.connect(channel).loadMessages()
+      console.log(messages)
+      commit('LOADING_SUCCESS', { channel, messages })
+    } catch (err) {
+      commit('LOADING_ERROR', err)
+      throw err
+    }
+  },
+  async disconnect ({ getters, commit }, channel: string | null) {
+    const leaving: string[] = channel !== null ? [channel] : getters.joinedChannels
+
+    leaving.forEach((c) => {
+      channelService.disconnect(c)
+      commit('CLEAR_CHANNEL', c)
+    })
+  },
+  async addMessage ({ commit }, { channel, message }: { channel: string, message: string }) {
+    const newMessage = await channelService.in(channel)?.addMessage(message)
+    commit('NEW_MESSAGE', { channel, message: newMessage })
+  }
 };
 
 export default actions;
