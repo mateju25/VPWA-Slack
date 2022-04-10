@@ -124,14 +124,12 @@ export default defineComponent({
   },
   computed: {
     loggedUser(): User {
-      console.log(this.$store.state.authStore.user);
       return this.$store.state.authStore.user as User;
     },
     channelsLoaded (): boolean {
       return this.$store.state.channelStore.statusChannel === 'success'
     },
     userLoaded (): boolean {
-      console.log(this.$store.state.authStore.user);
       return this.$store.state.authStore.user !== null
     },
   },
