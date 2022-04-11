@@ -17,6 +17,17 @@ const mutation: MutationTree<ChannelStateInterface> = {
     );
     state.statusChannel = 'success';
   },
+  REMOVE_USER_FROM_CHANNEL(state, { receivedChannel, user }: { receivedChannel: Channel, user: User }) {
+    const foundChannel = state.channels.find(
+      (item) => item.id === receivedChannel.id
+    );
+    if (foundChannel !== undefined) {
+      foundChannel.members = foundChannel.members.filter(
+        (item) => item.id !== user.id
+      );
+    }
+    state.statusChannel = 'success';
+  },
   ADD_CHANNEL(state, channel: Channel) {
     state.channels.push(channel);
     state.activeChannel = channel;
@@ -44,7 +55,7 @@ const mutation: MutationTree<ChannelStateInterface> = {
   NEW_MESSAGE (state, { channel, message }: { channel: string, message: Message}) {
     state.messages[channel].push(message)
   },
-  NEW_NOTIFICATION (state, { channel, message }: { channel: string, message: Message }) {
+  NEW_NOTIFICATION (state, { message }: { channel: string, message: Message }) {
     state.notifications.push(message);
   },
   REMOVE_NOTIFICATIONS (state) {

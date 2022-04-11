@@ -46,11 +46,11 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
       throw err;
     }
   },
-  async deleteChannel({ commit }, { channel }) {
+  async deleteChannel({ state, commit }, { channel }) {
     try {
-      const deletedChannel = await channelService.deleteChannel(channel.id);
+      const deletedChannel = await channelService.in(channel.name)?.deleteChannel(channel);
       commit('REMOVE_CHANNEL', deletedChannel);
-      commit('SET_ACTIVE_GENERAL');
+      commit('SET_ACTIVE_CHANNEL', state.channels.find((item) => item.name === 'General') as Channel);
       return deletedChannel !== null;
     } catch (err) {
       throw err;

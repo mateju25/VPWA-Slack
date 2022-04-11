@@ -16,6 +16,18 @@ class ChannelSocketManager extends SocketManager {
       store.commit('channelStore/NEW_MESSAGE', { channel, message});
       store.commit('channelStore/NEW_NOTIFICATION', { channel, message});
     })
+
+    this.socket.on('deleteUserFromChannel', ({receivedChannel, user} : { receivedChannel : Channel, user: User }) => {
+      if (receivedChannel.owners.find(item => item.id === user.id)) {
+        store.commit('channelStore/REMOVE_CHANNEL', receivedChannel);
+      } else {
+        store.commit('channelStore/REMOVE_USER_FROM_CHANNEL', { receivedChannel, user});
+      }
+    })
+  }
+  public deleteChannel (channel: Channel): Promise<Channel> {
+    console.log('deleting channel', channel);
+    return this.emitAsync('deleteChannel', channel.id)
   }
 
   public addMessage (message: string): Promise<Message> {
