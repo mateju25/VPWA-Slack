@@ -41,11 +41,13 @@
       <q-item-label header v-if='activeChannel.owners.length > 0'>Owners</q-item-label>
       <UserContactListItem
         :contacts='activeChannel.owners'
+        :highlighted='highlighted'
       />
 
       <q-item-label header v-if='activeChannel.members.length > 0'>Users</q-item-label>
       <UserContactListItem
         :contacts='activeChannel.members'
+        :highlighted='highlighted'
       />
     </q-list>
 
@@ -63,6 +65,12 @@ export default defineComponent({
   // type inference enabled
   components: {
     UserContactListItem
+  },
+  props: {
+    highlighted: {
+      type: Boolean,
+      default: false
+    },
   },
   data() {
     let channelPrivacy = ref(false);

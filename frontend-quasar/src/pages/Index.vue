@@ -126,11 +126,40 @@ export default defineComponent({
       Dark: Dark,
       date: date,
       myMessage: '',
-      loading: false,
-      actions: ['@', '/join', '/invite', '/revoke', '/kick', '/quit', '/cancel']
+      loading: false
     };
   },
   computed: {
+    isGeneral() {
+      return this.$store.state.channelStore.activeChannel?.name === 'General';
+    },
+    iAmMember() {
+      return this.$store.state.channelStore.activeChannel?.members.find(member => member.id === this.$store.state.authStore.user?.id) !== undefined;
+    },
+    isPublic() {
+      return this.$store.state.channelStore.activeChannel?.isPrivate === false;
+    },
+    iAmOwner() {
+      return this.$store.state.channelStore.activeChannel?.owners.find(owner => owner.id === this.$store.state.authStore.user?.id) !== undefined;
+    },
+    actions() {
+      if (this.isGeneral) {
+        return ['@', '/join', '/list'];
+      }
+      if (this.iAmMember && !this.isPublic) {
+        return ['@', '/join', '/list', '/cancel'];
+      }
+      if (this.iAmOwner && !this.isPublic) {
+        return ['@', '/join', '/list', '/invite', '/revoke', '/kick', '/quit', '/cancel'];
+      }
+      if (this.iAmMember && this.isPublic) {
+        return ['@', '/join', '/list', '/kick', '/cancel'];
+      }
+      if (this.iAmOwner && this.isPublic) {
+        return ['@', '/join', '/list', '/kick', '/quit', '/cancel'];
+      }
+      return [];
+    },
     notifications(): Message[] {
       return this.$store.state.channelStore.notifications;
     },
@@ -159,7 +188,36 @@ export default defineComponent({
     },
     async submit() {
       this.loading = true;
-      await this.addMessage({ channel: this.$store.state.channelStore.activeChannel!.name, message: this.myMessage });
+      if (this.myMessage.includes('/list') && this.actions.includes('/list')) {
+        this.$emit('commandList');
+      } else if (this.myMessage.includes('/join') && this.actions.includes('/join')) {
+        let split = this.myMessage.split('/join');
+        let name = '';
+        if (split.length > 1) {
+          name = split[1].trim();
+        } else {
+          name = split[0].trim();
+        }
+        let isPrivate = name.includes('private');
+        name = name.split('private')[0].trim();
+        if (name !== '') {
+          this.$store.dispatch('channelStore/addChannel', {
+            name: name,
+            isPrivate: isPrivate
+          }).catch(() => {
+            this.$q.notify({
+              color: 'red-4',
+              textColor: 'white',
+              position: 'top',
+              icon: 'warning',
+              message: 'Channel name already exists'
+            });
+          });
+        }
+      }
+      else {
+        await this.addMessage({ channel: this.$store.state.channelStore.activeChannel!.name, message: this.myMessage });
+      }
       this.myMessage = '';
       this.loading = false;
     },
@@ -231,7 +289,7 @@ export default defineComponent({
   margin-top: 2px;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1270px) {
   .menu-actions {
     display: none;
   }
