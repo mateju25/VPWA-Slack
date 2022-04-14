@@ -1,5 +1,6 @@
 <template>
   <q-page class='q-pa-md container' v-if='userLoaded && messagesLoaded'>
+    <UserLeavingDialog :confirm='confirm' @updateConfirm='updateConfirm'/>
     <q-infinite-scroll id='chat' @load='onLoad' class='full-width overflow-auto' reverse>
       <template v-slot:loading>
         <div class='row justify-center q-my-md'>
@@ -116,16 +117,19 @@ import { Message } from 'components/models';
 import { User } from 'src/components/models';
 import Avatar from 'components/Avatar.vue';
 import { mapActions } from 'vuex';
+import { AppVisibility } from 'quasar';
+import UserLeavingDialog from 'components/UserLeavingDialog.vue';
 
 
 export default defineComponent({
   name: 'PageIndex',
-  components: { Avatar },
+  components: { Avatar, UserLeavingDialog },
   data() {
     return {
       Dark: Dark,
       date: date,
       myMessage: '',
+      confirm: false,
       loading: false
     };
   },
@@ -183,6 +187,9 @@ export default defineComponent({
     }
   },
   methods: {
+    updateConfirm(newValue: boolean) {
+      this.confirm = newValue;
+    },
     prepareMessage(message: string): string {
       return message.replace('@' + (this.loggedUser as User).username, '<strong class="mention underlined-text">' + (this.loggedUser as User).username + '</strong>');
     },
@@ -190,6 +197,10 @@ export default defineComponent({
       this.loading = true;
       if (this.myMessage.includes('/list') && this.actions.includes('/list')) {
         this.$emit('commandList');
+      } else if (this.myMessage.includes('/quit') && this.actions.includes('/quit')) {
+        this.confirm = true;
+      } else if (this.myMessage.includes('/cancel') && this.actions.includes('/cancel')) {
+        this.confirm = true;
       } else if (this.myMessage.includes('/join') && this.actions.includes('/join')) {
         let split = this.myMessage.split('/join');
         let name = '';
@@ -204,18 +215,17 @@ export default defineComponent({
           this.$store.dispatch('channelStore/addChannel', {
             name: name,
             isPrivate: isPrivate
-          }).catch(() => {
+          }).catch((err) => {
             this.$q.notify({
               color: 'red-4',
               textColor: 'white',
               position: 'top',
               icon: 'warning',
-              message: 'Channel name already exists'
+              message: err.response?.data.message
             });
           });
         }
-      }
-      else {
+      } else {
         await this.addMessage({ channel: this.$store.state.channelStore.activeChannel!.name, message: this.myMessage });
       }
       this.myMessage = '';
@@ -244,22 +254,24 @@ export default defineComponent({
   watch: {
     notifications: {
       handler() {
-        this.notifications.forEach(notification => {
-          let message =
-            `<b style='color: black'>Channel: ${notification.channel.name}</b></br>
+        if (!AppVisibility.appVisible) {
+          this.notifications.forEach(notification => {
+            let message =
+              `<b style='color: black'>Channel: ${notification.channel.name}</b></br>
              <b style='color: black'>User: ${notification.user.username}</b></br>
              <p style='color: black' class='q-mt-md'>${notification.text}</p>`;
-          this.$q.notify({
-            color: 'blue-4',
-            textColor: 'white',
-            position: 'top',
-            html: true,
-            type: 'info',
-            message: message
+            this.$q.notify({
+              color: 'blue-4',
+              textColor: 'white',
+              position: 'top',
+              html: true,
+              type: 'info',
+              message: message
+            });
           });
-        });
-        if (this.notifications.length > 0) {
-          this.$store.commit('channelStore/REMOVE_NOTIFICATIONS');
+          if (this.notifications.length > 0) {
+            this.$store.commit('channelStore/REMOVE_NOTIFICATIONS');
+          }
         }
       },
       deep: true
@@ -385,6 +397,7 @@ export default defineComponent({
   border-radius: 5px;
   padding: 2px;
 }
+
 .sent-hint {
   color: rgba(128, 128, 128, 0.45);
   position: absolute;

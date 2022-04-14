@@ -12,6 +12,7 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.channels = channels;
   },
   REMOVE_CHANNEL(state, channel: Channel) {
+    console.log(state.channels, channel)
     state.channels = state.channels.filter(
       (item) => item.id !== channel.id
     );

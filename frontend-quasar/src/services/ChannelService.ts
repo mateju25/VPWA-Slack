@@ -83,9 +83,13 @@ class ChannelService {
       });
   }
 
-  async addChannel(data: ChannelData): Promise<User> {
-    const response = await api.post<User>('data/channel', data);
-    return response.data;
+  async addChannel(data: ChannelData): Promise<Channel> {
+    return api
+      .post('data/channel', data)
+      .then((response) => response.data)
+      .catch((error: AxiosError) => {
+        return Promise.reject(error);
+      });
   }
 
   async deleteChannel(id: number): Promise<User> {
