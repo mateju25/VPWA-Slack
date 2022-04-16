@@ -14,7 +14,8 @@ class ChannelSocketManager extends SocketManager {
 
     this.socket.on('message', (message: Message) => {
       store.commit('channelStore/NEW_MESSAGE', { channel, message});
-      store.commit('channelStore/NEW_NOTIFICATION', { channel, message});
+      if (store.state.preferenceStore.userPreference?.stateName !== 'DND')
+        store.commit('channelStore/NEW_NOTIFICATION', { channel, message});
     })
 
     this.socket.on('deleteUserFromChannel', ({receivedChannel, user} : { receivedChannel : Channel, user: User }) => {
