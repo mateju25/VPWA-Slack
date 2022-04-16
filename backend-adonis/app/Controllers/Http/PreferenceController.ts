@@ -8,6 +8,7 @@ export default class PreferenceController {
     await auth.user?.load('preference');
     auth.user?.preference?.$setAttribute('darkMode', data.darkMode);
     auth.user?.preference?.$setAttribute('notificationsOn', data.notificationsOn);
+    auth.user?.preference?.$setAttribute('stateName', data.stateName);
 
     await auth.user?.preference?.save();
 

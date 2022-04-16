@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex';
 import { StateInterface } from '../index';
 import { ChannelStateInterface } from './state';
 import { channelService } from 'src/services';
-import { Channel } from 'components/models';
+import { Channel, User } from 'components/models';
 import { ChannelData } from 'src/contracts';
 
 const actions: ActionTree<ChannelStateInterface, StateInterface> = {
@@ -27,6 +27,9 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
       commit('LOAD_ERROR');
       throw err;
     }
+  },
+  async updateChannels({ commit }, {user, userState}: {user: User, userState: string}){
+    commit('UPDATE_CHANNELS', {user: user, userState: userState});
   },
   async setActiveChannel({ state, commit }, { channel }) {
     try {

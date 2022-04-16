@@ -128,6 +128,9 @@ export default defineComponent({
           'username': this.username,
           'password': this.password
         }).then(() => {
+          //load userstate
+
+          //redirect if successful
           this.$router.push(this.redirectTo)
         }).catch(() => {
           this.$q.notify({

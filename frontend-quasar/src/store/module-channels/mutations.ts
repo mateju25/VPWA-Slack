@@ -39,6 +39,24 @@ const mutation: MutationTree<ChannelStateInterface> = {
   LOAD_ERROR(state) {
     state.statusChannel = 'error';
   },
+  UPDATE_CHANNELS(state, {user, userState}: {user: User, userState: string}) {
+    state.channels.forEach((x) => {
+      x.members.every((m) => {
+        if(m.username === user.username){
+          m.preference.stateName = userState;
+          return false;
+        }
+        return true;
+      })
+      x.owners.every((m) => {
+        if(m.username === user.username){
+          m.preference.stateName = userState;
+          return false;
+        }
+        return true;
+      })
+    });
+  },
 
   // MUTATIONS FOR MESSAGES LOADING
   LOADING_START (state) {
