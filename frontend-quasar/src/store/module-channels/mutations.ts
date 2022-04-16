@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex';
 import { ChannelStateInterface } from './state';
-import { Channel, Message } from 'components/models';
+import { Channel, Message, User } from 'components/models';
 
 const mutation: MutationTree<ChannelStateInterface> = {
   // MUTATIONS FOR CHANNEL LOADING
@@ -26,6 +26,24 @@ const mutation: MutationTree<ChannelStateInterface> = {
   },
   LOAD_ERROR(state) {
     state.statusChannel = 'error';
+  },
+  UPDATE_CHANNELS(state, {user, userState}: {user: User, userState: string}) {
+    state.channels.forEach((x) => {
+      x.members.every((m) => {
+        if(m.username === user.username){
+          m.preference.stateName = userState;
+          return false;
+        }
+        return true;
+      })
+      x.owners.every((m) => {
+        if(m.username === user.username){
+          m.preference.stateName = userState;
+          return false;
+        }
+        return true;
+      })
+    });
   },
 
   // MUTATIONS FOR MESSAGES LOADING

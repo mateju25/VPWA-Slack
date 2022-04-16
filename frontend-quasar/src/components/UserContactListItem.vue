@@ -13,7 +13,9 @@
       v-ripple
     >
       <q-item-section avatar>
-        <Avatar v-bind:contact='contact' v-bind:inHeader='false' />
+        <Avatar 
+          :contact='contact' 
+          :inHeader='false' />
       </q-item-section>
 
       <q-item-section>

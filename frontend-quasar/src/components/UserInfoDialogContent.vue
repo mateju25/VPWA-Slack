@@ -121,7 +121,7 @@ export default defineComponent({
       darkMode: this.selectedContact.preference.darkMode,
       notifications: this.selectedContact.preference.notificationsOn,
       options: [
-        'Online', 'Offline', 'DND'
+        'Online', 'DND'
       ]
     }
   },
@@ -135,13 +135,26 @@ export default defineComponent({
       Dark.toggle();
       this.$store.dispatch('preferenceStore/savePreference', {
         notificationsOn: this.notifications,
-        darkMode: this.darkMode
+        darkMode: this.darkMode,
+        stateName: this.userState
       });
     },
     notifications: function(): void {
       this.$store.dispatch('preferenceStore/savePreference', {
         notificationsOn: this.notifications,
-        darkMode: this.darkMode
+        darkMode: this.darkMode,
+        stateName: this.userState
+      });
+    },
+    userState: function(): void {
+      this.$store.dispatch('preferenceStore/savePreference', {
+        notificationsOn: this.notifications,
+        darkMode: this.darkMode,
+        stateName: this.userState
+      });
+      this.$store.dispatch('preferenceStore/userStateChanged', {
+        stateName: this.userState,
+        user: this.selectedContact 
       });
     },
   },

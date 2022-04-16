@@ -21,6 +21,7 @@ export interface LoginCredentials {
 export interface PreferenceData {
   darkMode: boolean;
   notificationsOn: boolean;
+  stateName: string;
 }
 
 export interface ChannelData {
