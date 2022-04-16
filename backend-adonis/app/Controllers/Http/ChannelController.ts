@@ -21,10 +21,4 @@ export default class ChannelController {
 
     return channel;
   }
-
-  public async deleteChannel({ auth, params }: HttpContextContract) {
-    // if invalid, exception
-    const channel = await this.channelRepository.delete(params.id, auth);
-    return channel;
-  }
 }

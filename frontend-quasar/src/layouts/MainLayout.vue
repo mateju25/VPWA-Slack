@@ -82,11 +82,11 @@
       icon="people"
       bordered
     >
-      <UserContactList v-if='channelsLoaded' />
+      <UserContactList v-if='channelsLoaded' :highlighted='highlighted' />
     </q-drawer>
 
     <q-page-container>
-      <router-view/>
+      <router-view @commandList="commandList()"/>
     </q-page-container>
 
   </q-layout>
@@ -119,7 +119,8 @@ export default defineComponent({
       Dark: Dark,
       leftDrawerOpen: false,
       rightDrawerOpen: false,
-      dialogOpen: false
+      dialogOpen: false,
+      highlighted: false,
     }
   },
   computed: {
@@ -134,6 +135,16 @@ export default defineComponent({
     },
   },
   methods: {
+    commandList() {
+      if (!this.rightDrawerOpen)
+        this.rightDrawerOpen = true;
+      else {
+        this.highlighted = true;
+        setTimeout(() => {
+          this.highlighted = false;
+        }, 1000);
+      }
+    },
     changeDialogOpen() {
       this.dialogOpen = !this.dialogOpen;
     },

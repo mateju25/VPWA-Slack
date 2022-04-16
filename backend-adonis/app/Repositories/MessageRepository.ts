@@ -18,6 +18,7 @@ export default class MessageRepository implements MessageRepositoryContract {
       .related('messages')
       .create({ written_by: userId, channel_id: channel.id, text: content });
     await message.load('user');
+    await message.load('channel');
 
     return message;
   }

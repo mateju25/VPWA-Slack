@@ -65,7 +65,7 @@
       flat
       dense
       :color="Dark.isActive ? 'white' : 'black'"
-      label='Create new channel'
+      label='Join channel'
       icon='add_circle_outline'
       class='full-width q-pl-lg last-item'
       align='left'
@@ -77,7 +77,7 @@
     <q-dialog v-model='newChannel' persistent>
       <q-card class='new-channel'>
         <q-card-section>
-          <h2>Create new channel</h2>
+          <h2>Join channel</h2>
         </q-card-section>
         <q-card-section class='row items-center'>
           <q-input class='full-width' square standout='bg-grey' clearable v-model='newChannelName' type='name' label='Channel name' />
@@ -87,7 +87,7 @@
 
         <q-card-actions align='right'>
           <q-btn flat label='Cancel' color='secondary' v-close-popup />
-          <q-btn flat label='Create' color='primary' @click='createNewChannel()' v-close-popup />
+          <q-btn flat label='Join' color='primary' @click='createNewChannel()' v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -118,12 +118,13 @@ export default defineComponent({
         this.$store.dispatch('channelStore/addChannel', {
           name: this.newChannelName,
           isPrivate: this.newChannelPrivate
-        }).catch(() => {
+        }).catch((err) => {
           this.$q.notify({
             color: 'red-4',
             textColor: 'white',
+            position: 'top',
             icon: 'warning',
-            message: 'Channel name already exists'
+            message: err.response?.data.message
           });
         });
         this.newChannelName = '';

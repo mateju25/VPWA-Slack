@@ -20,7 +20,7 @@ const mutation: MutationTree<AuthStateInterface> = {
     state.user!.preference.darkMode = data.darkMode;
     state.user!.preference.notificationsOn = data.notificationsOn;
     state.user!.preference.stateName = data.stateName;
-  }
+  },
 };
 
 export default mutation;

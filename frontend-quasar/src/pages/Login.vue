@@ -119,6 +119,7 @@ export default defineComponent({
         this.$q.notify({
           color: 'red-4',
           textColor: 'white',
+          position: 'top',
           icon: 'warning',
           message: this.v$.$errors.map(e => e.$message).join()
         });
@@ -135,6 +136,7 @@ export default defineComponent({
           this.$q.notify({
             color: 'red-4',
             textColor: 'white',
+            position: 'top',
             icon: 'warning',
             message: 'Invalid username or password'
           });

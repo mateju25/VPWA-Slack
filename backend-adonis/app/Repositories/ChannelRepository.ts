@@ -4,6 +4,7 @@ import User from 'App/Models/User';
 import Channel from 'App/Models/Channel';
 import { DateTime } from 'luxon';
 import { AuthContract } from '@ioc:Adonis/Addons/Auth';
+import { Exception } from '@poppinss/utils';
 
 export default class ChannelRepository implements ChannelRepositoryContract {
   public async findAll(auth: AuthContract): Promise<Channel[]> {
@@ -11,17 +12,50 @@ export default class ChannelRepository implements ChannelRepositoryContract {
     return auth.user?.channels.map((channel) => channel.serialize() as Channel) ?? [];
   }
 
-  public async create(data: Object, auth: AuthContract): Promise<Channel> {
-    const channel = await Channel.create(data);
-    await auth.user?.related('channels').attach({
-      [channel.id]: {
-        role_id: 1,
-        joined: DateTime.now(),
-        invited: DateTime.now(),
-      },
-    });
-    await channel.load('owners');
-    await channel.load('members');
+  public async create(
+    { name, isPrivate }: { name: string; isPrivate: boolean },
+    auth: AuthContract,
+  ): Promise<Channel | null> {
+    let channel = await Channel.findBy('name', name);
+    if (channel !== null) {
+      //existuje kanal s takym nazvom
+      await channel.load('owners');
+      await channel.load('members');
+
+      await auth.user?.load('channels');
+      if (auth.user?.channels.find((channel) => channel.name === name) === undefined) {
+        if (!channel.isPrivate) {
+          //moze joinovat len public kanal
+          //join ako member
+          await auth.user?.related('channels').attach({
+            [channel.id]: {
+              role_id: 2,
+              joined: DateTime.now(),
+              invited: DateTime.now(),
+            },
+          });
+        } else {
+          //nemoze joinovat privatny kanal
+          throw new Exception('Channel is private');
+        }
+      } else {
+        //uz je clen
+        throw new Exception('You are already in this channel');
+      }
+    } else {
+      //neexistuje kanal s takym nazvom
+      channel = await Channel.create({ name, isPrivate });
+      //vytvori kanal ako owner
+      await auth.user?.related('channels').attach({
+        [channel.id]: {
+          role_id: 1,
+          joined: DateTime.now(),
+          invited: DateTime.now(),
+        },
+      });
+      await channel.load('owners');
+      await channel.load('members');
+    }
 
     return channel;
   }

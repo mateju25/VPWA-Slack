@@ -28,4 +28,9 @@ export interface ChannelData {
   name: string;
   isPrivate: boolean;
 }
+//
+// export interface ChannelDeletionData {
+//   channel: Channel;
+//   user: User;
+// }
 
