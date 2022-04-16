@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex';
 import { ChannelStateInterface } from './state';
-import { Channel, Message } from 'components/models';
+import { Channel, Message, User } from 'components/models';
 
 const mutation: MutationTree<ChannelStateInterface> = {
   // MUTATIONS FOR CHANNEL LOADING
@@ -12,9 +12,21 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.channels = channels;
   },
   REMOVE_CHANNEL(state, channel: Channel) {
+    console.log(state.channels, channel)
     state.channels = state.channels.filter(
       (item) => item.id !== channel.id
     );
+    state.statusChannel = 'success';
+  },
+  REMOVE_USER_FROM_CHANNEL(state, { receivedChannel, user }: { receivedChannel: Channel, user: User }) {
+    const foundChannel = state.channels.find(
+      (item) => item.id === receivedChannel.id
+    );
+    if (foundChannel !== undefined) {
+      foundChannel.members = foundChannel.members.filter(
+        (item) => item.id !== user.id
+      );
+    }
     state.statusChannel = 'success';
   },
   ADD_CHANNEL(state, channel: Channel) {
@@ -26,6 +38,24 @@ const mutation: MutationTree<ChannelStateInterface> = {
   },
   LOAD_ERROR(state) {
     state.statusChannel = 'error';
+  },
+  UPDATE_CHANNELS(state, {user, userState}: {user: User, userState: string}) {
+    state.channels.forEach((x) => {
+      x.members.every((m) => {
+        if(m.username === user.username){
+          m.preference.stateName = userState;
+          return false;
+        }
+        return true;
+      })
+      x.owners.every((m) => {
+        if(m.username === user.username){
+          m.preference.stateName = userState;
+          return false;
+        }
+        return true;
+      })
+    });
   },
 
   // MUTATIONS FOR MESSAGES LOADING
@@ -41,8 +71,14 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.loading = false
     state.error = error
   },
-  NEW_MESSAGE (state, { channel, message }: { channel: string, message: Message }) {
+  NEW_MESSAGE (state, { channel, message }: { channel: string, message: Message}) {
     state.messages[channel].push(message)
+  },
+  NEW_NOTIFICATION (state, { message }: { channel: string, message: Message }) {
+    state.notifications.push(message);
+  },
+  REMOVE_NOTIFICATIONS (state) {
+    state.notifications = [];
   }
 };
 

@@ -5,6 +5,7 @@ export interface ChannelStateInterface {
   error: Error | null,
   channels: Channel[];
   messages: { [channel: string]: Message[] }
+  notifications: Message[]
   activeChannel: Channel | null;
   statusChannel: 'pending' | 'success' | 'error';
 }
@@ -13,6 +14,7 @@ function state(): ChannelStateInterface {
   return {
     channels: [],
     messages: {},
+    notifications: [],
     activeChannel: null,
     statusChannel: 'pending',
     loading: false,

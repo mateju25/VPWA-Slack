@@ -21,10 +21,16 @@ export interface LoginCredentials {
 export interface PreferenceData {
   darkMode: boolean;
   notificationsOn: boolean;
+  stateName: string;
 }
 
 export interface ChannelData {
   name: string;
   isPrivate: boolean;
 }
+//
+// export interface ChannelDeletionData {
+//   channel: Channel;
+//   user: User;
+// }
 

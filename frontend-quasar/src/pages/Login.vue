@@ -119,6 +119,7 @@ export default defineComponent({
         this.$q.notify({
           color: 'red-4',
           textColor: 'white',
+          position: 'top',
           icon: 'warning',
           message: this.v$.$errors.map(e => e.$message).join()
         });
@@ -127,11 +128,15 @@ export default defineComponent({
           'username': this.username,
           'password': this.password
         }).then(() => {
+          //load userstate
+
+          //redirect if successful
           this.$router.push(this.redirectTo)
         }).catch(() => {
           this.$q.notify({
             color: 'red-4',
             textColor: 'white',
+            position: 'top',
             icon: 'warning',
             message: 'Invalid username or password'
           });

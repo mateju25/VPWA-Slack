@@ -8,12 +8,15 @@
       v-for='contact in contacts'
       :key='contact.id'
       class='q-my-sm cursor-pointer q-hoverable'
+      :class='highlighted ? "hovered" : ""'
       clickable
       @click='changeDialogOpen(contact)'
       v-ripple
     >
       <q-item-section avatar>
-        <Avatar v-bind:contact='contact' v-bind:inHeader='false' />
+        <Avatar 
+          :contact='contact' 
+          :inHeader='false' />
       </q-item-section>
 
       <q-item-section>
@@ -41,7 +44,11 @@ export default defineComponent({
     };
   },
   props: {
-    contacts: Array as PropType<Array<User>>
+    contacts: Array as PropType<Array<User>>,
+    highlighted: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     changeDialogOpen(contact: User) {
@@ -57,5 +64,7 @@ export default defineComponent({
 </script>
 
 <style>
-
+.hovered {
+  background-color: rgba(38, 166, 154, 0.29) !important;
+}
 </style>

@@ -26,6 +26,7 @@ export default class PreferenceUserValidator {
   public schema = schema.create({
     notificationsOn: schema.boolean([rules.required()]),
     darkMode: schema.boolean([rules.required()]),
+    stateName: schema.string({}, [rules.required()]),
   });
 
   /**

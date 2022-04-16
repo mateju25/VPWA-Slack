@@ -24,10 +24,7 @@ export default class ChannelValidator {
    *    ```
    */
   public schema = schema.create({
-    name: schema.string({}, [
-      rules.required(),
-      rules.unique({ table: 'channels', column: 'name' }),
-    ]),
+    name: schema.string({}, [rules.required()]),
     isPrivate: schema.boolean([rules.required()]),
   });
 

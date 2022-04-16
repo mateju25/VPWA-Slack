@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex';
 import { StateInterface } from '../index';
 import { ChannelStateInterface } from './state';
 import { channelService } from 'src/services';
-import { Channel } from 'components/models';
+import { Channel, User } from 'components/models';
 import { ChannelData } from 'src/contracts';
 
 const actions: ActionTree<ChannelStateInterface, StateInterface> = {
@@ -28,6 +28,9 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
       throw err;
     }
   },
+  async updateChannels({ commit }, {user, userState}: {user: User, userState: string}){
+    commit('UPDATE_CHANNELS', {user: user, userState: userState});
+  },
   async setActiveChannel({ state, commit }, { channel }) {
     try {
       commit('SET_ACTIVE_CHANNEL', channel);
@@ -37,20 +40,21 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
     }
   },
 
-  async addChannel({ commit }, data: ChannelData) {
-    try {
-      const channel = await channelService.addChannel(data);
+  async addChannel({ state, commit }, data: ChannelData) {
+    await channelService.addChannel(data).then((channel) => {
       commit('ADD_CHANNEL', channel);
-      return channel !== null;
-    } catch (err) {
+      channelService.connect(channel.name);
+    }).catch(err => {
       throw err;
-    }
+    });
+    return state.activeChannel;
   },
-  async deleteChannel({ commit }, { channel }) {
+  async deleteChannel({ state, commit }, { channel }) {
     try {
-      const deletedChannel = await channelService.deleteChannel(channel.id);
+      const deletedChannel = await channelService.in(channel.name)?.deleteChannel(channel);
+      channelService.disconnect(channel.name);
       commit('REMOVE_CHANNEL', deletedChannel);
-      commit('SET_ACTIVE_GENERAL');
+      commit('SET_ACTIVE_CHANNEL', state.channels.find((item) => item.name === 'General') as Channel);
       return deletedChannel !== null;
     } catch (err) {
       throw err;
