@@ -245,7 +245,7 @@ export default defineComponent({
       //   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       //   done()
       // }, 2000)
-      done();
+      // done();
     },
     addCommandToInput(action: string): void {
       this.myMessage = this.myMessage.concat(' ', action);
@@ -256,18 +256,21 @@ export default defineComponent({
       handler() {
         if (!AppVisibility.appVisible) {
           this.notifications.forEach(notification => {
-            let message =
-              `<b style='color: black'>Channel: ${notification.channel.name}</b></br>
+            console.log(this.$store.state.authStore.user?.preference.notificationsOn)
+            if (!this.$store.state.authStore.user?.preference.notificationsOn || notification.text.includes('@')) {
+              let message =
+                `<b style='color: black'>Channel: ${notification.channel.name}</b></br>
              <b style='color: black'>User: ${notification.user.username}</b></br>
              <p style='color: black' class='q-mt-md'>${notification.text}</p>`;
-            this.$q.notify({
-              color: 'blue-4',
-              textColor: 'white',
-              position: 'top',
-              html: true,
-              type: 'info',
-              message: message
-            });
+              this.$q.notify({
+                color: 'blue-4',
+                textColor: 'white',
+                position: 'top',
+                html: true,
+                type: 'info',
+                message: message
+              });
+            }
           });
           if (this.notifications.length > 0) {
             this.$store.commit('channelStore/REMOVE_NOTIFICATIONS');

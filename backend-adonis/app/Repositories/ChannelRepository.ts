@@ -34,6 +34,7 @@ export default class ChannelRepository implements ChannelRepositoryContract {
               invited: DateTime.now(),
             },
           });
+          await channel.load('members');
         } else {
           //nemoze joinovat privatny kanal
           throw new Exception('Channel is private');

@@ -21,6 +21,10 @@ const mutation: MutationTree<AuthStateInterface> = {
     state.user!.preference.notificationsOn = data.notificationsOn;
     state.user!.preference.stateName = data.stateName;
   },
+  SET_PREFERENCE(state, {preference}) {
+    if (state.user)
+      state.user.preference = preference;
+  },
 };
 
 export default mutation;
