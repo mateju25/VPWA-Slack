@@ -32,10 +32,11 @@ export default class Channel extends BaseModel {
     pivotForeignKey: 'channel_id',
     pivotRelatedForeignKey: 'user_id',
     pivotTimestamps: true,
-    pivotColumns: ['role_id', 'joined', 'deleted', 'invited'],
+    pivotColumns: ['role_id', 'joined', 'kickedBy', 'kickedAt', 'invited'],
     onQuery(query) {
       query.preload('preference');
       query.wherePivot('role_id', '=', 2);
+      query.whereNullPivot('kickedAt');
     },
   })
   public members: ManyToMany<typeof User>;
@@ -45,10 +46,11 @@ export default class Channel extends BaseModel {
     pivotForeignKey: 'channel_id',
     pivotRelatedForeignKey: 'user_id',
     pivotTimestamps: true,
-    pivotColumns: ['role_id', 'joined', 'deleted', 'invited'],
+    pivotColumns: ['role_id', 'joined', 'kickedBy', 'kickedAt', 'invited'],
     onQuery(query) {
       query.preload('preference');
       query.wherePivot('role_id', '=', 1);
+      query.whereNullPivot('kickedAt');
     },
   })
   public owners: ManyToMany<typeof User>;

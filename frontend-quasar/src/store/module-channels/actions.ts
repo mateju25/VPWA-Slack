@@ -40,15 +40,26 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
     }
   },
 
-  async addChannel({ state, commit }, data: ChannelData) {
-    await channelService.addChannel(data).then((channel) => {
-      commit('ADD_CHANNEL', channel);
-      channelService.connect(channel.name);
-    }).catch(err => {
-      throw err;
-    });
-    return state.activeChannel;
+  async addChannel({ commit }, data: ChannelData) {
+    try {
+      const channel = await channelService.in('General')?.joinChannel(data);
+      if (channel !== null) {
+        commit('ADD_CHANNEL', channel);
+        channelService.connect(channel!.name);
+      }
+      return true;
+    } catch (err) {
+    }
   },
+
+  async kickFromChannel({}, { kickedUser, channel }) {
+    try {
+      await channelService.in(channel.name)?.kickFromChannel(kickedUser, channel);
+      return true;
+    } catch (err) {
+    }
+  },
+
   async deleteChannel({ state, commit }, { channel }) {
     try {
       const deletedChannel = await channelService.in(channel.name)?.deleteChannel(channel);
@@ -77,7 +88,6 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
 
     leaving.forEach((c) => {
       channelService.disconnect(c)
-      // commit('CLEAR_CHANNEL', c)
     })
   },
   async addMessage ({ commit }, { channel, message }: { channel: string, message: string }) {

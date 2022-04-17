@@ -147,15 +147,7 @@ export default defineComponent({
       });
     },
     userState: function(): void {
-      this.$store.dispatch('preferenceStore/savePreference', {
-        notificationsOn: this.notifications,
-        darkMode: this.darkMode,
-        stateName: this.userState
-      });
-      this.$store.dispatch('preferenceStore/userStateChanged', {
-        stateName: this.userState,
-        user: this.selectedContact 
-      });
+      this.$store.dispatch('preferenceStore/userStateChanged', this.userState);
     },
   },
   methods: {

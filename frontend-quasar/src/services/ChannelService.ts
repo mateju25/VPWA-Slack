@@ -12,22 +12,43 @@ class ChannelSocketManager extends SocketManager {
   public subscribe ({ store }: BootParams): void {
     const channel = this.namespace.split('/').pop() as string
 
+    this.socket.on('errorMessage', ({message}) => {
+      store.commit('channelStore/SET_ERROR', message);
+    })
+
     this.socket.on('message', (message: Message) => {
       store.commit('channelStore/NEW_MESSAGE', { channel, message});
-      if (store.state.preferenceStore.userPreference?.stateName !== 'DND')
+      if (store.state.authStore.user?.preference.stateName !== 'DND')
         store.commit('channelStore/NEW_NOTIFICATION', { channel, message});
     })
 
+    this.socket.on('userJoinChannel', ({receivedChannel, user} : { receivedChannel : Channel, user: string }) => {
+      store.commit('channelStore/ADD_MEMBER', { receivedChannel, user});
+      if (store.state.channelStore.activeChannel?.members.find(member => member.username === user)) {
+        store.commit('channelStore/SET_ACTIVE_CHANNEL', store.state.channelStore.channels.find(channel => channel.name === store.state.channelStore.activeChannel?.name));
+      }
+    })
+
+    this.socket.on('userKickFromChannel', ({channelKicked, kickedUser} : { channelKicked: Channel, kickedUser: string, }) => {
+      store.commit('channelStore/REMOVE_USER_FROM_CHANNEL', { receivedChannel: channelKicked, username: kickedUser});
+      if (store.state.channelStore.activeChannel?.name === channelKicked.name && kickedUser === store.state.authStore.user?.username) {
+        store.commit('channelStore/REMOVE_CHANNEL', channelKicked);
+        store.commit('channelStore/SET_ACTIVE_CHANNEL', store.state.channelStore.channels.find((item) => item.name === 'General') as Channel);
+      }
+    })
+
     this.socket.on('deleteUserFromChannel', ({receivedChannel, user} : { receivedChannel : Channel, user: User }) => {
-      if (receivedChannel.owners.find(item => item.id === user.id)) {
+      const username = user.username;
+      if (receivedChannel.owners.find(item => item.username === username)) {
         store.commit('channelStore/REMOVE_CHANNEL', receivedChannel);
+        if (store.state.channelStore.activeChannel?.name === receivedChannel.name)
+          store.commit('channelStore/SET_ACTIVE_CHANNEL', store.state.channelStore.channels.find((item) => item.name === 'General') as Channel);
       } else {
-        store.commit('channelStore/REMOVE_USER_FROM_CHANNEL', { receivedChannel, user});
+        store.commit('channelStore/REMOVE_USER_FROM_CHANNEL', { receivedChannel, username});
       }
     })
   }
   public deleteChannel (channel: Channel): Promise<Channel> {
-    console.log('deleting channel', channel);
     return this.emitAsync('deleteChannel', channel.id)
   }
 
@@ -37,6 +58,14 @@ class ChannelSocketManager extends SocketManager {
 
   public loadMessages (): Promise<Message[]> {
     return this.emitAsync('loadMessages')
+  }
+
+  public joinChannel (data: ChannelData): Promise<Channel> {
+    return this.emitAsync('joinChannel', data)
+  }
+
+  public kickFromChannel (kickedUser: string, channel: Channel): Promise<Channel> {
+    return this.emitAsync('kickFromChannel', { kickedUser, channel })
   }
 }
 
@@ -82,20 +111,6 @@ class ChannelService {
 
         return Promise.reject(error);
       });
-  }
-
-  async addChannel(data: ChannelData): Promise<Channel> {
-    return api
-      .post('data/channel', data)
-      .then((response) => response.data)
-      .catch((error: AxiosError) => {
-        return Promise.reject(error);
-      });
-  }
-
-  async deleteChannel(id: number): Promise<User> {
-    const response = await api.delete<User>('data/channel/'+id);
-    return response.data;
   }
 }
 

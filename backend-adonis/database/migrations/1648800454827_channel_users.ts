@@ -16,12 +16,13 @@ export default class ChannelUsers extends BaseSchema {
         .inTable('channels')
         .onDelete('CASCADE');
 
+      table.json('kickedBy').defaultTo('[]');
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
       table.timestamp('joined');
-      table.timestamp('deleted');
       table.timestamp('invited');
+      table.timestamp('kickedAt').defaultTo(null);
       table.timestamp('created_at', { useTz: true });
       table.timestamp('updated_at', { useTz: true });
     });

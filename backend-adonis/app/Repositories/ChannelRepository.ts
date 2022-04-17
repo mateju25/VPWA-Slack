@@ -4,15 +4,60 @@ import User from 'App/Models/User';
 import Channel from 'App/Models/Channel';
 import { DateTime } from 'luxon';
 import { AuthContract } from '@ioc:Adonis/Addons/Auth';
-import { Exception } from '@poppinss/utils';
 
 export default class ChannelRepository implements ChannelRepositoryContract {
   public async findAll(auth: AuthContract): Promise<Channel[]> {
     await auth.user?.load('channels');
-    return auth.user?.channels.map((channel) => channel.serialize() as Channel) ?? [];
+    const channels = auth.user?.channels ?? [];
+    return (
+      channels
+        .filter((channel) => channel.$extras.pivot_kickedBy.length !== 3)
+        .map((channel) => channel.serialize() as Channel) ?? []
+    );
   }
 
-  public async create(
+  public async kickFromChannel(
+    { kickedUser, channel }: { kickedUser: string; channel: Channel },
+    auth: AuthContract,
+  ): Promise<Channel | null> {
+    let kickedChannel = await Channel.findBy('name', channel.name);
+    let user = await User.findBy('username', kickedUser);
+
+    if (user !== null) {
+      await kickedChannel?.load('members');
+      await kickedChannel?.load('owners');
+      if (
+        kickedChannel?.members.find((member) => member.username === user?.username) === undefined
+      ) {
+        throw new Error('User is not in the channel or is owner of the channel');
+      }
+      let arrayOfIds = kickedChannel?.members.find((member) => member.username === user?.username)
+        ?.$extras.pivot_kickedBy;
+      if (arrayOfIds.find((id) => id === auth.user?.id)) {
+        throw new Error('You already kicked this user from this channel');
+      }
+      if (kickedChannel.owners.find((member) => member.username === auth.user?.username)) {
+        arrayOfIds.push(auth.user?.id);
+        arrayOfIds.push(auth.user?.id);
+        arrayOfIds.push(auth.user?.id);
+      } else {
+        arrayOfIds.push(auth.user?.id);
+      }
+      await kickedChannel?.related('members').sync(
+        {
+          [user.id]: {
+            kickedBy: JSON.stringify(arrayOfIds),
+            kickedAt: DateTime.now(),
+          },
+        },
+        false,
+      );
+      await kickedChannel?.load('members');
+    }
+    return kickedChannel;
+  }
+
+  public async join(
     { name, isPrivate }: { name: string; isPrivate: boolean },
     auth: AuthContract,
   ): Promise<Channel | null> {
@@ -23,7 +68,11 @@ export default class ChannelRepository implements ChannelRepositoryContract {
       await channel.load('members');
 
       await auth.user?.load('channels');
-      if (auth.user?.channels.find((channel) => channel.name === name) === undefined) {
+      await auth.user?.load('kickedChannels');
+      if (
+        auth.user?.channels.find((channel) => channel.name === name) === undefined &&
+        auth.user?.kickedChannels.find((channel) => channel.name === name) === undefined
+      ) {
         if (!channel.isPrivate) {
           //moze joinovat len public kanal
           //join ako member
@@ -37,11 +86,33 @@ export default class ChannelRepository implements ChannelRepositoryContract {
           await channel.load('members');
         } else {
           //nemoze joinovat privatny kanal
-          throw new Exception('Channel is private');
+          throw new Error('Channel is private');
         }
       } else {
-        //uz je clen
-        throw new Exception('You are already in this channel');
+        // je kicknuty
+        if (
+          auth.user?.kickedChannels.find((channel) => channel.name === name)?.$extras.pivot_kickedBy
+            .length === 3
+        )
+          throw new Error('You are permanently kicked from this channel');
+        if (
+          auth.user?.kickedChannels.length !== 0 &&
+          auth.user?.kickedChannels.find((channel) => channel.name === name)?.$extras
+            .pivot_kickedAt !== null
+        ) {
+          await auth.user?.related('kickedChannels').sync(
+            {
+              [channel.id]: {
+                kickedAt: null,
+              },
+            },
+            false,
+          );
+          await channel.load('members');
+        } else {
+          //uz je clen a nie je kicknuty
+          throw new Error('You are already in this channel');
+        }
       }
     } else {
       //neexistuje kanal s takym nazvom
