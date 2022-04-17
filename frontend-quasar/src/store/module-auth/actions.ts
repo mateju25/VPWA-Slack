@@ -1,8 +1,8 @@
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../index';
 import { AuthStateInterface } from './state';
-import { authService, authManager } from 'src/services';
-import { LoginCredentials, PreferenceData, RegisterData } from 'src/contracts';
+import { authManager, authService } from 'src/services';
+import { LoginCredentials, RegisterData } from 'src/contracts';
 import { Dark } from 'quasar';
 import { User } from 'src/components/models';
 
@@ -16,17 +16,10 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       if (user !== null){
         Dark.set((user as User).preference.darkMode);
         if(user.preference.stateName !== 'DND'){
-          await dispatch('preferenceStore/savePreference', {
-            notificationsOn: (user as User).preference.notificationsOn,
-            darkMode: (user as User).preference.darkMode,
-            stateName: 'Online',
-          }, {root: true});
           user.preference.stateName = 'Online';
         }
-        else {
-          user.preference.stateName = 'DND';
-        }
-        dispatch('preferenceStore/loadPreferences', user.preference, { root: true });
+        dispatch('preferenceStore/userStateChanged',
+          user.preference.stateName, {root: true});
       }
       commit('AUTH_SUCCESS', user);
       return user !== null;
@@ -63,14 +56,10 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     try {
       commit('AUTH_START');
       const user = await authService.me();
-      
+
       //serialize user stateName before logout if not DND
       if (user !== null && user.preference.stateName !== 'DND'){
-        await dispatch('preferenceStore/savePreference', {
-          notificationsOn: (user as User).preference.notificationsOn,
-          darkMode: (user as User).preference.darkMode,
-          stateName: 'Offline',
-        }, {root: true});
+        dispatch('preferenceStore/userStateChanged', 'Offline', {root: true});
       }
       await authService.logout();
       await dispatch('channelStore/disconnect', null, { root: true })
@@ -83,9 +72,9 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     }
   },
 
-  async updateUserPreference({ commit }, data: PreferenceData){
-    commit('UPDATE_USER_PREFERENCE', data);
-  },
+  async updateUserPreference({ commit }, stateName: string){
+    commit('UPDATE_USER_PREFERENCE_STATE', stateName);
+  }
 };
 
 export default actions;

@@ -60,13 +60,28 @@ export default class User extends BaseModel {
     pivotForeignKey: 'user_id',
     pivotRelatedForeignKey: 'channel_id',
     pivotTimestamps: true,
-    pivotColumns: ['role_id', 'joined', 'deleted', 'invited'],
+    pivotColumns: ['role_id', 'joined', 'kickedBy', 'kickedAt', 'invited'],
     onQuery(query) {
       query.preload('owners');
       query.preload('members');
+      query.whereNullPivot('kickedAt');
     },
   })
   public channels: ManyToMany<typeof Channel>;
+
+  @manyToMany(() => Channel, {
+    pivotTable: 'channel_users',
+    pivotForeignKey: 'user_id',
+    pivotRelatedForeignKey: 'channel_id',
+    pivotTimestamps: true,
+    pivotColumns: ['role_id', 'joined', 'kickedBy', 'kickedAt', 'invited'],
+    onQuery(query) {
+      query.preload('owners');
+      query.preload('members');
+      query.whereNotNullPivot('kickedAt');
+    },
+  })
+  public kickedChannels: ManyToMany<typeof Channel>;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

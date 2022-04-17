@@ -3,24 +3,21 @@ import { StateInterface } from '../index';
 import { PreferenceStateInterface } from './state';
 import { PreferenceData } from 'src/contracts';
 import { activityService, preferenceService } from 'src/services';
-import { Preference, User } from 'src/components/models';
 
 const actions: ActionTree<PreferenceStateInterface, StateInterface> = {
   async savePreference({commit}, data: PreferenceData) {
     try {
       const preference = await preferenceService.savePreference(data);
-      commit('authStore/SET_PREFERENCE', {preference}, {root: true});
+      commit('authStore/SET_USER_PREFERENCE', {preference}, {root: true});
       return preference;
     } catch (err) {
       throw err;
     }
   },
-  userStateChanged({}, {stateName, user}: {stateName: string, user: User}) {
-    activityService.changedState({stateName: stateName, user: user });
+  async userStateChanged({dispatch}, stateName: string) {
+    await activityService.changedState(stateName);
+    dispatch('authStore/updateUserPreference', stateName, {root: true})
   },
-  loadPreferences({commit}, preferences: Preference){
-    commit('LOAD_PREFERENCES', preferences);
-  }
 };
 
 export default actions;

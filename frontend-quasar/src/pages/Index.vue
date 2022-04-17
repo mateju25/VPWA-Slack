@@ -164,6 +164,9 @@ export default defineComponent({
       }
       return [];
     },
+    error(): string | null {
+      return this.$store.state.channelStore.error;
+    },
     notifications(): Message[] {
       return this.$store.state.channelStore.notifications;
     },
@@ -213,7 +216,7 @@ export default defineComponent({
         let isPrivate = name.includes('private');
         name = name.split('private')[0].trim();
         if (name !== '') {
-          this.$store.dispatch('channelStore/addChannel', {
+          await this.$store.dispatch('channelStore/addChannel', {
             name: name,
             isPrivate: isPrivate
           }).catch((err) => {
@@ -238,8 +241,20 @@ export default defineComponent({
         } else {
           this.showNotification('User is already in channel.');
         }
-          
-        // }
+      } else if (this.myMessage.includes('/kick') && this.actions.includes('/kick')) {
+        let split = this.myMessage.split('/kick');
+        let name = '';
+        if (split.length > 1) {
+          name = split[1].trim();
+        } else {
+          name = split[0].trim();
+        }
+        if (name !== '') {
+          await this.$store.dispatch('channelStore/kickFromChannel', {
+            kickedUser: name,
+            channel: this.$store.state.channelStore.activeChannel
+          });
+        }
       } else {
         await this.addMessage({ channel: this.$store.state.channelStore.activeChannel!.name, message: this.myMessage });
       }
@@ -279,13 +294,28 @@ export default defineComponent({
       //   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       //   done()
       // }, 2000)
-      // done();
+      done();
     },
     addCommandToInput(action: string): void {
       this.myMessage = this.myMessage.concat(' ', action);
     }
   },
   watch: {
+    error: {
+      handler() {
+        if (this.$store.state.channelStore.error !== null) {
+          this.$q.notify({
+            color: 'red-4',
+            textColor: 'white',
+            position: 'top',
+            icon: 'warning',
+            message: this.$store.state.channelStore.error as string
+          });
+          this.$store.commit('channelStore/SET_ERROR', null);
+        }
+      },
+      deep: true
+    },
     notifications: {
       handler() {
         if (!AppVisibility.appVisible) {

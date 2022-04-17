@@ -138,7 +138,8 @@ export abstract class SocketManager implements SocketManagerContract {
       })
 
       socket.onAny((event, ...args) => {
-        console.info(`${this.namespace} [${event}]`, args)
+        if (this.namespace !== '/')
+          console.info(`${this.namespace} [${event}]`, args)
       })
     }
 

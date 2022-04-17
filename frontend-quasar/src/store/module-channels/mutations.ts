@@ -29,7 +29,7 @@ const mutation: MutationTree<ChannelStateInterface> = {
     );
     state.statusChannel = 'success';
   },
-  REMOVE_USER_FROM_CHANNEL(state, { receivedChannel, user }: { receivedChannel: Channel, user: User }) {
+  REMOVE_USER_FROM_CHANNEL(state, { receivedChannel, username }: { receivedChannel: Channel, username: string }) {
     const foundChannel = state.channels.find(
       (item) => item.channel.id === receivedChannel.id
     );
@@ -37,6 +37,21 @@ const mutation: MutationTree<ChannelStateInterface> = {
       foundChannel.channel.members = foundChannel.channel.members.filter(
         (item) => item.id !== user.id
       );
+    }
+    if (state.activeChannel?.name === receivedChannel.name) {
+      state.activeChannel.members = state.activeChannel.members.filter(
+        (item) => item.username !== username
+      );
+      console.log(state.activeChannel.members, username)
+    }
+    state.statusChannel = 'success';
+  },
+  ADD_MEMBER(state, { receivedChannel, user }: { receivedChannel: Channel, user: User }) {
+    const foundChannel = state.channels.find(
+      (item) => item.name === receivedChannel.name
+    );
+    if (foundChannel !== undefined) {
+      foundChannel.members.push(user);
     }
     state.statusChannel = 'success';
   },
@@ -97,7 +112,10 @@ const mutation: MutationTree<ChannelStateInterface> = {
   },
   LOADING_SUCCESS (state, { channel, messages }: { channel: string, messages: Message[] }) {
     state.loading = false
-    state.messages[channel] = messages
+    if (state.messages[channel] === undefined) {
+      state.messages[channel] = []
+    }
+    state.messages[channel].push(...messages);
   },
   LOADING_ERROR (state, error) {
     state.loading = false
@@ -111,6 +129,9 @@ const mutation: MutationTree<ChannelStateInterface> = {
   },
   REMOVE_NOTIFICATIONS (state) {
     state.notifications = [];
+  },
+  SET_ERROR (state, message: string) {
+    state.error = message;
   }
 };
 

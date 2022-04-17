@@ -33,7 +33,5 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('channels', 'ChannelController.getChannels').middleware('auth');
-  Route.post('channel', 'ChannelController.createChannel').middleware('auth');
-  Route.delete('channel/:id', 'ChannelController.deleteChannel').middleware('auth');
   Route.post('preference', 'PreferenceController.savePreference').middleware('auth');
 }).prefix('data');
