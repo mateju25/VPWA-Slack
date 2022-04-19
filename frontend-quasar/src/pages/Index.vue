@@ -1,41 +1,7 @@
 <template>
   <q-page class='q-pa-md container' v-if='userLoaded && messagesLoaded'>
     <UserLeavingDialog :confirm='confirm' @updateConfirm='updateConfirm'/>
-    <q-infinite-scroll id='chat' @load='onLoad' class='full-width overflow-auto' reverse>
-      <template v-slot:loading>
-        <div class='row justify-center q-my-md'>
-          <q-spinner color='primary' name='dots' size='20px' />
-        </div>
-      </template>
-
-      <div v-for='message in alreadyTyped' v-bind:key='message.id'>
-        <q-chat-message
-          v-if='message.user.username === loggedUser.username'
-          :name='message.user.username'
-          :text='[prepareMessage(message.text)]'
-          :text-html='true'
-          sent
-          :stamp="date.formatDate(date.extractDate(message.createdAt, 'YYYY-MM-DDTHH:mm:ss.SSSZ'), 'HH:mm DD.MM.YYYY')"
-        >
-          <template v-slot:avatar>
-            <Avatar class='q-mx-md' :contact='message.user' :in-header='false' :noBadge='true' />
-          </template>
-        </q-chat-message>
-        <q-chat-message
-          v-else
-          :name='message.user.username'
-          :text='[prepareMessage(message.text)]'
-          :text-html='true'
-          received
-          :stamp="date.formatDate(date.extractDate(message.createdAt, 'YYYY-MM-DDTHH:mm:ss.SSSZ'), 'HH:mm DD.MM.YYYY')"
-        >
-          <template v-slot:avatar>
-            <Avatar class='q-mx-md' :contact='message.user' :in-header='false' :noBadge='true' />
-          </template>
-        </q-chat-message>
-
-      </div>
-    </q-infinite-scroll>
+    <InfiniteMessageScroll :key='rerender' :messages='alreadyTyped'/>
     <div v-if='currentlyTyping.length !== 0' class='typing q-mt-md'
          :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
       <div :class="Dark.isActive ? 'yellow-text' : 'black-text'" class='typing-font q-ml-sm typing-hover cursor-pointer'
@@ -112,28 +78,31 @@
 
 <script lang='ts'>
 import { defineComponent } from 'vue';
-import { Dark, date } from 'quasar';
+import { AppVisibility, Dark, date } from 'quasar';
 import { Message } from 'components/models';
 import { User } from 'src/components/models';
-import Avatar from 'components/Avatar.vue';
 import { mapActions } from 'vuex';
-import { AppVisibility } from 'quasar';
 import UserLeavingDialog from 'components/UserLeavingDialog.vue';
+import InfiniteMessageScroll from 'components/InfiniteMessageScroll.vue';
 
 
 export default defineComponent({
   name: 'PageIndex',
-  components: { Avatar, UserLeavingDialog },
+  components: { InfiniteMessageScroll, UserLeavingDialog },
   data() {
     return {
       Dark: Dark,
       date: date,
+      rerender: 1,
       myMessage: '',
       confirm: false,
       loading: false
     };
   },
   computed: {
+    activeChannel() {
+      return this.$store.state.channelStore.activeChannel;
+    },
     isGeneral() {
       return this.$store.state.channelStore.activeChannel?.name === 'General';
     },
@@ -180,10 +149,9 @@ export default defineComponent({
       return this.$store.state.authStore.user as unknown as User;
     },
     alreadyTyped: function(): Message[] {
-      if (this.$store.state.channelStore.activeChannel === null) {
+      if (this.$store.state.channelStore.activeChannel === null || this.$store.state.channelStore.messages[this.$store.state.channelStore.activeChannel!.name] === undefined) {
         return [];
       }
-      console.log(this.$store.state.channelStore.activeChannel!.name);
       return this.$store.state.channelStore.messages[this.$store.state.channelStore.activeChannel!.name];
     },
     currentlyTyping: function(): Message[] {
@@ -288,17 +256,6 @@ export default defineComponent({
         }
       }, 20);
     },
-    ...mapActions('channelStore', ['addMessage']),
-    onLoad(index: number, done: () => void) {
-      // setTimeout(() => {
-      //   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      //   done()
-      // }, 2000)
-      done();
-    },
-    addCommandToInput(action: string): void {
-      this.myMessage = this.myMessage.concat(' ', action);
-    }
   },
   watch: {
     error: {
@@ -343,9 +300,16 @@ export default defineComponent({
       },
       deep: true
     },
-    alreadyTyped: {
+    myMessage: {
       handler() {
         this.$nextTick(() => this.scrollToBottom());
+      },
+      deep: true
+    },
+    activeChannel: {
+      handler() {
+        console.log('active channel changed', this.rerender);
+        this.rerender += 1;
       },
       deep: true
     }

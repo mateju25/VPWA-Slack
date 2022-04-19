@@ -41,12 +41,13 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
     }
   },
 
-  async addChannel({ commit }, data: ChannelData) {
+  async addChannel({ commit, state }, data: ChannelData) {
     try {
       const channel = await channelService.in('General')?.joinChannel(data);
       if (channel !== null) {
         commit('ADD_CHANNEL', channel);
         channelService.connect(channel!.name);
+        commit('SET_ACTIVE_CHANNEL', state.channels.find(channel => channel.name === state.activeChannel?.name));
       }
       return true;
     } catch (err) {
@@ -93,10 +94,26 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
   async connect ({ commit }, channel: string) {
     try {
       commit('LOADING_START')
-      const messages = await channelService.connect(channel).loadMessages()
-      commit('LOADING_SUCCESS', { channel, messages })
+      await channelService.connect(channel);
+      commit('LOADING_INIT', { channel })
     } catch (err) {
       commit('LOADING_ERROR', err)
+      throw err
+    }
+  },
+  async loadMoreMessages ({state, commit }, { channel, pagination }: { channel: string, pagination: number }) {
+    try {
+      const messages = await channelService.in(channel)!.loadMessages(pagination)
+      console.log(messages, pagination, state.messages[channel].pagination);
+      if (messages.length !== 0) {
+        if (state.messages[channel].pagination == pagination) {
+          commit('LOADING_SUCCESS', { channel, messages })
+          commit('INC_PAGINATION', { channel })
+        }
+      } else {
+        throw new Error('No more messages');
+      }
+    } catch (err) {
       throw err
     }
   },

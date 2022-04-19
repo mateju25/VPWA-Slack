@@ -24,9 +24,6 @@ class ChannelSocketManager extends SocketManager {
 
     this.socket.on('userJoinChannel', ({receivedChannel, user} : { receivedChannel : Channel, user: string }) => {
       store.commit('channelStore/ADD_MEMBER', { receivedChannel, user});
-      if (store.state.channelStore.activeChannel?.members.find(member => member.username === user)) {
-        store.commit('channelStore/SET_ACTIVE_CHANNEL', store.state.channelStore.channels.find(channel => channel.name === store.state.channelStore.activeChannel?.name));
-      }
     })
 
     this.socket.on('userKickFromChannel', ({channelKicked, kickedUser} : { channelKicked: Channel, kickedUser: string, }) => {
@@ -96,8 +93,8 @@ class ChannelSocketManager extends SocketManager {
     return this.emitAsync('addMessage', message)
   }
 
-  public loadMessages (): Promise<Message[]> {
-    return this.emitAsync('loadMessages')
+  public loadMessages (pagination: number): Promise<Message[]> {
+    return this.emitAsync('loadMessages', pagination)
   }
 
   public joinChannel (data: ChannelData): Promise<Channel> {
