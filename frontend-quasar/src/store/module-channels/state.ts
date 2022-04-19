@@ -4,7 +4,7 @@ export interface ChannelStateInterface {
   loading: boolean,
   error: string | null,
   channels: Channel[];
-  messages: { [channel: string]: Message[] }
+  messages: { [channel: string]: { messages: Message[], pagination: number }}
   notifications: Message[]
   activeChannel: Channel | null;
   statusChannel: 'pending' | 'success' | 'error';

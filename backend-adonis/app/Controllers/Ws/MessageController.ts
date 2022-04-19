@@ -15,23 +15,14 @@ import Channel from 'App/Models/Channel';
 export default class MessageController {
   constructor(private messageRepository: MessageRepositoryContract) {}
 
-  private static compare(a: DateTime, b: DateTime) {
-    if (a < b) {
-      return 1;
-    }
-    if (a > b) {
-      return -1;
-    }
-    return 0;
-  }
-
-  public async loadMessages({ params, socket }: WsContextContract) {
-    const messages = await this.messageRepository.getAll(params.name);
+  public async loadMessages({ params, socket }: WsContextContract, pagination: number) {
+    const messages = await this.messageRepository.getAll(params.name, pagination);
     const channel = await Channel.findBy('name', params.name);
+    const newestMessage = await this.messageRepository.getNewestMessage(params.name);
     if (
       messages.length > 0 &&
-      [...messages].sort((a, b) => MessageController.compare(a.createdAt, b.createdAt))[0]
-        .createdAt < DateTime.now().minus({ days: 30 })
+      newestMessage !== undefined &&
+      newestMessage.createdAt < DateTime.now().minus({ days: 30 })
     ) {
       await channel?.load('owners');
       socket.nsp.emit('deleteUserFromChannel', {

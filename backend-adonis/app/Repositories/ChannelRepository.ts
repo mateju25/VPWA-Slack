@@ -137,7 +137,9 @@ export default class ChannelRepository implements ChannelRepositoryContract {
     await channel?.load('owners');
     await channel?.load('members');
     if (channel?.members.find((item) => item.id === auth.user?.id)) {
-      await channel?.related('members').detach([(auth.user as User).id]);
+      await channel
+        ?.related('members')
+        .sync({ [(auth.user as User).id]: { kickedAt: DateTime.now() } }, false);
     }
     if (channel?.owners.find((item) => item.id === auth.user?.id)) {
       await channel?.delete();

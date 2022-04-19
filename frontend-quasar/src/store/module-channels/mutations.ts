@@ -81,16 +81,23 @@ const mutation: MutationTree<ChannelStateInterface> = {
   LOADING_SUCCESS (state, { channel, messages }: { channel: string, messages: Message[] }) {
     state.loading = false
     if (state.messages[channel] === undefined) {
-      state.messages[channel] = []
+      state.messages[channel] = { messages: [], pagination: 1}
     }
-    state.messages[channel].push(...messages);
+    state.messages[channel].messages.unshift(...messages);
+  },
+  LOADING_INIT (state, { channel }: { channel: string}) {
+    state.loading = false
+    state.messages[channel] = { messages: [], pagination: 1}
+  },
+  INC_PAGINATION (state, { channel }: { channel: string }) {
+    state.messages[channel].pagination += 1;
   },
   LOADING_ERROR (state, error) {
     state.loading = false
     state.error = error
   },
   NEW_MESSAGE (state, { channel, message }: { channel: string, message: Message}) {
-    state.messages[channel].push(message)
+    state.messages[channel].messages.push(message)
   },
   NEW_NOTIFICATION (state, { message }: { channel: string, message: Message }) {
     state.notifications.push(message);
