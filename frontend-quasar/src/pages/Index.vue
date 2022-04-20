@@ -1,7 +1,7 @@
 <template>
   <q-page class='q-pa-md container' v-if='userLoaded && messagesLoaded'>
     <UserLeavingDialog :confirm='confirm' @updateConfirm='updateConfirm'/>
-    <InfiniteMessageScroll :key='rerender' :messages='alreadyTyped'/>
+    <InfiniteMessageScroll :key='rerender' :messages='alreadyTyped' />
     <div v-if='currentlyTyping.length !== 0' class='typing q-mt-md'
          :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
       <div :class="Dark.isActive ? 'yellow-text' : 'black-text'" class='typing-font q-ml-sm typing-hover cursor-pointer'
@@ -93,7 +93,7 @@ export default defineComponent({
     return {
       Dark: Dark,
       date: date,
-      rerender: 1,
+      rerender: false,
       myMessage: '',
       confirm: false,
       loading: false
@@ -102,6 +102,9 @@ export default defineComponent({
   computed: {
     activeChannel() {
       return this.$store.state.channelStore.activeChannel;
+    },
+    activeChannelName() {
+      return this.$store.state.channelStore.activeChannel?.name;
     },
     isGeneral() {
       return this.$store.state.channelStore.activeChannel?.name === 'General';
@@ -210,30 +213,8 @@ export default defineComponent({
       this.loading = false;
     },
     ...mapActions('channelStore', ['addMessage']),
-    onLoad(index: number, done: (stop: boolean) => void) {
-      setTimeout(() => {
-        this.$store.dispatch('channelStore/loadMoreMessages', {
-          channel: this.$store.state.channelStore.activeChannel!.name,
-          pagination: index
-        }).then(() => {
-          done(false);
-        }).catch(() => {
-          done(true);
-        });
-      }, 200);
-
-
-    },
     addCommandToInput(action: string): void {
       this.myMessage = this.myMessage.concat(' ', action);
-    },
-    scrollToBottom(): void {
-      setTimeout(() => {
-        if (document.getElementById('chat') !== null) {
-          let objDiv = document.getElementById('chat') as HTMLElement;
-          objDiv.scrollTop = objDiv.scrollHeight;
-        }
-      }, 20);
     },
   },
   watch: {
@@ -256,8 +237,7 @@ export default defineComponent({
       handler() {
         if (!AppVisibility.appVisible) {
           this.notifications.forEach(notification => {
-            console.log(this.$store.state.authStore.user?.preference.notificationsOn)
-            if (!this.$store.state.authStore.user?.preference.notificationsOn || notification.text.includes('@')) {
+            if (!this.$store.state.authStore.user?.preference.notificationsOn || notification.text.includes('@') ) {
               let message =
                 `<b style='color: black'>Channel: ${notification.channel.name}</b></br>
              <b style='color: black'>User: ${notification.user.username}</b></br>
@@ -279,16 +259,9 @@ export default defineComponent({
       },
       deep: true
     },
-    myMessage: {
+    activeChannelName: {
       handler() {
-        this.$nextTick(() => this.scrollToBottom());
-      },
-      deep: true
-    },
-    activeChannel: {
-      handler() {
-        console.log('active channel changed', this.rerender);
-        this.rerender += 1;
+        this.rerender = !this.rerender;
       },
       deep: true
     }
