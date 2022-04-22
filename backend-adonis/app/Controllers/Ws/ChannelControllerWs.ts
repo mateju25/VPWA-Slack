@@ -28,15 +28,15 @@ export default class ChannelControllerWs {
   }
 
   public async revokeUser({ socket }:  WsContextContract, { user, channel }: { user: User, channel: Channel }){
-    const updatedChannel = await this.channelRepository.revokeUser(user.id, channel.id);
+    const updatedChannel = await this.channelRepository.revokeUser(channel.id, user.id);
     // after delete send all users info to update channels
-    socket.nsp.emit('revokeUser', { channel: updatedChannel, user: user });
+    socket.nsp.emit('revokeUser', { receivedChannel: updatedChannel, user: user });
   }
 
   public async inviteUser({ socket }:  WsContextContract, { username, channel }: { username: string, channel: Channel }){
-    const updatedChannel = await this.channelRepository.inviteUser(username, channel.id);
+    const updatedChannel = await this.channelRepository.inviteUser(channel.id, username);
     const user = await User.findBy('username', username);
     // send info to invited user
-    socket.to("user:${user.id}").emit('inviteUser', { channel: updatedChannel, user: user });
+    socket.broadcast.emit('inviteUser', { channel: updatedChannel, user: user });
   }
 }

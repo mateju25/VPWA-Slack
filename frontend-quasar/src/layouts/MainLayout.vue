@@ -147,6 +147,7 @@ export default defineComponent({
     },
     changeDialogOpen() {
       this.dialogOpen = !this.dialogOpen;
+      console.log(this.$store.state.channelStore.activeChannel);
     },
     toggleRightDrawer () {
       this.rightDrawerOpen = !this.rightDrawerOpen

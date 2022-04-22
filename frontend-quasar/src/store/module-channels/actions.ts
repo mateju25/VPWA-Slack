@@ -14,11 +14,13 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
       if (channels === null)
         throw new Error('Channels not found');
 
+      console.log(channels);
+      const allChannels = channels.topped_channels.concat(channels.joined_channels);
       commit('LOAD_SUCCESS_CHANNELS', channels);
-      commit('SET_ACTIVE_CHANNEL', channels.find((item) => item.name === 'General') as Channel);
+      commit('SET_ACTIVE_CHANNEL', allChannels.find((item) => item.name === 'General') as Channel);
 
       //connect socket to general
-      for (const channel of channels) {
+      for (const channel of allChannels) {
         await dispatch('channelStore/connect', channel.name, { root: true })
       }
 
@@ -54,7 +56,7 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
       const deletedChannel = await channelService.in(channel.name)?.deleteChannel(channel);
       channelService.disconnect(channel.name);
       commit('REMOVE_CHANNEL', deletedChannel);
-      commit('SET_ACTIVE_CHANNEL', state.channels.find((item) => item.name === 'General') as Channel);
+      commit('SET_ACTIVE_CHANNEL', state.channels.find((item) => item.channel.name === 'General')?.channel as Channel);
       return deletedChannel !== null;
     } catch (err) {
       throw err;
@@ -66,9 +68,9 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
     channelService.in(channel.name)?.revokeUser({ user, channel });
   },
 
-  async inviteUser({ state, commit }, username: string){
+  async inviteUser({ state }, username: string){
     const channel = state.activeChannel as Channel;
-    channelService.in(channel.name)?.inviteUser({ username, channel });
+    channelService.in('General')?.inviteUser({ username, channel });
   },
 
   // ACTIONS FOR MESSAGE LOADING

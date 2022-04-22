@@ -25,25 +25,30 @@ class ChannelSocketManager extends SocketManager {
         store.commit('channelStore/REMOVE_USER_FROM_CHANNEL', { receivedChannel, user});
       }
     })
-    this.socket.on('revokeUser', ({channel, user} : { channel : Channel, user: User }) => {
-      store.commit('channelStore/REMOVE_USER_FROM_CHANNEL', { channel, user});
+    this.socket.on('revokeUser', ({receivedChannel, user} : { receivedChannel : Channel, user: User }) => {
+      console.log(receivedChannel);
+      store.commit('channelStore/REMOVE_USER_FROM_CHANNEL', { receivedChannel, user});
     })
     this.socket.on('inviteUser', ({channel, user} : { channel : Channel, user: User }) => {
-      // before user accept invitation, channel will be topped
-      store.commit('channelStore/ADD_CHANNEL_TO_START', { channel, user});
+      // before user accept invitation, channel  will be topped
+      if (user.id === (store.state.authStore.user as User).id) {
+        store.commit('channelStore/ADD_CHANNEL_TO_START', channel);
+      }
     })
 
   }
   public deleteChannel (channel: Channel): Promise<Channel> {
     console.log('deleting channel', channel);
-    return this.emitAsync('deleteChannel', channel.id)
+    return this.emitAsync('deleteChannel', channel.id);
   }
 
   public revokeUser ({ user, channel }: { user: User, channel: Channel }): Promise<User> {
+    console.log('Revoking user', user.username);
     return this.emitAsync('revokeUser', { user, channel });
   }
 
   public inviteUser ({ username, channel }: { username: string, channel: Channel }): Promise<User> {
+    console.log('Inviting user', username);
     return this.emitAsync('inviteUser', { username, channel });
   }
 
@@ -87,7 +92,7 @@ class ChannelService {
     return this.channels.get(name)
   }
 
-  async loadChannels(dontTriggerLogout = false): Promise<Channel[] | null> {
+  async loadChannels(dontTriggerLogout = false):  Promise<{ joined_channels:Channel[], topped_channels:Channel[] } | null>{
     return api
       .get('data/channels', { dontTriggerLogout } as AxiosRequestConfig)
       .then((response) => response.data)

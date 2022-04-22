@@ -157,10 +157,10 @@ export default defineComponent({
         return ['@', '/join', '/list', '/invite', '/revoke', '/kick', '/quit', '/cancel'];
       }
       if (this.iAmMember && this.isPublic) {
-        return ['@', '/join', '/list', '/kick', '/cancel'];
+        return ['@', '/join', '/list', '/invite', '/kick', '/cancel'];
       }
       if (this.iAmOwner && this.isPublic) {
-        return ['@', '/join', '/list', '/kick', '/quit', '/cancel'];
+        return ['@', '/join', '/list', '/invite', '/kick', '/quit', '/cancel'];
       }
       return [];
     },

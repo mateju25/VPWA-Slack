@@ -1,6 +1,6 @@
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../index';
-import { AuthStateInterface } from './state';
+import state, { AuthStateInterface } from './state';
 import { authService, authManager } from 'src/services';
 import { LoginCredentials, PreferenceData, RegisterData } from 'src/contracts';
 import { Dark } from 'quasar';
@@ -85,7 +85,7 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
 
   async updateUserPreference({ commit }, data: PreferenceData){
     commit('UPDATE_USER_PREFERENCE', data);
-  }
+  },
 };
 
 export default actions;

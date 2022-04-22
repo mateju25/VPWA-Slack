@@ -7,9 +7,25 @@ import { AuthContract } from '@ioc:Adonis/Addons/Auth';
 import { Exception } from '@poppinss/utils';
 
 export default class ChannelRepository implements ChannelRepositoryContract {
-  public async findAll(auth: AuthContract): Promise<Channel[]> {
+  public async findAll(auth: AuthContract): Promise<{ joined_channels:Channel[], topped_channels:Channel[] }> {
     await auth.user?.load('channels');
-    return auth.user?.channels.map((channel) => channel.serialize() as Channel) ?? [];
+    let topped = [] as Channel[];
+    let joined = [] as Channel[];
+    auth.user?.channels.forEach((x) => {
+      if(x.$extras.pivot_joined){
+        joined.push(x.serialize() as Channel);
+      } else {
+        topped.push(x.serialize() as Channel);
+      }
+    });
+    // order by created_at desc due to top newest invited channels
+    topped.reverse();
+    return {
+      joined_channels: joined,
+      topped_channels: topped
+    }
+    // return topped.concat(joined);
+    // return auth.user?.channels.map((channel) => channel.serialize() as Channel) ?? [];
   }
 
   public async create(
