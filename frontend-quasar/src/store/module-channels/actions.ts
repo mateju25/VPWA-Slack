@@ -87,13 +87,13 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
   async loadMoreMessages ({state, commit }, { channel, pagination }: { channel: string, pagination: number }) {
     try {
       const messages = await channelService.in(channel)!.loadMessages(pagination)
-      console.log(messages, pagination, state.messages[channel].pagination);
       if (messages.length !== 0) {
         if (state.messages[channel].pagination == pagination) {
           commit('LOADING_SUCCESS', { channel, messages })
           commit('INC_PAGINATION', { channel })
         }
       } else {
+        commit('ALL_LOADED', { channel })
         throw new Error('No more messages');
       }
     } catch (err) {

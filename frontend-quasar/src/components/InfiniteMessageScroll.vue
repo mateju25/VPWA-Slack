@@ -1,11 +1,12 @@
 <template>
   <q-infinite-scroll id='chat' @scroll='onScroll' @load='onLoad' ref='infiniteScroll' class='full-width overflow-auto'
-                     reverse :offset='5' :initial-index='0'>
+                     reverse :offset='50' :initial-index='0'>
     <template v-slot:loading>
       <div class='row justify-center q-my-md'>
-        <q-spinner color='primary' name='dots' size='20px' />
+        <q-spinner color='primary' name='dots' size='20px' v-if='!allLoaded'/>
       </div>
     </template>
+    <p class='full-width text-center nomoremessages' v-if='allLoaded'>No more messages</p>
 
     <div v-for='message in messages' v-bind:key='message.id'>
       <q-chat-message
@@ -14,6 +15,7 @@
         :text='[prepareMessage(message.text)]'
         :text-html='true'
         sent
+        :class='Dark.isActive ? "myCustomMessageBlack" : "myCustomMessageWhite"'
         :stamp="date.formatDate(date.extractDate(message.createdAt, 'YYYY-MM-DDTHH:mm:ss.SSSZ'), 'HH:mm DD.MM.YYYY')"
       >
         <template v-slot:avatar>
@@ -22,6 +24,7 @@
       </q-chat-message>
       <q-chat-message
         v-else
+        :class='Dark.isActive ? "myCustomMessageBlack" : "myCustomMessageWhite"'
         :name='message.user.username'
         :text='[prepareMessage(message.text)]'
         :text-html='true'
@@ -35,7 +38,7 @@
 
     </div>
     <div :class='scrollToBottomClass + (Dark.isActive ? " showMoreButtonDark" : "")'  >
-      <q-btn icon='expand_more' @click='scrollToBottom'>
+      <q-btn icon='expand_more' @click='scrollToBottom' :class='Dark.isActive ? "showMoreButtonBlack" : "showMoreButtonWhite"'>
         Scroll to bottom
       </q-btn>
     </div>
@@ -73,13 +76,19 @@ export default defineComponent({
     },
     notifications(): Message[] {
       return this.$store.state.channelStore.notifications;
+    },
+    allLoaded(): boolean {
+      if (this.$store.state.channelStore.activeChannel === null) {
+        return false;
+      }
+      return this.$store.state.channelStore.messages[this.$store.state.channelStore.activeChannel!.name].allLoaded;
     }
   },
   watch: {
     clonedMessages: {
       handler(value, oldValue) {
         let diff = value.length - oldValue.length
-        if (diff < 5) {
+        if (diff == 1) {
           this.$nextTick(() => this.scrollToBottom());
         }
       },
@@ -126,6 +135,9 @@ export default defineComponent({
 </script>
 
 <style>
+.nomoremessages {
+  color: rgba(128, 128, 128, 0.45);
+}
 .showMoreButton {
   display: flex;
   position: absolute;
@@ -135,10 +147,17 @@ export default defineComponent({
   justify-content: center;
   z-index: 20;
 }
+.showMoreButtonBlack {
+  background: #1d1d1d;
+}
+.showMoreButtonWhite {
+  background: #ffffff;
+}
 .showMoreButton button {
   padding: 0 10px 0 10px;
-  font-size: 12px;
+  font-size: 11px;
   border-radius: 25px;
+  box-shadow: 0px 1px 2px var(--q-secondary) !important;
 }
 
 .showMoreButtonHidden {
@@ -146,5 +165,35 @@ export default defineComponent({
 }
 .showMoreButtonDark button {
   background-color: #232323;
+}
+.q-message-container > div {
+  max-width: 60%;
+}
+.myCustomMessageWhite .q-message-text--received {
+  color: #d9d9d9;
+}
+.myCustomMessageWhite .q-message-text--sent{
+  color: #d9d9d9;
+}
+.myCustomMessageWhite .q-message-text-content--sent {
+  color: #000000;
+}
+.myCustomMessageWhite .q-message-text-content--received {
+  color: #000000;
+}
+.myCustomMessageBlack .q-message-text--received {
+  color: #1e1d1d;
+}
+.myCustomMessageBlack .q-message-text--sent{
+  color: #1e1d1d;
+}
+.myCustomMessageBlack .q-message-text-content--sent {
+  color: #FFFFFF;
+}
+.myCustomMessageBlack .q-message-text-content--received {
+  color: #FFFFFF;
+}
+.q-message-text:last-child:before {
+  content: none !important;
 }
 </style>
