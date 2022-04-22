@@ -109,6 +109,9 @@ export default defineComponent({
     UserContactList,
     ChannelList
   },
+  async beforeUnmount() {
+    await this.$store.dispatch('authStore/logout');
+  },
   created() {
     if (!this.$store.state.authStore.user)
       this.$store.dispatch('authStore/check');
