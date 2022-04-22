@@ -4,6 +4,8 @@ import { inject } from '@adonisjs/core/build/standalone';
 // @ts-ignore
 import type { ChannelRepositoryContract } from '@ioc:Repositories/ChannelRepositoryContract';
 import { WsContextContract } from '@ioc:Ruby184/Socket.IO/WsContext';
+import User from 'App/Models/User';
+import Channel from 'App/Models/Channel';
 
 // inject repository from container to controller constructor
 // we do so because we can extract database specific storage to another class
@@ -23,5 +25,18 @@ export default class ChannelControllerWs {
     socket.broadcast.emit('deleteUserFromChannel', { receivedChannel: channel, user: auth.user });
 
     return channel;
+  }
+
+  public async revokeUser({ socket }:  WsContextContract, { user, channel }: { user: User, channel: Channel }){
+    const updatedChannel = await this.channelRepository.revokeUser(user.id, channel.id);
+    // after delete send all users info to update channels
+    socket.nsp.emit('revokeUser', { channel: updatedChannel, user: user });
+  }
+
+  public async inviteUser({ socket }:  WsContextContract, { username, channel }: { username: string, channel: Channel }){
+    const updatedChannel = await this.channelRepository.inviteUser(username, channel.id);
+    const user = await User.findBy('username', username);
+    // send info to invited user
+    socket.to("user:${user.id}").emit('inviteUser', { channel: updatedChannel, user: user });
   }
 }

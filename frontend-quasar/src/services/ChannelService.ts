@@ -25,10 +25,26 @@ class ChannelSocketManager extends SocketManager {
         store.commit('channelStore/REMOVE_USER_FROM_CHANNEL', { receivedChannel, user});
       }
     })
+    this.socket.on('revokeUser', ({channel, user} : { channel : Channel, user: User }) => {
+      store.commit('channelStore/REMOVE_USER_FROM_CHANNEL', { channel, user});
+    })
+    this.socket.on('inviteUser', ({channel, user} : { channel : Channel, user: User }) => {
+      // before user accept invitation, channel will be topped
+      store.commit('channelStore/ADD_CHANNEL_TO_START', { channel, user});
+    })
+
   }
   public deleteChannel (channel: Channel): Promise<Channel> {
     console.log('deleting channel', channel);
     return this.emitAsync('deleteChannel', channel.id)
+  }
+
+  public revokeUser ({ user, channel }: { user: User, channel: Channel }): Promise<User> {
+    return this.emitAsync('revokeUser', { user, channel });
+  }
+
+  public inviteUser ({ username, channel }: { username: string, channel: Channel }): Promise<User> {
+    return this.emitAsync('inviteUser', { username, channel });
   }
 
   public addMessage (message: string): Promise<Message> {
@@ -97,6 +113,7 @@ class ChannelService {
     const response = await api.delete<User>('data/channel/'+id);
     return response.data;
   }
+
 }
 
 export default new ChannelService();

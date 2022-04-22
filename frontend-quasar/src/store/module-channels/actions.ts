@@ -61,6 +61,16 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
     }
   },
 
+  async revokeUser({state}, { user }){
+    const channel = state.activeChannel as Channel;
+    channelService.in(channel.name)?.revokeUser({ user, channel });
+  },
+
+  async inviteUser({ state, commit }, username: string){
+    const channel = state.activeChannel as Channel;
+    channelService.in(channel.name)?.inviteUser({ username, channel });
+  },
+
   // ACTIONS FOR MESSAGE LOADING
   async connect ({ commit }, channel: string) {
     try {

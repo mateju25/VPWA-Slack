@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex';
-import { ChannelStateInterface } from './state';
+import state, { ChannelStateInterface } from './state';
 import { Channel, Message, User } from 'components/models';
 
 const mutation: MutationTree<ChannelStateInterface> = {
@@ -56,6 +56,9 @@ const mutation: MutationTree<ChannelStateInterface> = {
         return true;
       })
     });
+  },
+  ADD_CHANNEL_TO_START(state, channel: Channel){
+    state.channels.unshift(channel);
   },
 
   // MUTATIONS FOR MESSAGES LOADING

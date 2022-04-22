@@ -73,4 +73,29 @@ export default class ChannelRepository implements ChannelRepositoryContract {
     }
     return channel as Channel;
   }
+
+  public async revokeUser(channelId: number, userId: number): Promise<Channel> {
+    const channel = await Channel.findBy('id', channelId);
+    await channel?.load('members');
+    if (channel?.members.find((x) => x.id === userId)) {
+      await channel?.related('members').detach([userId]);
+    }
+    return channel as Channel;
+  }
+
+  public async inviteUser(channelId: number, username: string): Promise<Channel> {
+    const user = await User.findBy('username', username);
+    if (user) {
+      user.related('channels').attach({
+        [channelId]: {
+          role_id: 2,
+          joined: null,
+          invited: DateTime.now(),
+        },
+      })
+    }
+    const channel = await Channel.findBy('id', channelId);
+    await channel?.load('members');
+    return channel as Channel;
+  }
 }

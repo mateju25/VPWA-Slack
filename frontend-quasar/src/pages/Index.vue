@@ -216,20 +216,49 @@ export default defineComponent({
             name: name,
             isPrivate: isPrivate
           }).catch((err) => {
-            this.$q.notify({
-              color: 'red-4',
-              textColor: 'white',
-              position: 'top',
-              icon: 'warning',
-              message: err.response?.data.message
-            });
+            this.showNotification(err.response?.data.message);
           });
+        }
+      //revoke from private channel, by admin
+      } else if (this.iAmOwner && !this.isPublic && this.myMessage.includes('/revoke') && this.actions.includes('/revoke')) {
+        let nickname = this.splitMessage('/revoke');
+        let user = this.$store.state.channelStore.activeChannel?.members.find((x) => x.username === nickname);
+        if (user) {
+          this.$store.dispatch('channelStore/revokeUser', {user: user} );
+        } else {
+          this.showNotification('User is not in channel.');
+        }
+      // invite
+      } else if (this.myMessage.includes('/invite') && this.actions.includes('/invite')) {
+        //private channel + admin || public channel + whoever
+        if ((!this.isPublic && this.iAmOwner) || (this.isPublic)) {
+          let newUser = this.splitMessage('/invite');
+          this.$store.dispatch('channelStore/inviteUser', newUser);
         }
       } else {
         await this.addMessage({ channel: this.$store.state.channelStore.activeChannel!.name, message: this.myMessage });
       }
       this.myMessage = '';
       this.loading = false;
+    },
+    showNotification(message: string) {
+      this.$q.notify({
+        color: 'red-4',
+        textColor: 'white',
+        position: 'top',
+        icon: 'warning',
+        message: message
+      });
+    },
+    splitMessage(command: string): string{
+      let split = this.myMessage.split(command);
+      let name = '';
+      if (split.length > 1) {
+        name = split[1].trim();
+      } else {
+        name = split[0].trim();
+      }
+      return name;
     },
     scrollToBottom() {
       setTimeout(() => {
