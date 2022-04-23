@@ -111,7 +111,11 @@ export default defineComponent({
       setTimeout(() => {
         if (document.getElementById('chat') !== null) {
           let objDiv = document.getElementById('chat') as HTMLElement;
-          objDiv.scrollTop = objDiv.scrollHeight;
+          objDiv.scroll({
+            top: objDiv.scrollHeight,
+            behavior: 'smooth'
+          })
+          // objDiv.scrollTop = objDiv.scrollHeight;
         }
       }, 20);
     },
