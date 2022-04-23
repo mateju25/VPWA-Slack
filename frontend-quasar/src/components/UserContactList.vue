@@ -87,6 +87,9 @@ export default defineComponent({
       return this.$store.state.authStore.user;
     },
     activeChannel (): Channel {
+      console.log('kkt');
+      console.log(this.$store.state.channelStore.activeChannel);
+      console.log('kkt');
       return this.$store.state.channelStore.activeChannel as Channel;
     },
   }

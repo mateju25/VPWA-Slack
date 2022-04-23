@@ -20,6 +20,9 @@ export default class ChannelRepository implements ChannelRepositoryContract {
     });
     // order by created_at desc due to top newest invited channels
     topped.reverse();
+    // order by name asc
+    joined.sort((a, b) => a.name.localeCompare(b.name));
+    
     return {
       joined_channels: joined,
       topped_channels: topped
@@ -113,5 +116,16 @@ export default class ChannelRepository implements ChannelRepositoryContract {
     const channel = await Channel.findBy('id', channelId);
     await channel?.load('members');
     return channel as Channel;
+  }
+
+  public async userJoined(channelId: number, userId: number){
+    const user = await User.findBy('id', userId);
+    if (user) {
+      user.related('channels').sync({
+        [channelId]: {
+          joined: DateTime.now()
+        },
+      })
+    }
   }
 }

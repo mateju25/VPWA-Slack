@@ -14,13 +14,11 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
       if (channels === null)
         throw new Error('Channels not found');
 
-      console.log(channels);
-      const allChannels = channels.topped_channels.concat(channels.joined_channels);
       commit('LOAD_SUCCESS_CHANNELS', channels);
-      commit('SET_ACTIVE_CHANNEL', allChannels.find((item) => item.name === 'General') as Channel);
+      commit('SET_ACTIVE_CHANNEL', channels.joined_channels.find((item) => item.name === 'General') as Channel);
 
       //connect socket to general
-      for (const channel of allChannels) {
+      for (const channel of channels.joined_channels) {
         await dispatch('channelStore/connect', channel.name, { root: true })
       }
 
@@ -33,7 +31,7 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
   async updateChannels({ commit }, {user, userState}: {user: User, userState: string}){
     commit('UPDATE_CHANNELS', {user: user, userState: userState});
   },
-  async setActiveChannel({ state, commit }, { channel }) {
+  async setActiveChannel({ state, commit },  channel: Channel ) {
     try {
       commit('SET_ACTIVE_CHANNEL', channel);
       return state.activeChannel !== null;
@@ -71,6 +69,14 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
   async inviteUser({ state }, username: string){
     const channel = state.activeChannel as Channel;
     channelService.in('General')?.inviteUser({ username, channel });
+  },
+
+  async changeToppedToFalse({ commit, dispatch }, {user, channel}: {user: User, channel: { channel: Channel, topped: boolean }}){
+    // db request + socket info about connected user + connect channel
+    await dispatch('channelStore/connect', channel.channel.name, { root: true });
+    channelService.in(channel.channel.name)?.userJoined({ user, channel });
+    // change local store -> from invitations to channels (loccally)
+    commit('REMOVE_INVITATION', channel);
   },
 
   // ACTIONS FOR MESSAGE LOADING

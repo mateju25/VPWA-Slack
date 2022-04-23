@@ -39,4 +39,11 @@ export default class ChannelControllerWs {
     // send info to invited user
     socket.broadcast.emit('inviteUser', { channel: updatedChannel, user: user });
   }
+
+  public async userJoined({ socket }:  WsContextContract, {user, channel}: {user: User, channel: { channel: Channel, topped: boolean }}){
+    // db request
+    await this.channelRepository.userJoined(channel.channel.id, user.id);
+    // socket info about connected user
+    socket.nsp.emit('userJoined', channel);
+  }
 }

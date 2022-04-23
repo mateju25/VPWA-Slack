@@ -1,13 +1,40 @@
 <template>
   <div class='q-pa-sm q-gutter-md'>
+    <q-list padding class='rounded-borders' style='max-width: 350px'>
+      <q-expansion-item
+        switch-toggle-side
+        expand-separator
+        default-opened
+        dense
+        label='INVITATIONS'
+        expand-icon='chevron_right'
+        expanded-icon='expand_more'
+        class='expandable-icon'
+      >
+        <q-item
+          class='channel-item q-mt-sm'
+          v-for='channel in invitations'
+          :key='channel.id'
+          clickable
+          v-ripple
+          :class='channel.channel.id === activeChannel.id ? "channel-active" : ""'
+          @click='changeActiveModel(channel)'
+        >
+          <ChannelItem :channel='channel'/>
+        </q-item>
+      </q-expansion-item>
+    </q-list>
+
+    <q-separator />
+
     <q-item
       class='q-ml-none'
       clickable
       v-ripple
-      :class='channels[0].id === activeChannel.id ? "channel-active" : ""'
+      :class='channels[0].channel.id === activeChannel.id ? "channel-active" : ""'
       @click='changeActiveModel(channels[0])'
     >
-      <ChannelItem :channel='channels[0]' :isSeen='true' />
+      <ChannelItem :channel='channels[0]'/>
     </q-item>
     <q-list padding class='rounded-borders' style='max-width: 350px'>
       <q-expansion-item
@@ -26,10 +53,10 @@
           :key='channel.id'
           clickable
           v-ripple
-          :class='channel.id === activeChannel.id ? "channel-active" : ""'
+          :class='channel.channel.id === activeChannel.id ? "channel-active" : ""'
           @click='changeActiveModel(channel)'
         >
-          <ChannelItem :channel='channel' :isSeen='true' />
+          <ChannelItem :channel='channel'/>
         </q-item>
       </q-expansion-item>
     </q-list>
@@ -48,13 +75,13 @@
         <q-item
           class='channel-item q-mt-sm'
           v-for='channel in privateChannels'
-          :key='channel.id'
+          :key='channel.channel.id'
           clickable
           v-ripple
-          :class='channel.id === activeChannel.id ? "channel-active" : ""'
+          :class='channel.channel.id === activeChannel.id ? "channel-active" : ""'
           @click='changeActiveModel(channel)'
         >
-          <ChannelItem :channel='channel' :isSeen='true' />
+          <ChannelItem :channel='channel'/>
         </q-item>
       </q-expansion-item>
     </q-list>
@@ -131,29 +158,37 @@ export default defineComponent({
         this.newChannelPrivate = false;
       }
     },
-    changeActiveModel: function(channel: Channel): void {
-      this.$store.dispatch('channelStore/setActiveChannel', { channel });
+    changeActiveModel: function(channel: { channel: Channel, topped: boolean }): void {
+      // if topped channel -> change topped property to false
+      if(channel.topped){
+        this.$store.dispatch('channelStore/changeToppedToFalse', { channel });  
+      }
+      let channelToSet = channel.channel;
+      this.$store.dispatch('channelStore/setActiveChannel', { channelToSet });
     }
   },
   computed: {
-    channels: function(): Channel[] {
+    invitations: function(): { channel: Channel, topped: boolean }[] {
+      return this.$store.state.channelStore.invitations;
+    },
+    channels: function(): { channel: Channel, topped: boolean }[] {
       return this.$store.state.channelStore.channels;
     },
     activeChannel: function(): Channel | null {
       return this.$store.state.channelStore.activeChannel;
     },
-    privateChannels: function(): Channel[] {
-      let privateChannels: Channel[] = [];
+    privateChannels: function(): { channel: Channel, topped: boolean }[] {
+      let privateChannels: { channel: Channel, topped: boolean }[] = [];
       this.channels.forEach(item => {
-        if (item.isPrivate && item.name !== 'General')
+        if (item.channel.isPrivate && item.channel.name !== 'General')
           privateChannels.push(item);
       });
       return privateChannels;
     },
-    publicChannels: function(): Channel[] {
-      let publicChannels: Channel[] = [];
+    publicChannels: function(): { channel: Channel, topped: boolean }[] {
+      let publicChannels: { channel: Channel, topped: boolean }[] = [];
       this.channels.forEach(item => {
-        if (!item.isPrivate && item.name !== 'General')
+        if (!item.channel.isPrivate && item.channel.name !== 'General')
           publicChannels.push(item);
       });
       return publicChannels;

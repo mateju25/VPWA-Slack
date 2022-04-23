@@ -32,8 +32,11 @@ class ChannelSocketManager extends SocketManager {
     this.socket.on('inviteUser', ({channel, user} : { channel : Channel, user: User }) => {
       // before user accept invitation, channel  will be topped
       if (user.id === (store.state.authStore.user as User).id) {
-        store.commit('channelStore/ADD_CHANNEL_TO_START', channel);
+        store.commit('channelStore/ADD_CHANNEL_TO_TOP', channel);
       }
+    })
+    this.socket.on('userJoined', (channel: { channel: Channel, topped: boolean }) => {
+      store.commit('channelStore/MOVE_ACCEPTED_TO_ALLCHANNELS', channel);
     })
 
   }
@@ -58,6 +61,10 @@ class ChannelSocketManager extends SocketManager {
 
   public loadMessages (): Promise<Message[]> {
     return this.emitAsync('loadMessages')
+  }
+
+  public userJoined ({user, channel}: {user: User, channel: { channel: Channel, topped: boolean }}): Promise<User>{
+    return this.emitAsync('userJoined', {user, channel});
   }
 }
 

@@ -8,17 +8,15 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.statusChannel = 'pending';
   },
   LOAD_SUCCESS_CHANNELS(state, channels: { joined_channels:Channel[], topped_channels:Channel[] }) {
-    state.statusChannel = 'success';
-    let tempArr = [] as { channel: Channel, topped: boolean }[];
-    channels.topped_channels.forEach((x) => tempArr.push({
+    channels.topped_channels.forEach((x) => state.invitations.push({
       channel: x,
       topped: true
     }));
-    channels.joined_channels.forEach((x) => tempArr.push({
+    channels.joined_channels.forEach((x) => state.channels.push({
       channel: x,
       topped: false
     }));
-    state.channels = tempArr;
+    state.statusChannel = 'success';
   },
   REMOVE_CHANNEL(state, channel: Channel) {
     console.log(state.channels, channel)
@@ -48,6 +46,7 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.activeChannel = channel;
   },
   SET_ACTIVE_CHANNEL(state, channel: Channel) {
+    console.log(channel);
     state.activeChannel = channel;
   },
   LOAD_ERROR(state) {
@@ -71,9 +70,19 @@ const mutation: MutationTree<ChannelStateInterface> = {
       })
     });
   },
-  // ADD_CHANNEL_TO_START(state, channel: Channel){
-  //   state.channels.unshift(channel);
-  // },
+  ADD_CHANNEL_TO_TOP(state, channel: Channel){
+    state.invitations.unshift({
+      channel: channel,
+      topped: true
+    });
+  },
+  REMOVE_INVITATION(state, channel: { channel: Channel, topped: boolean }){
+    state.invitations.filter((x) => x.channel.id !== channel.channel.id);
+  },
+  MOVE_ACCEPTED_TO_ALLCHANNELS(state, channel: { channel: Channel, topped: boolean }){
+    state.channels.push(channel);
+    state.channels.sort((a, b) => a.channel.name.localeCompare(b.channel.name));
+  },
 
   // MUTATIONS FOR MESSAGES LOADING
   LOADING_START (state) {

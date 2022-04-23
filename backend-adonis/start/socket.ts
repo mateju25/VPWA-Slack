@@ -38,4 +38,5 @@ Ws.namespace('channels/:name')
   .on('addMessage', 'MessageController.addMessage')
   .on('deleteChannel', 'ChannelControllerWs.deleteChannel')
   .on('revokeUser', 'ChannelControllerWs.revokeUser')
-  .on('inviteUser', 'ChannelControllerWs.inviteUser');
+  .on('inviteUser', 'ChannelControllerWs.inviteUser')
+  .on('userJoined', 'ChannelControllerWs.userJoined');

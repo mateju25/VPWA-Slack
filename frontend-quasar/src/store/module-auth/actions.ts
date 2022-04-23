@@ -1,6 +1,6 @@
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../index';
-import state, { AuthStateInterface } from './state';
+import { AuthStateInterface } from './state';
 import { authService, authManager } from 'src/services';
 import { LoginCredentials, PreferenceData, RegisterData } from 'src/contracts';
 import { Dark } from 'quasar';
