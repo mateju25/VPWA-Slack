@@ -12,13 +12,17 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.channels = channels;
   },
   REMOVE_CHANNEL(state, channel: Channel) {
-    console.log(state.channels, channel)
-    state.channels = state.channels.filter(
-      (item) => item.id !== channel.id
-    );
+    console.log(state.channels, channel);
+    state.channels = state.channels.filter((item) => item.id !== channel.id);
     state.statusChannel = 'success';
   },
-  REMOVE_USER_FROM_CHANNEL(state, { receivedChannel, username }: { receivedChannel: Channel, username: string }) {
+  REMOVE_USER_FROM_CHANNEL(
+    state,
+    {
+      receivedChannel,
+      username,
+    }: { receivedChannel: Channel; username: string }
+  ) {
     const foundChannel = state.channels.find(
       (item) => item.name === receivedChannel.name
     );
@@ -31,11 +35,14 @@ const mutation: MutationTree<ChannelStateInterface> = {
       state.activeChannel.members = state.activeChannel.members.filter(
         (item) => item.username !== username
       );
-      console.log(state.activeChannel.members, username)
+      console.log(state.activeChannel.members, username);
     }
     state.statusChannel = 'success';
   },
-  ADD_MEMBER(state, { receivedChannel, user }: { receivedChannel: Channel, user: User }) {
+  ADD_MEMBER(
+    state,
+    { receivedChannel, user }: { receivedChannel: Channel; user: User }
+  ) {
     const foundChannel = state.channels.find(
       (item) => item.name === receivedChannel.name
     );
@@ -54,64 +61,84 @@ const mutation: MutationTree<ChannelStateInterface> = {
   LOAD_ERROR(state) {
     state.statusChannel = 'error';
   },
-  UPDATE_CHANNELS(state, {user, userState}: {user: User, userState: string}) {
+  UPDATE_CHANNELS(
+    state,
+    { user, userState }: { user: User; userState: string }
+  ) {
     state.channels.forEach((x) => {
       x.members.every((m) => {
-        if(m.username === user.username){
+        if (m.username === user.username) {
           m.preference.stateName = userState;
           return false;
         }
         return true;
-      })
+      });
       x.owners.every((m) => {
-        if(m.username === user.username){
+        if (m.username === user.username) {
           m.preference.stateName = userState;
           return false;
         }
         return true;
-      })
+      });
     });
   },
 
   // MUTATIONS FOR MESSAGES LOADING
-  LOADING_START (state) {
-    state.loading = true
-    state.error = null
+  LOADING_START(state) {
+    state.loading = true;
+    state.error = null;
   },
-  LOADING_SUCCESS (state, { channel, messages }: { channel: string, messages: Message[] }) {
-    state.loading = false
+  LOADING_SUCCESS(
+    state,
+    { channel, messages }: { channel: string; messages: Message[] }
+  ) {
+    state.loading = false;
     if (state.messages[channel] === undefined) {
-      state.messages[channel] = { messages: [], pagination: 1, allLoaded: false}
+      state.messages[channel] = {
+        messages: [],
+        pagination: 1,
+        allLoaded: false,
+      };
     }
     state.messages[channel].messages.unshift(...messages);
     state.messages[channel].allLoaded = false;
   },
-  ALL_LOADED (state, { channel }: { channel: string}) {
+  ALL_LOADED(state, { channel }: { channel: string }) {
     state.messages[channel].allLoaded = true;
   },
-  LOADING_INIT (state, { channel }: { channel: string}) {
-    state.loading = false
-    state.messages[channel] = { messages: [], pagination: 1, allLoaded: false}
+  LOADING_INIT(state, { channel }: { channel: string }) {
+    state.loading = false;
+    state.messages[channel] = { messages: [], pagination: 1, allLoaded: false };
   },
-  INC_PAGINATION (state, { channel }: { channel: string }) {
+  INC_PAGINATION(state, { channel }: { channel: string }) {
     state.messages[channel].pagination += 1;
   },
-  LOADING_ERROR (state, error) {
-    state.loading = false
-    state.error = error
+  LOADING_ERROR(state, error) {
+    state.loading = false;
+    state.error = error;
   },
-  NEW_MESSAGE (state, { channel, message }: { channel: string, message: Message}) {
-    state.messages[channel].messages.push(message)
+  NEW_MESSAGE(
+    state,
+    { channel, message }: { channel: string; message: Message }
+  ) {
+    if (state.messages[channel] === undefined) {
+      state.messages[channel] = {
+        messages: [],
+        pagination: 1,
+        allLoaded: false,
+      };
+    }
+    state.messages[channel].messages.push(message);
   },
-  NEW_NOTIFICATION (state, { message }: { channel: string, message: Message }) {
+  NEW_NOTIFICATION(state, { message }: { channel: string; message: Message }) {
     state.notifications.push(message);
   },
-  REMOVE_NOTIFICATIONS (state) {
+  REMOVE_NOTIFICATIONS(state) {
     state.notifications = [];
   },
-  SET_ERROR (state, message: string) {
+  SET_ERROR(state, message: string) {
     state.error = message;
-  }
+  },
 };
 
 export default mutation;

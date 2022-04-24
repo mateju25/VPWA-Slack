@@ -78,7 +78,7 @@ export default defineComponent({
       return this.$store.state.channelStore.notifications;
     },
     allLoaded(): boolean {
-      if (this.$store.state.channelStore.activeChannel === null) {
+      if (this.$store.state.channelStore.activeChannel === null || this.$store.state.channelStore.messages[this.$store.state.channelStore.activeChannel!.name] === undefined) {
         return false;
       }
       return this.$store.state.channelStore.messages[this.$store.state.channelStore.activeChannel!.name].allLoaded;
