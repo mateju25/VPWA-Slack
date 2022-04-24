@@ -1,0 +1,63 @@
+version: '3.1'
+services:
+  database-postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Korespondent2000
+      POSTGRES_DB: vpwa
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    container_name: database-postgres
+
+  adminer-postgres:
+    image: adminer
+    restart: always
+    ports:
+      - "3030:8080"
+    depends_on:
+      - "database-postgres"
+    container_name: adminer-postgres
+
+  frontend-quasar:
+    image: frontend-quasar
+    build:
+      context: ./frontend-quasar
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    container_name: frontend-quasar
+    depends_on:
+      - "backend-adonis"
+    environment:
+      - API_URL=backend-adonis:3333
+
+  backend-adonis:
+    image: backend-adonis
+    build:
+      context: ./backend-adonis
+    ports:
+      - "3333:3333"
+    restart: on-failure
+    container_name: backend-adonis
+    depends_on:
+      - "database-postgres"
+    environment:
+      - PORT=8080
+      - DB_HOST=postgres
+      - PORT=3333
+      - HOST=0.0.0.0
+      - NODE_ENV=development
+      - APP_KEY=6FRlvl4op8IzZlqx8GuO_0E4Faz1K35C
+      - DB_CONNECTION=pg
+      - PG_HOST=database-postgres
+      - PG_PORT=5432
+      - PG_USER=postgres
+      - PG_PASSWORD=Korespondent2000
+      - PG_DB_NAME=vpwa
+      - DRIVE_DISK=local
+    command: sh -c "node ace migration:run && node ace db:seed && node server.js"
+
