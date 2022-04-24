@@ -42,8 +42,14 @@ export default class ChannelControllerWs {
 
   public async userJoined({ socket }:  WsContextContract, {user, channel}: {user: User, channel: { channel: Channel, topped: boolean }}){
     // db request
-    await this.channelRepository.userJoined(channel.channel.id, user.id);
+    const editedChannel = await this.channelRepository.userJoined(channel.channel.id, user.id);
     // socket info about connected user
-    socket.nsp.emit('userJoined', channel);
+    socket.nsp.emit('userJoined', { 
+      channel: {
+        channel: editedChannel,
+        topped: false
+      },
+      user: user
+    });
   }
 }

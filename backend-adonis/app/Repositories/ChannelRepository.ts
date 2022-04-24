@@ -118,7 +118,7 @@ export default class ChannelRepository implements ChannelRepositoryContract {
     return channel as Channel;
   }
 
-  public async userJoined(channelId: number, userId: number){
+  public async userJoined(channelId: number, userId: number): Promise<Channel>{
     const user = await User.findBy('id', userId);
     if (user) {
       user.related('channels').sync({
@@ -127,5 +127,9 @@ export default class ChannelRepository implements ChannelRepositoryContract {
         },
       })
     }
+    const channel = await Channel.findBy('id', channelId);
+    await channel?.load('members');
+    await channel?.load('owners');
+    return channel as Channel;
   }
 }

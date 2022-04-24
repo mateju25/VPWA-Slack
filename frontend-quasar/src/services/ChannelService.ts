@@ -35,8 +35,14 @@ class ChannelSocketManager extends SocketManager {
         store.commit('channelStore/ADD_CHANNEL_TO_TOP', channel);
       }
     })
-    this.socket.on('userJoined', (channel: { channel: Channel, topped: boolean }) => {
-      store.commit('channelStore/MOVE_ACCEPTED_TO_ALLCHANNELS', channel);
+    this.socket.on('userJoined', ({channel, user} :  {channel: { channel: Channel, topped: boolean }, user: User}) => {
+      console.log('kkt2');
+      if (user.id === (store.state.authStore.user as User).id) {
+        store.commit('channelStore/MOVE_ACCEPTED_TO_ALLCHANNELS', channel);
+      }
+      console.log('kkt3');
+      store.commit('channelStore/ADD_NEW_USER_TO_CHANNEL', { user, channel });
+      console.log('kkt4');
     })
 
   }
@@ -55,16 +61,16 @@ class ChannelSocketManager extends SocketManager {
     return this.emitAsync('inviteUser', { username, channel });
   }
 
+  public userJoined ({user, channel}: {user: User, channel: { channel: Channel, topped: boolean }}): Promise<User>{
+    return this.emitAsync('userJoined', {user, channel});
+  }
+
   public addMessage (message: string): Promise<Message> {
     return this.emitAsync('addMessage', message)
   }
 
   public loadMessages (): Promise<Message[]> {
     return this.emitAsync('loadMessages')
-  }
-
-  public userJoined ({user, channel}: {user: User, channel: { channel: Channel, topped: boolean }}): Promise<User>{
-    return this.emitAsync('userJoined', {user, channel});
   }
 }
 

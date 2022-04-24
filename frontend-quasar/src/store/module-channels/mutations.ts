@@ -46,7 +46,6 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.activeChannel = channel;
   },
   SET_ACTIVE_CHANNEL(state, channel: Channel) {
-    console.log(channel);
     state.activeChannel = channel;
   },
   LOAD_ERROR(state) {
@@ -76,11 +75,17 @@ const mutation: MutationTree<ChannelStateInterface> = {
       topped: true
     });
   },
-  REMOVE_INVITATION(state, channel: { channel: Channel, topped: boolean }){
-    state.invitations.filter((x) => x.channel.id !== channel.channel.id);
-  },
   MOVE_ACCEPTED_TO_ALLCHANNELS(state, channel: { channel: Channel, topped: boolean }){
+    state.invitations = state.invitations.filter((x) => x.channel.id !== channel.channel.id);
     state.channels.push(channel);
+    state.channels.sort((a, b) => a.channel.name.localeCompare(b.channel.name));
+    console.log(state.channels);
+  },
+  ADD_NEW_USER_TO_CHANNEL(state, {user, channel}: {user: User, channel: { channel: Channel, topped: boolean }}){
+    const index = state.channels.findIndex((x) => {
+      return x.channel.id === channel.channel.id;
+    });
+    state.channels[index].channel.members.push(user);
     state.channels.sort((a, b) => a.channel.name.localeCompare(b.channel.name));
   },
 

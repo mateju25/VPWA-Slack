@@ -158,13 +158,23 @@ export default defineComponent({
         this.newChannelPrivate = false;
       }
     },
-    changeActiveModel: function(channel: { channel: Channel, topped: boolean }): void {
+    changeActiveModel: async function(channel: { channel: Channel, topped: boolean }): Promise<void> {
       // if topped channel -> change topped property to false
       if(channel.topped){
-        this.$store.dispatch('channelStore/changeToppedToFalse', { channel });  
+        if(!channel.channel.members){
+          channel.channel.members = [];
+        }
+        if(!channel.channel.owners){
+          channel.channel.owners = [];
+        }
+        await this.$store.dispatch('channelStore/changeToppedToFalse', { 
+          user: this.$store.state.authStore.user, 
+          channel: channel
+        });  
       }
-      let channelToSet = channel.channel;
-      this.$store.dispatch('channelStore/setActiveChannel', { channelToSet });
+      console.log('kktidk');
+      this.$store.dispatch('channelStore/setActiveChannel', channel.channel );
+      console.log(this.$store.state.channelStore.activeChannel);
     }
   },
   computed: {
