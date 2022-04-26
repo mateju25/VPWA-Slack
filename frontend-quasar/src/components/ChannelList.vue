@@ -31,10 +31,10 @@
       class='q-ml-none'
       clickable
       v-ripple
-      :class='channels[0].channel.id === activeChannel.id ? "channel-active" : ""'
-      @click='changeActiveModel(channels[0])'
+      :class='general.channel.id === activeChannel.id ? "channel-active" : ""'
+      @click='changeActiveModel(general)'
     >
-      <ChannelItem :channel='channels[0]'/>
+      <ChannelItem :channel='general'/>
     </q-item>
     <q-list padding class='rounded-borders' style='max-width: 350px'>
       <q-expansion-item
@@ -172,9 +172,7 @@ export default defineComponent({
           channel: channel
         });  
       }
-      console.log('kktidk');
       this.$store.dispatch('channelStore/setActiveChannel', channel.channel );
-      console.log(this.$store.state.channelStore.activeChannel);
     }
   },
   computed: {
@@ -186,6 +184,9 @@ export default defineComponent({
     },
     activeChannel: function(): Channel | null {
       return this.$store.state.channelStore.activeChannel;
+    },
+    general: function(): { channel: Channel, topped: boolean } {
+      return this.$store.state.channelStore.channels.find((x) => x.channel.name === 'General') as { channel: Channel, topped: boolean };
     },
     privateChannels: function(): { channel: Channel, topped: boolean }[] {
       let privateChannels: { channel: Channel, topped: boolean }[] = [];

@@ -26,8 +26,6 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.statusChannel = 'success';
   },
   REMOVE_USER_FROM_CHANNEL(state, { receivedChannel, user }: { receivedChannel: Channel, user: User }) {
-    console.log(receivedChannel);
-    
     const foundChannel = state.channels.find(
       (item) => item.channel.id === receivedChannel.id
     );
@@ -79,7 +77,6 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.invitations = state.invitations.filter((x) => x.channel.id !== channel.channel.id);
     state.channels.push(channel);
     state.channels.sort((a, b) => a.channel.name.localeCompare(b.channel.name));
-    console.log(state.channels);
   },
   ADD_NEW_USER_TO_CHANNEL(state, {user, channel}: {user: User, channel: { channel: Channel, topped: boolean }}){
     const index = state.channels.findIndex((x) => {

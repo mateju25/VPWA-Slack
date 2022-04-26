@@ -73,9 +73,7 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
 
   async changeToppedToFalse({ dispatch }, {user, channel}: {user: User, channel: { channel: Channel, topped: boolean }}){
     // db request + socket info about connected user + connect channel
-    console.log('kkt');
     await dispatch('channelStore/connect', channel.channel.name, { root: true });
-    console.log('kkt1');
     await channelService.in(channel.channel.name)?.userJoined({ user, channel });
   },
 

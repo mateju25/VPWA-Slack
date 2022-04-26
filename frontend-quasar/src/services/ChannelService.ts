@@ -26,8 +26,13 @@ class ChannelSocketManager extends SocketManager {
       }
     })
     this.socket.on('revokeUser', ({receivedChannel, user} : { receivedChannel : Channel, user: User }) => {
-      console.log(receivedChannel);
       store.commit('channelStore/REMOVE_USER_FROM_CHANNEL', { receivedChannel, user});
+      if (user.id === (store.state.authStore.user as User).id) {
+        const general = store.state.channelStore.channels.find((x) => x.channel.name === 'General')?.channel;
+        store.commit('channelStore/SET_ACTIVE_CHANNEL', general);
+        store.commit('channelStore/REMOVE_CHANNEL', receivedChannel);
+      }
+
     })
     this.socket.on('inviteUser', ({channel, user} : { channel : Channel, user: User }) => {
       // before user accept invitation, channel  will be topped
@@ -36,13 +41,10 @@ class ChannelSocketManager extends SocketManager {
       }
     })
     this.socket.on('userJoined', ({channel, user} :  {channel: { channel: Channel, topped: boolean }, user: User}) => {
-      console.log('kkt2');
       if (user.id === (store.state.authStore.user as User).id) {
         store.commit('channelStore/MOVE_ACCEPTED_TO_ALLCHANNELS', channel);
       }
-      console.log('kkt3');
       store.commit('channelStore/ADD_NEW_USER_TO_CHANNEL', { user, channel });
-      console.log('kkt4');
     })
 
   }
