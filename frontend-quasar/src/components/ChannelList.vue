@@ -1,4 +1,4 @@
-<template>
+<template >
   <div class='q-pa-sm q-gutter-md'>
     <q-list padding class='rounded-borders' style='max-width: 350px'>
       <q-expansion-item
@@ -161,10 +161,10 @@ export default defineComponent({
     changeActiveModel: async function(channel: { channel: Channel, topped: boolean }): Promise<void> {
       // if topped channel -> change topped property to false
       if(channel.topped){
-        await this.$store.dispatch('channelStore/changeToppedToFalse', { 
-          user: this.$store.state.authStore.user, 
+        await this.$store.dispatch('channelStore/changeToppedToFalse', {
+          user: this.$store.state.authStore.user,
           channel: channel
-        });  
+        });
       }
       console.log(channel.channel, 'active');
       this.$store.dispatch('channelStore/setActiveChannel', channel.channel );

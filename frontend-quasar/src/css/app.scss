@@ -20,14 +20,28 @@
 }
 
 ::-webkit-scrollbar {
-  width: 7px;
+  width: 8px;
 }
-::-webkit-scrollbar-track {
-  background: rgba(124, 124, 124, 0.87);
+.white-scroll-bar::-webkit-scrollbar-track {
+  background: rgba(227, 227, 227, 0.87);
+  border-radius: 5px;
+  border: 1px solid rgba(217, 217, 217, 0.87);
 }
-::-webkit-scrollbar-thumb {
+.white-scroll-bar::-webkit-scrollbar-thumb {
    //background: $secondary;
-  background: rgba(63, 63, 63, 0.87);
+  background: rgba(185, 185, 185, 0.87);
+
+  border-radius: 5px;
+  cursor:pointer;
+}
+
+.black-scroll-bar::-webkit-scrollbar-track {
+  background: rgba(31, 31, 31, 0.87);
+  border-radius: 5px;
+  border: 1px solid rgba(42, 42, 42, 0.87);
+}
+.black-scroll-bar::-webkit-scrollbar-thumb {
+  background: rgba(70, 70, 70, 0.87);
 
   border-radius: 5px;
   cursor:pointer;

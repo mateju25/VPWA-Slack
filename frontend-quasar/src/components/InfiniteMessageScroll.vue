@@ -1,6 +1,7 @@
 <template>
   <q-infinite-scroll id='chat' @scroll='onScroll' @load='onLoad' ref='infiniteScroll' class='full-width overflow-auto'
-                     reverse :offset='50' :initial-index='0'>
+                     reverse :offset='50' :initial-index='0'
+                      :class='Dark.isActive ? "black-scroll-bar" : "white-scroll-bar"'>
     <template v-slot:loading>
       <div class='row justify-center q-my-md'>
         <q-spinner color='primary' name='dots' size='20px' v-if='!allLoaded'/>

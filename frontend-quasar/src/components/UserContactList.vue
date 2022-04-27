@@ -1,5 +1,5 @@
-<template>
-  <div class='q-pa-sm q-gutter-md'>
+<template >
+  <div class='q-pa-sm q-gutter-md' >
     <UserLeavingDialog :confirm='confirm' @updateConfirm='updateConfirm'/>
 
     <div class='q-my-lg q-ml-lg q-mr-none text-h6 row justify-between'>

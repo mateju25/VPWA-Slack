@@ -41,6 +41,7 @@
     </q-header>
 
     <q-drawer
+      :class='Dark.isActive ? "black-scroll-bar" : "white-scroll-bar"'
       show-if-above
       v-model="leftDrawerOpen"
       side="left"
@@ -75,6 +76,7 @@
     </q-drawer>
 
     <q-drawer
+      :class='Dark.isActive ? "black-scroll-bar" : "white-scroll-bar"'
       show-if-above
       v-model="rightDrawerOpen"
       side="right"
