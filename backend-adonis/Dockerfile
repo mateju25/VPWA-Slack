@@ -11,7 +11,7 @@ EXPOSE ${PORTS}
 
 COPY ${SERVER_src} ${SERVER}
 
-RUN node ace build --production
+RUN node ace build --production --ignore-ts-errors
 
 WORKDIR ${BUILD}
 

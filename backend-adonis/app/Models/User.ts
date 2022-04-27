@@ -3,7 +3,6 @@ import {
   BaseModel,
   beforeSave,
   column,
-  computed,
   hasMany,
   HasMany,
   hasOne,
