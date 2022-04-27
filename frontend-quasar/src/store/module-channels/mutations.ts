@@ -7,23 +7,30 @@ const mutation: MutationTree<ChannelStateInterface> = {
   LOAD_START_CHANNELS(state) {
     state.statusChannel = 'pending';
   },
-  LOAD_SUCCESS_CHANNELS(state, channels: { joined_channels:Channel[], topped_channels:Channel[] }) {
-    if(state.invitations.length == 0) {
-      channels.topped_channels.forEach((x) => state.invitations.push({
-        channel: x,
-        topped: true
-      }));
+  LOAD_SUCCESS_CHANNELS(
+    state,
+    channels: { joined_channels: Channel[]; topped_channels: Channel[] }
+  ) {
+    if (state.invitations.length == 0) {
+      channels.topped_channels.forEach((x) =>
+        state.invitations.push({
+          channel: x,
+          topped: true,
+        })
+      );
     }
-    if(state.channels.length == 0) {
-      channels.joined_channels.forEach((x) => state.channels.push({
-        channel: x,
-        topped: false
-      }));
+    if (state.channels.length == 0) {
+      channels.joined_channels.forEach((x) =>
+        state.channels.push({
+          channel: x,
+          topped: false,
+        })
+      );
     }
     state.statusChannel = 'success';
   },
   REMOVE_CHANNEL(state, channel: Channel) {
-    console.log(state.channels, channel)
+    console.log(state.channels, channel);
     state.channels = state.channels.filter(
       (item) => item.channel.id !== channel.id
     );
@@ -67,7 +74,7 @@ const mutation: MutationTree<ChannelStateInterface> = {
   ADD_CHANNEL(state, channel: Channel) {
     state.channels.push({
       channel: channel,
-      topped: false
+      topped: false,
     });
     state.activeChannel = channel;
   },
@@ -83,14 +90,14 @@ const mutation: MutationTree<ChannelStateInterface> = {
   ) {
     state.channels.forEach((x) => {
       x.channel.members.every((m) => {
-        if(m.username === user.username){
+        if (m.username === user.username) {
           m.preference.stateName = userState;
           return false;
         }
         return true;
-      })
+      });
       x.channel.owners.every((m) => {
-        if(m.username === user.username){
+        if (m.username === user.username) {
           m.preference.stateName = userState;
           return false;
         }
@@ -98,18 +105,29 @@ const mutation: MutationTree<ChannelStateInterface> = {
       });
     });
   },
-  ADD_CHANNEL_TO_TOP(state, channel: Channel){
+  ADD_CHANNEL_TO_TOP(state, channel: Channel) {
     state.invitations.unshift({
       channel: channel,
-      topped: true
+      topped: true,
     });
   },
-  MOVE_ACCEPTED_TO_ALLCHANNELS(state, channel: { channel: Channel, topped: boolean }){
-    state.invitations = state.invitations.filter((x) => x.channel.id !== channel.channel.id);
+  MOVE_ACCEPTED_TO_ALLCHANNELS(
+    state,
+    channel: { channel: Channel; topped: boolean }
+  ) {
+    state.invitations = state.invitations.filter(
+      (x) => x.channel.id !== channel.channel.id
+    );
     state.channels.push(channel);
     state.channels.sort((a, b) => a.channel.name.localeCompare(b.channel.name));
   },
-  ADD_NEW_USER_TO_CHANNEL(state, {user, channel}: {user: User, channel: { channel: Channel, topped: boolean }}){
+  ADD_NEW_USER_TO_CHANNEL(
+    state,
+    {
+      user,
+      channel,
+    }: { user: User; channel: { channel: Channel; topped: boolean } }
+  ) {
     const index = state.channels.findIndex((x) => {
       return x.channel.id === channel.channel.id;
     });
@@ -163,6 +181,21 @@ const mutation: MutationTree<ChannelStateInterface> = {
       };
     }
     state.messages[channel].messages.push(message);
+  },
+  NEW_MESSAGE_TYPING(
+    state,
+    {
+      receivedChannel,
+      user,
+      message,
+    }: { receivedChannel: string; user: string; message: string }
+  ) {
+    if (state.currentlyTyping[receivedChannel] === undefined)
+      state.currentlyTyping[receivedChannel] = {};
+    state.currentlyTyping[receivedChannel][user] = { message };
+    if (message === '') {
+      delete state.currentlyTyping[receivedChannel][user];
+    }
   },
   NEW_NOTIFICATION(state, { message }: { channel: string; message: Message }) {
     state.notifications.push(message);

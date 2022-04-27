@@ -2,14 +2,15 @@
   <q-page class='q-pa-md container' v-if='userLoaded && messagesLoaded'>
     <UserLeavingDialog :confirm='confirm' @updateConfirm='updateConfirm'/>
     <InfiniteMessageScroll :key='rerender' :messages='alreadyTyped' />
-    <div v-if='currentlyTyping.length !== 0' class='typing q-mt-md'
+
+    <div v-if='currentlyTypingUsers.length !== 0' class='typing q-mt-md'
          :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
       <div :class="Dark.isActive ? 'yellow-text' : 'black-text'" class='typing-font q-ml-sm typing-hover cursor-pointer'
-           v-for='(message, index) in currentlyTyping' v-bind:key='message.id'>
-        <p>{{ message.user.username }} <span v-if='index !== currentlyTyping.length - 1'>,</span></p>
+           v-for='(user, index) in currentlyTypingUsers' v-bind:key='index'>
+        <p>{{ user }} <span v-if='index !== currentlyTypingUsers.length - 1'>,</span></p>
 
         <div class='text' :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
-          <p class='q-ma-lg' :class="Dark.isActive ? '' : 'black-text'">{{ message.text }}</p>
+          <p class='q-ma-lg' :class="Dark.isActive ? 'black-scroll-bar' : 'white-scroll-bar black-text'">{{ currentlyTypingMessages[index] }}</p>
         </div>
 
       </div>
@@ -157,8 +158,23 @@ export default defineComponent({
       }
       return this.$store.state.channelStore.messages[this.$store.state.channelStore.activeChannel!.name].messages;
     },
-    currentlyTyping: function(): Message[] {
-      return [];
+    currentlyTypingUsers: function(): string[] {
+      if (this.$store.state.channelStore.activeChannel === null || this.$store.state.channelStore.currentlyTyping[this.$store.state.channelStore.activeChannel!.name] === undefined) {
+        return [];
+      }
+      let arr = [];
+      for (let item in this.$store.state.channelStore.currentlyTyping[this.$store.state.channelStore.activeChannel!.name])
+        arr.push(item)
+      return arr;
+    },
+    currentlyTypingMessages: function(): string[] {
+      if (this.$store.state.channelStore.activeChannel === null || this.$store.state.channelStore.currentlyTyping[this.$store.state.channelStore.activeChannel!.name] === undefined) {
+        return [];
+      }
+      let arr = [];
+      for (let item in this.$store.state.channelStore.currentlyTyping[this.$store.state.channelStore.activeChannel!.name])
+        arr.push(this.$store.state.channelStore.currentlyTyping[this.$store.state.channelStore.activeChannel!.name][item].message)
+      return arr;
     }
   },
   methods: {
@@ -303,6 +319,11 @@ export default defineComponent({
         this.rerender = !this.rerender;
       },
       deep: true
+    },
+    myMessage: {
+      handler() {
+        this.$store.dispatch('channelStore/addMessageCurrentlyTyping', { channel: this.$store.state.channelStore.activeChannel!.name, message: this.myMessage });
+      }
     }
   }
 
@@ -358,7 +379,7 @@ export default defineComponent({
 }
 
 .text {
-  max-width: 40%;
+  max-width: 80%;
   font-size: 16px;
   position: absolute;
   bottom: 180px;

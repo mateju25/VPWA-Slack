@@ -165,6 +165,12 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
     const newMessage = await channelService.in(channel)?.addMessage(message);
     commit('NEW_MESSAGE', { channel, message: newMessage });
   },
+  async addMessageCurrentlyTyping(
+    {},
+    { channel, message }: { channel: string; message: string }
+  ) {
+    await channelService.in(channel)?.addMessageCurrentlyTyping(message);
+  },
 };
 
 export default actions;

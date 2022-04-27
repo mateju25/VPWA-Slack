@@ -52,4 +52,18 @@ export default class MessageController {
     // return message to sender
     return message;
   }
+
+  public async addMessageCurrentlyTyping(
+    { params, socket, auth }: WsContextContract,
+    content: string,
+  ) {
+    // broadcast message to other users in channel
+    socket.broadcast.emit('messageCurrentlyTyping', {
+      receivedChannel: params.name,
+      user: auth.user?.username,
+      message: content,
+    });
+    // return message to sender
+    return content;
+  }
 }

@@ -23,6 +23,25 @@ class ChannelSocketManager extends SocketManager {
     });
 
     this.socket.on(
+      'messageCurrentlyTyping',
+      ({
+        receivedChannel,
+        user,
+        message,
+      }: {
+        receivedChannel: string;
+        user: string;
+        message: string;
+      }) => {
+        store.commit('channelStore/NEW_MESSAGE_TYPING', {
+          receivedChannel,
+          user,
+          message,
+        });
+      }
+    );
+
+    this.socket.on(
       'userJoinChannel',
       ({
         receivedChannel,
@@ -172,6 +191,10 @@ class ChannelSocketManager extends SocketManager {
 
   public addMessage(message: string): Promise<Message> {
     return this.emitAsync('addMessage', message);
+  }
+
+  public addMessageCurrentlyTyping(message: string): Promise<Message> {
+    return this.emitAsync('addMessageCurrentlyTyping', message);
   }
 
   public loadMessages(pagination: number): Promise<Message[]> {
