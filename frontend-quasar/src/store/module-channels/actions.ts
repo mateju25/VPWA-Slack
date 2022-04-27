@@ -48,18 +48,12 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
     }
   },
 
-  async addChannel({ commit, state }, data: ChannelData) {
+  async addChannel({ commit }, data: ChannelData) {
     try {
       const channel = await channelService.in('General')?.joinChannel(data);
       if (channel !== null) {
         commit('ADD_CHANNEL', channel);
         channelService.connect(channel!.name);
-        commit(
-          'SET_ACTIVE_CHANNEL',
-          state.channels.find(
-            (channel) => channel.channel.name === state.activeChannel?.name
-          )
-        );
       }
       return true;
     } catch (err) {}
