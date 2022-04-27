@@ -6,12 +6,14 @@ import { DateTime } from 'luxon';
 import { AuthContract } from '@ioc:Adonis/Addons/Auth';
 
 export default class ChannelRepository implements ChannelRepositoryContract {
-  public async findAll(auth: AuthContract): Promise<{ joined_channels:Channel[], topped_channels:Channel[] }> {
+  public async findAll(
+    auth: AuthContract,
+  ): Promise<{ joined_channels: Channel[]; topped_channels: Channel[] }> {
     await auth.user?.load('channels');
     let topped = [] as Channel[];
     let joined = [] as Channel[];
     auth.user?.channels.forEach((x) => {
-      if(x.$extras.pivot_joined){
+      if (x.$extras.pivot_joined) {
         joined.push(x.serialize() as Channel);
       } else {
         topped.push(x.serialize() as Channel);
@@ -24,8 +26,8 @@ export default class ChannelRepository implements ChannelRepositoryContract {
 
     return {
       joined_channels: joined,
-      topped_channels: topped
-    }
+      topped_channels: topped,
+    };
     // return topped.concat(joined);
     // return auth.user?.channels.map((channel) => channel.serialize() as Channel) ?? [];
   }
@@ -174,14 +176,14 @@ export default class ChannelRepository implements ChannelRepositoryContract {
     const user = await User.findBy('username', username);
     if (user) {
       await user.load('channels');
-      if(!user.channels.find((x) => x.id == channelId)){
+      if (!user.channels.find((x) => x.id === channelId)) {
         await user.related('channels').attach({
           [channelId]: {
             role_id: 2,
             joined: null,
             invited: DateTime.now(),
           },
-        })
+        });
       }
     }
     const channel = await Channel.findBy('id', channelId);
@@ -190,14 +192,17 @@ export default class ChannelRepository implements ChannelRepositoryContract {
     return channel as Channel;
   }
 
-  public async userJoined(channelId: number, userId: number): Promise<Channel>{
+  public async userJoined(channelId: number, userId: number): Promise<Channel> {
     const user = await User.findBy('id', userId);
     if (user) {
-      user.related('channels').sync({
-        [channelId]: {
-          joined: DateTime.now()
+      user.related('channels').sync(
+        {
+          [channelId]: {
+            joined: DateTime.now(),
+          },
         },
-      }, false)
+        false,
+      );
     }
     const channel = await Channel.findBy('id', channelId);
     await channel?.load('members');

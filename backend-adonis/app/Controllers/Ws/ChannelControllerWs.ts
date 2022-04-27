@@ -91,29 +91,38 @@ export default class ChannelControllerWs {
     return channel;
   }
 
-  public async revokeUser({ socket }:  WsContextContract, { user, channel }: { user: User, channel: Channel }){
+  public async revokeUser(
+    { socket }: WsContextContract,
+    { user, channel }: { user: User; channel: Channel },
+  ) {
     const updatedChannel = await this.channelRepository.revokeUser(channel.id, user.id);
     // after delete send all users info to update channels
     socket.nsp.emit('revokeUser', { receivedChannel: updatedChannel, user: user });
   }
 
-  public async inviteUser({ socket }:  WsContextContract, { username, channel }: { username: string, channel: Channel }){
+  public async inviteUser(
+    { socket }: WsContextContract,
+    { username, channel }: { username: string; channel: Channel },
+  ) {
     const updatedChannel = await this.channelRepository.inviteUser(channel.id, username);
     const user = await User.findBy('username', username);
     // send info to invited user
     socket.broadcast.emit('inviteUser', { channel: updatedChannel, user: user });
   }
 
-  public async userJoined({ socket }:  WsContextContract, {user, channel}: {user: User, channel: { channel: Channel, topped: boolean }}){
+  public async userJoined(
+    { socket }: WsContextContract,
+    { user, channel }: { user: User; channel: { channel: Channel; topped: boolean } },
+  ) {
     // db request
     const editedChannel = await this.channelRepository.userJoined(channel.channel.id, user.id);
     // socket info about connected user
     socket.nsp.emit('userJoined', {
       channel: {
         channel: editedChannel,
-        topped: false
+        topped: false,
       },
-      user: user
+      user: user,
     });
   }
 }

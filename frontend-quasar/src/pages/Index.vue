@@ -155,7 +155,7 @@ export default defineComponent({
       if (this.$store.state.channelStore.activeChannel === null || this.$store.state.channelStore.messages[this.$store.state.channelStore.activeChannel!.name] === undefined) {
         return [];
       }
-      return this.$store.state.channelStore.messages[this.$store.state.channelStore.activeChannel!.name];
+      return this.$store.state.channelStore.messages[this.$store.state.channelStore.activeChannel!.name].messages;
     },
     currentlyTyping: function(): Message[] {
       return [];
