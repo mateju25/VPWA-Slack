@@ -36,11 +36,14 @@ class ChannelSocketManager extends SocketManager {
     })
     this.socket.on('inviteUser', ({channel, user} : { channel : Channel, user: User }) => {
       // before user accept invitation, channel  will be topped
-      if (user.id === (store.state.authStore.user as User).id) {
+      const temp = store.state.channelStore.invitations.find((x) => x.channel.name === channel.name);
+      if (user.id === (store.state.authStore.user as User).id && !temp) {
+        console.log(channel, 'invite');
         store.commit('channelStore/ADD_CHANNEL_TO_TOP', channel);
       }
     })
     this.socket.on('userJoined', ({channel, user} :  {channel: { channel: Channel, topped: boolean }, user: User}) => {
+      console.log(channel);
       if (user.id === (store.state.authStore.user as User).id) {
         store.commit('channelStore/MOVE_ACCEPTED_TO_ALLCHANNELS', channel);
       }

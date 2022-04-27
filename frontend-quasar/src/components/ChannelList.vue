@@ -161,17 +161,12 @@ export default defineComponent({
     changeActiveModel: async function(channel: { channel: Channel, topped: boolean }): Promise<void> {
       // if topped channel -> change topped property to false
       if(channel.topped){
-        if(!channel.channel.members){
-          channel.channel.members = [];
-        }
-        if(!channel.channel.owners){
-          channel.channel.owners = [];
-        }
         await this.$store.dispatch('channelStore/changeToppedToFalse', { 
           user: this.$store.state.authStore.user, 
           channel: channel
         });  
       }
+      console.log(channel.channel, 'active');
       this.$store.dispatch('channelStore/setActiveChannel', channel.channel );
     }
   },

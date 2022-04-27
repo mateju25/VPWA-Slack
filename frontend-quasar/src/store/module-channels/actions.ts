@@ -7,7 +7,7 @@ import { ChannelData } from 'src/contracts';
 
 const actions: ActionTree<ChannelStateInterface, StateInterface> = {
   // ACTIONS FOR CHANNEL LOADING
-  async loadChannels({ commit , dispatch}) {
+  async loadChannels({ commit , dispatch, state}) {
     try {
       commit('LOAD_START_CHANNELS');
       const channels = await channelService.loadChannels();
@@ -16,7 +16,8 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
 
       commit('LOAD_SUCCESS_CHANNELS', channels);
       commit('SET_ACTIVE_CHANNEL', channels.joined_channels.find((item) => item.name === 'General') as Channel);
-
+      console.log(channels);
+      console.log(state.activeChannel);
       //connect socket to general
       for (const channel of channels.joined_channels) {
         await dispatch('channelStore/connect', channel.name, { root: true })

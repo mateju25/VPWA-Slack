@@ -115,6 +115,7 @@ export default class ChannelRepository implements ChannelRepositoryContract {
     }
     const channel = await Channel.findBy('id', channelId);
     await channel?.load('members');
+    await channel?.load('owners');
     return channel as Channel;
   }
 
@@ -125,7 +126,7 @@ export default class ChannelRepository implements ChannelRepositoryContract {
         [channelId]: {
           joined: DateTime.now()
         },
-      })
+      }, false)
     }
     const channel = await Channel.findBy('id', channelId);
     await channel?.load('members');

@@ -180,6 +180,7 @@ export default defineComponent({
       if (this.$store.state.channelStore.activeChannel === null) {
         return [];
       }
+      console.log(this.$store.state.channelStore.activeChannel!.name);
       return this.$store.state.channelStore.messages[this.$store.state.channelStore.activeChannel!.name];
     },
     currentlyTyping: function(): Message[] {
@@ -220,7 +221,7 @@ export default defineComponent({
           });
         }
       //revoke from private channel, by admin
-      } else if (this.iAmOwner && !this.isPublic && this.myMessage.includes('/revoke') && this.actions.includes('/revoke')) {
+      } else if (this.myMessage.includes('/revoke') && this.actions.includes('/revoke')) {
         let nickname = this.splitMessage('/revoke');
         let user = this.$store.state.channelStore.activeChannel?.members.find((x) => x.username === nickname);
         if (user) {
@@ -230,11 +231,15 @@ export default defineComponent({
         }
       // invite
       } else if (this.myMessage.includes('/invite') && this.actions.includes('/invite')) {
-        //private channel + admin || public channel + whoever
-        if ((!this.isPublic && this.iAmOwner) || (this.isPublic)) {
-          let newUser = this.splitMessage('/invite');
-          this.$store.dispatch('channelStore/inviteUser', newUser);
+        let nickname = this.splitMessage('/invite');
+        let user = this.$store.state.channelStore.activeChannel?.members.find((x) => x.username === nickname);
+        if (!user) {
+          this.$store.dispatch('channelStore/inviteUser', nickname);
+        } else {
+          this.showNotification('User is already in channel.');
         }
+          
+        // }
       } else {
         await this.addMessage({ channel: this.$store.state.channelStore.activeChannel!.name, message: this.myMessage });
       }

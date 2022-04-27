@@ -8,14 +8,18 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.statusChannel = 'pending';
   },
   LOAD_SUCCESS_CHANNELS(state, channels: { joined_channels:Channel[], topped_channels:Channel[] }) {
-    channels.topped_channels.forEach((x) => state.invitations.push({
-      channel: x,
-      topped: true
-    }));
-    channels.joined_channels.forEach((x) => state.channels.push({
-      channel: x,
-      topped: false
-    }));
+    if(state.invitations.length == 0) {
+      channels.topped_channels.forEach((x) => state.invitations.push({
+        channel: x,
+        topped: true
+      }));
+    }
+    if(state.channels.length == 0) {
+      channels.joined_channels.forEach((x) => state.channels.push({
+        channel: x,
+        topped: false
+      }));
+    }
     state.statusChannel = 'success';
   },
   REMOVE_CHANNEL(state, channel: Channel) {

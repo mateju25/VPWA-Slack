@@ -110,7 +110,7 @@ export default defineComponent({
     ChannelList
   },
   created() {
-    if (this.$store.state.authStore.user == null)
+    if (!this.$store.state.authStore.user)
       this.$store.dispatch('authStore/check');
     this.$store.dispatch('channelStore/loadChannels');
   },
