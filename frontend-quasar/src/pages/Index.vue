@@ -9,8 +9,8 @@
            v-for='(user, index) in currentlyTypingUsers' v-bind:key='index'>
         <p>{{ user }} <span v-if='index !== currentlyTypingUsers.length - 1'>,</span></p>
 
-        <div class='text' :class="Dark.isActive ? 'input-bottom-dark' : 'input-bottom-white'">
-          <p class='q-ma-lg' :class="Dark.isActive ? 'black-scroll-bar' : 'white-scroll-bar black-text'">{{ currentlyTypingMessages[index] }}</p>
+        <div class='text' :class="Dark.isActive ? 'black-scroll-bar input-bottom-dark' : 'white-scroll-bar input-bottom-white'">
+          <p class='q-ma-lg'>{{ currentlyTypingMessages[index] }}</p>
         </div>
 
       </div>
@@ -384,6 +384,7 @@ export default defineComponent({
   position: absolute;
   bottom: 180px;
   color: white;
+  word-wrap: break-word;
   background: var(--q-dark);
   box-shadow: 0 0px 8px var(--q-secondary), 0 2px 2px rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 12%) !important;
 }
