@@ -111,6 +111,11 @@ const mutation: MutationTree<ChannelStateInterface> = {
       topped: true,
     });
   },
+  DELETE_INVITATION(state, channel: Channel) {
+    state.invitations = state.invitations.filter(
+      (item) => item.channel.name !== channel.name
+    );
+  },
   MOVE_ACCEPTED_TO_ALLCHANNELS(
     state,
     channel: { channel: Channel; topped: boolean }

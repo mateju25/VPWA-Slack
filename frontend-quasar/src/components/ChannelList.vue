@@ -14,11 +14,8 @@
         <q-item
           class='channel-item q-mt-sm'
           v-for='channel in invitations'
-          :key='channel.id'
-          clickable
-          v-ripple
+          :key='channel.channel.id'
           :class='channel.channel.id === activeChannel.id ? "channel-active" : ""'
-          @click='changeActiveModel(channel)'
         >
           <ChannelItem :channel='channel'/>
         </q-item>
@@ -159,15 +156,7 @@ export default defineComponent({
       }
     },
     changeActiveModel: async function(channel: { channel: Channel, topped: boolean }): Promise<void> {
-      // if topped channel -> change topped property to false
-      if(channel.topped){
-        await this.$store.dispatch('channelStore/changeToppedToFalse', {
-          user: this.$store.state.authStore.user,
-          channel: channel
-        });
-      }
-      console.log(channel.channel, 'active');
-      this.$store.dispatch('channelStore/setActiveChannel', channel.channel );
+      await this.$store.dispatch('channelStore/setActiveChannel', channel.channel);
     }
   },
   computed: {

@@ -24,4 +24,5 @@ Ws.namespace('channels/:name')
   .on('kickFromChannel', 'ChannelControllerWs.kickFromChannel')
   .on('revokeUser', 'ChannelControllerWs.revokeUser')
   .on('inviteUser', 'ChannelControllerWs.inviteUser')
+  .on('deleteInvitation', 'ChannelControllerWs.deleteInvitation')
   .on('userJoined', 'ChannelControllerWs.userJoined');

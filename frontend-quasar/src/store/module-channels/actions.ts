@@ -47,6 +47,14 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
       throw err;
     }
   },
+  async cancelInvitation({ commit }, channel: Channel) {
+    try {
+      commit('DELETE_INVITATION', channel);
+      await channelService.in('General')?.deleteInvitation(channel);
+    } catch (err) {
+      throw err;
+    }
+  },
 
   async addChannel({ commit }, data: ChannelData) {
     try {

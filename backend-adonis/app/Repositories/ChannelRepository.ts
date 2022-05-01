@@ -195,7 +195,7 @@ export default class ChannelRepository implements ChannelRepositoryContract {
   public async userJoined(channelId: number, userId: number): Promise<Channel> {
     const user = await User.findBy('id', userId);
     if (user) {
-      user.related('channels').sync(
+      await user.related('channels').sync(
         {
           [channelId]: {
             joined: DateTime.now(),
@@ -203,6 +203,17 @@ export default class ChannelRepository implements ChannelRepositoryContract {
         },
         false,
       );
+    }
+    const channel = await Channel.findBy('id', channelId);
+    await channel?.load('members');
+    await channel?.load('owners');
+    return channel as Channel;
+  }
+
+  public async deleteInvitation(channelId: number, userId: number): Promise<Channel> {
+    const user = await User.findBy('id', userId);
+    if (user) {
+      await user.related('channels').detach([channelId]);
     }
     const channel = await Channel.findBy('id', channelId);
     await channel?.load('members');

@@ -125,4 +125,8 @@ export default class ChannelControllerWs {
       user: user,
     });
   }
+
+  public async deleteInvitation({ auth }: WsContextContract, channel: Channel) {
+    return await this.channelRepository.deleteInvitation(channel.id, auth.user?.id);
+  }
 }

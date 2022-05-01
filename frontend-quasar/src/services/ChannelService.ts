@@ -205,6 +205,10 @@ class ChannelSocketManager extends SocketManager {
     return this.emitAsync('joinChannel', data);
   }
 
+  public deleteInvitation(channel: Channel): Promise<Channel> {
+    return this.emitAsync('deleteInvitation', channel);
+  }
+
   public kickFromChannel(
     kickedUser: string,
     channel: Channel
