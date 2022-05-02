@@ -289,29 +289,37 @@ export default defineComponent({
       deep: true
     },
     notifications: {
-      handler() {
+      handler()
+      {
+        console.log(this.notifications);
         if (!AppVisibility.appVisible) {
           this.notifications.forEach(notification => {
             if (!this.$store.state.authStore.user?.preference.notificationsOn || notification.text.includes('@') ) {
+
               let message =
-                `<b style='color: black'>Channel: ${notification.channel.name}</b></br>
-             <b style='color: black'>User: ${notification.user.username}</b></br>
-             <p style='color: black' class='q-mt-md'>${notification.text}</p>`;
-              this.$q.notify({
-                color: 'blue-4',
-                textColor: 'white',
-                position: 'top',
-                html: true,
-                type: 'info',
-                message: message
-              });
+                `Channel: ${notification.channel.name}\nUser: ${notification.user.username}\n${notification.text.substring(0, 50)}...`;
+
+              if (!('Notification' in window)) {
+                alert('This browser does not support desktop notification');
+              }
+              else if (Notification.permission === 'granted') {
+                new Notification('VoidMessenger', {body: message});
+              }
+              else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(function (permission) {
+                  if (permission === 'granted') {
+                    new Notification('VoidMessenger', {body: message});
+                  }
+                });
+              }
             }
           });
           if (this.notifications.length > 0) {
             this.$store.commit('channelStore/REMOVE_NOTIFICATIONS');
           }
         }
-      },
+      }
+,
       deep: true
     },
     activeChannelName: {
