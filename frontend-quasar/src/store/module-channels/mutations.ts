@@ -11,6 +11,7 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state,
     channels: { joined_channels: Channel[]; topped_channels: Channel[] }
   ) {
+    state.invitations = [];
     if (state.invitations.length == 0) {
       channels.topped_channels.forEach((x) =>
         state.invitations.push({
@@ -19,6 +20,7 @@ const mutation: MutationTree<ChannelStateInterface> = {
         })
       );
     }
+    state.channels = [];
     if (state.channels.length == 0) {
       channels.joined_channels.forEach((x) =>
         state.channels.push({
