@@ -71,6 +71,7 @@ class ChannelSocketManager extends SocketManager {
           store.state.channelStore.activeChannel?.name === channelKicked.name &&
           kickedUser === store.state.authStore.user?.username
         ) {
+          store.dispatch('channelStore/disconnectChannel', channelKicked);
           store.commit('channelStore/REMOVE_CHANNEL', channelKicked);
           store.commit(
             'channelStore/SET_ACTIVE_CHANNEL',
@@ -86,6 +87,7 @@ class ChannelSocketManager extends SocketManager {
       'deleteUserFromChannel',
       ({ receivedChannel, user }: { receivedChannel: Channel; user: User }) => {
         const username = user.username;
+        store.dispatch('channelStore/disconnectChannel', receivedChannel);
         if (receivedChannel.owners.find((item) => item.username === username)) {
           store.commit('channelStore/REMOVE_CHANNEL', receivedChannel);
           if (
@@ -109,9 +111,11 @@ class ChannelSocketManager extends SocketManager {
     this.socket.on(
       'revokeUser',
       ({ receivedChannel, user }: { receivedChannel: Channel; user: User }) => {
+        store.dispatch('channelStore/disconnectChannel', receivedChannel);
+        const username = user.username;
         store.commit('channelStore/REMOVE_USER_FROM_CHANNEL', {
           receivedChannel,
-          user,
+          username,
         });
         if (user.id === (store.state.authStore.user as User).id) {
           const general = store.state.channelStore.channels.find(
@@ -130,7 +134,6 @@ class ChannelSocketManager extends SocketManager {
           (x) => x.channel.name === channel.name
         );
         if (user.id === (store.state.authStore.user as User).id && !temp) {
-          console.log(channel, 'invite');
           store.commit('channelStore/ADD_CHANNEL_TO_TOP', channel);
         }
       }
@@ -144,7 +147,6 @@ class ChannelSocketManager extends SocketManager {
         channel: { channel: Channel; topped: boolean };
         user: User;
       }) => {
-        console.log(channel);
         if (user.id === (store.state.authStore.user as User).id) {
           store.commit('channelStore/MOVE_ACCEPTED_TO_ALLCHANNELS', channel);
         }
@@ -153,7 +155,6 @@ class ChannelSocketManager extends SocketManager {
     );
   }
   public deleteChannel(channel: Channel): Promise<Channel> {
-    console.log('deleting channel', channel);
     return this.emitAsync('deleteChannel', channel.id);
   }
 
@@ -164,7 +165,6 @@ class ChannelSocketManager extends SocketManager {
     user: User;
     channel: Channel;
   }): Promise<User> {
-    console.log('Revoking user', user.username);
     return this.emitAsync('revokeUser', { user, channel });
   }
 
@@ -175,7 +175,6 @@ class ChannelSocketManager extends SocketManager {
     username: string;
     channel: Channel;
   }): Promise<User> {
-    console.log('Inviting user', username);
     return this.emitAsync('inviteUser', { username, channel });
   }
 

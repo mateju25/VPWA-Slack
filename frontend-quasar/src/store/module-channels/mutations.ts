@@ -30,7 +30,6 @@ const mutation: MutationTree<ChannelStateInterface> = {
     state.statusChannel = 'success';
   },
   REMOVE_CHANNEL(state, channel: Channel) {
-    console.log(state.channels, channel);
     state.channels = state.channels.filter(
       (item) => item.channel.id !== channel.id
     );
@@ -44,7 +43,7 @@ const mutation: MutationTree<ChannelStateInterface> = {
     }: { receivedChannel: Channel; username: string }
   ) {
     const foundChannel = state.channels.find(
-      (item) => item.channel.id === receivedChannel.id
+      (item) => item.channel.name === receivedChannel.name
     );
     if (foundChannel !== undefined) {
       foundChannel.channel.members = foundChannel.channel.members.filter(
@@ -55,7 +54,6 @@ const mutation: MutationTree<ChannelStateInterface> = {
       state.activeChannel.members = state.activeChannel.members.filter(
         (item) => item.username !== username
       );
-      console.log(state.activeChannel.members, username);
     }
     state.statusChannel = 'success';
   },

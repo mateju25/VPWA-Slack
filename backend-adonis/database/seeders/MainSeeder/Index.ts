@@ -17,7 +17,7 @@ export default class IndexSeeder extends BaseSeeder {
 
   public async run() {
     const users = await User.all();
-    console.log(users.length);
+
     if (users.length === 0) {
       await this.runSeeder(await import('../Role'));
       await this.runSeeder(await import('../User'));

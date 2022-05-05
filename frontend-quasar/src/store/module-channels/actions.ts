@@ -20,8 +20,7 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
           (item) => item.name === 'General'
         ) as Channel
       );
-      console.log(channels);
-      console.log(state.activeChannel);
+
       //connect socket to general
       for (const channel of channels.joined_channels) {
         await dispatch('channelStore/connect', channel.name, { root: true });
@@ -46,6 +45,9 @@ const actions: ActionTree<ChannelStateInterface, StateInterface> = {
     } catch (err) {
       throw err;
     }
+  },
+  async disconnectChannel({}, channelKicked: Channel) {
+    channelService.disconnect(channelKicked.name);
   },
   async cancelInvitation({ commit }, channel: Channel) {
     try {

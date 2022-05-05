@@ -156,6 +156,7 @@ export default defineComponent({
       }
     },
     changeActiveModel: async function(channel: { channel: Channel, topped: boolean }): Promise<void> {
+      await this.$store.dispatch('channelStore/addMessageCurrentlyTyping', { channel: this.$store.state.channelStore.activeChannel!.name, message: '' });
       await this.$store.dispatch('channelStore/setActiveChannel', channel.channel);
     }
   },

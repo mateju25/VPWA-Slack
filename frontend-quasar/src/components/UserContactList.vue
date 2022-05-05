@@ -87,7 +87,7 @@ export default defineComponent({
       return this.$store.state.authStore.user;
     },
     activeChannel (): Channel {
-      console.log(this.$store.state.channelStore.activeChannel);
+
       return this.$store.state.channelStore.activeChannel as Channel;
     },
   }

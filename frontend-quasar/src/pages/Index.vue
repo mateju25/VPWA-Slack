@@ -186,6 +186,10 @@ export default defineComponent({
     },
     async submit() {
       this.loading = true;
+      if (this.myMessage.trim().length === 0)
+        return;
+      await this.$store.dispatch('channelStore/addMessageCurrentlyTyping', { channel: this.$store.state.channelStore.activeChannel!.name, message: '' });
+
       if (this.myMessage.includes('/list') && this.actions.includes('/list')) {
         this.$emit('commandList');
       } else if (this.myMessage.includes('/quit') && this.actions.includes('/quit')) {
@@ -291,7 +295,7 @@ export default defineComponent({
     notifications: {
       handler()
       {
-        console.log(this.notifications);
+
         if (!AppVisibility.appVisible) {
           this.notifications.forEach(notification => {
             if (!this.$store.state.authStore.user?.preference.notificationsOn || notification.text.includes('@') ) {
@@ -325,6 +329,7 @@ export default defineComponent({
     activeChannelName: {
       handler() {
         this.rerender = !this.rerender;
+        this.myMessage = '';
       },
       deep: true
     },
