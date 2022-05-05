@@ -23,7 +23,6 @@ export default class IndexSeeder extends BaseSeeder {
       await this.runSeeder(await import('../User'));
       await this.runSeeder(await import('../Channel'));
       await this.runSeeder(await import('../Message'));
-      await this.runSeeder(await import('../UnreadChannel'));
     }
   }
 }
