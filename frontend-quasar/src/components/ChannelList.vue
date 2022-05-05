@@ -1,14 +1,22 @@
 <template >
   <div class='q-pa-sm q-gutter-md'>
-    <q-list padding class='rounded-borders' style='max-width: 350px'>
+    <q-toolbar-title class="logo-mobile flex items-center">
+      <q-icon size="md" class="q-mr-sm">
+        <img src="~assets/icon3.svg" />
+      </q-icon>
+      <p class="q-mt-xs q-mb-none text-primary">VoidMessenger</p>
+    </q-toolbar-title>
+    <q-list
+      v-if='invitations && invitations.length > 0'
+      padding class='rounded-borders' style='max-width: 350px'
+    >
       <q-expansion-item
         switch-toggle-side
-        expand-separator
         default-opened
         dense
         label='INVITATIONS'
-        expand-icon='chevron_right'
-        expanded-icon='expand_more'
+        expand-icon='mark_email_unread'
+        expanded-icon='mark_email_unread'
         class='expandable-icon'
       >
         <q-item
@@ -22,7 +30,7 @@
       </q-expansion-item>
     </q-list>
 
-    <q-separator />
+    <q-separator v-if='invitations && invitations.length > 0'/>
 
     <q-item
       class='q-ml-none'
@@ -195,6 +203,12 @@ export default defineComponent({
 </script>
 
 <style>
+@media (min-width: 992px) {
+  .logo-mobile {
+    display: none;
+  }
+}
+
 .q-item__label {
   font-size: 16px;
 }

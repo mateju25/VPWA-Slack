@@ -4,12 +4,14 @@
     <q-header elevated class="bg-primary text-white">
       <q-toolbar class="content-center">
         <q-btn dense flat round icon="menu" class="hide-channels" @click="toggleLeftDrawer" />
-
-        <q-toolbar-title class="flex flex-center">
+        <q-toolbar-title class="logo flex flex-center">
           <q-icon size="lg" class="q-mr-sm">
             <img src="~assets/icon3.svg" />
           </q-icon>
           <p class="q-ma-none">VoidMessenger</p>
+        </q-toolbar-title>
+        <q-toolbar-title class="channel flex items-center">
+          <p class="q-ma-none"># {{ activeChannel }}</p>
         </q-toolbar-title>
 
         <q-btn dense flat round icon="people" class="hide-users" @click="toggleRightDrawer" />
@@ -104,6 +106,11 @@ import { Dark } from 'quasar';
 import { User } from 'src/components/models';
 
 export default defineComponent({
+  //bud totok
+  // async beforePageLeave(type: string) {
+  //   if(type === 'close')
+  //     await this.$store.dispatch('preferenceStore/userStateChanged', 'Offline');
+  // },
   name: 'MainLayout',
   components: {
     UserInfoDialogContent,
@@ -112,6 +119,8 @@ export default defineComponent({
     ChannelList
   },
   async beforeUnmount() {
+    //alebo totok
+    // await this.$store.dispatch('preferenceStore/userStateChanged', 'Offline');
     await this.$store.dispatch('authStore/logout');
   },
   created() {
@@ -138,6 +147,9 @@ export default defineComponent({
     userLoaded (): boolean {
       return this.$store.state.authStore.user !== null
     },
+    activeChannel(): string{
+      return this.$store.state.channelStore.activeChannel?.name as string;
+    }
   },
   methods: {
     commandList() {
@@ -165,13 +177,13 @@ export default defineComponent({
 </script>
 <style>
 @media (min-width: 992px) {
-  .hide-users, .mobile-avatar, .hide-channels {
+  .hide-users, .mobile-avatar, .hide-channels, .channel {
     display: none;
   }
 }
 
 @media (max-width: 992px) {
-  .hide-avatar{
+  .hide-avatar, .logo{
     display: none;
   }
 }

@@ -7,7 +7,7 @@ import { ChannelData } from 'src/contracts';
 
 const actions: ActionTree<ChannelStateInterface, StateInterface> = {
   // ACTIONS FOR CHANNEL LOADING
-  async loadChannels({ commit, dispatch, state }) {
+  async loadChannels({ commit, dispatch }) {
     try {
       commit('LOAD_START_CHANNELS');
       const channels = await channelService.loadChannels();
