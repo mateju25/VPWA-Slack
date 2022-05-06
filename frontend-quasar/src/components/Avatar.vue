@@ -50,6 +50,9 @@ export default defineComponent({
     },
     userState(state: string): string {
       let color = 'bg-negative';
+      if (this.contact?.logged == false) {
+        return 'bg-negative';
+      }
       switch (state) {
         case 'Online':
           color = 'bg-positive';

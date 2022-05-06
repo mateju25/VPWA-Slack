@@ -7,6 +7,7 @@ export interface User {
   preference: Preference;
   createdAt: string;
   updatedAt: string;
+  logged: boolean;
 }
 
 export class Preference {
@@ -24,7 +25,7 @@ export class Channel {
     public name: string,
     public isPrivate: boolean,
     public owners: User[],
-    public members: User[],
+    public members: User[]
   ) {}
 }
 

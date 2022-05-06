@@ -11,21 +11,23 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     try {
       commit('AUTH_START');
       const user = await authService.me();
-
       //set dark mode based on preference
-      if (user !== null){
+      if (user !== null) {
         Dark.set((user as User).preference.darkMode);
-        if(user.preference.stateName !== 'DND'){
+        if (user.preference.stateName !== 'DND') {
           user.preference.stateName = 'Online';
         }
-        dispatch('preferenceStore/userStateChanged',
-          user.preference.stateName, {root: true});
+        dispatch(
+          'preferenceStore/userStateChanged',
+          user.preference.stateName,
+          { root: true }
+        );
       }
       commit('AUTH_SUCCESS', user);
       return user !== null;
     } catch (err) {
+      commit('AUTH_SUCCESS', null);
       commit('AUTH_ERROR', err);
-      throw err;
     }
   },
   async register({ commit }, form: RegisterData) {
@@ -52,17 +54,17 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       throw err;
     }
   },
-  async logout({ commit , dispatch}) {
+  async logout({ commit, dispatch }) {
     try {
       commit('AUTH_START');
       const user = await authService.me();
 
       //serialize user stateName before logout if not DND
-      if (user !== null && user.preference.stateName !== 'DND'){
-        dispatch('preferenceStore/userStateChanged', 'Offline', {root: true});
+      if (user !== null && user.preference.stateName !== 'DND') {
+        dispatch('preferenceStore/userStateChanged', 'Offline', { root: true });
       }
       await authService.logout();
-      await dispatch('channelStore/disconnect', null, { root: true })
+      await dispatch('channelStore/disconnect', null, { root: true });
       commit('AUTH_SUCCESS', null);
       // remove api token and notify listeners
       authManager.removeToken();
@@ -72,9 +74,9 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     }
   },
 
-  async updateUserPreference({ commit }, stateName: string){
+  async updateUserPreference({ commit }, stateName: string) {
     commit('UPDATE_USER_PREFERENCE_STATE', stateName);
-  }
+  },
 };
 
 export default actions;

@@ -106,11 +106,6 @@ import { Dark } from 'quasar';
 import { User } from 'src/components/models';
 
 export default defineComponent({
-  //bud totok
-  // async beforePageLeave(type: string) {
-  //   if(type === 'close')
-  //     await this.$store.dispatch('preferenceStore/userStateChanged', 'Offline');
-  // },
   name: 'MainLayout',
   components: {
     UserInfoDialogContent,
@@ -119,14 +114,14 @@ export default defineComponent({
     ChannelList
   },
   async beforeUnmount() {
-    //alebo totok
-    // await this.$store.dispatch('preferenceStore/userStateChanged', 'Offline');
     await this.$store.dispatch('authStore/logout');
   },
-  created() {
+  async created() {
     if (!this.$store.state.authStore.user)
-      this.$store.dispatch('authStore/check');
-    this.$store.dispatch('channelStore/loadChannels');
+      await this.$store.dispatch('authStore/check').catch(() => {
+        this.$router.push('/login');
+      });
+    await this.$store.dispatch('channelStore/loadChannels');
   },
   data() {
     return {

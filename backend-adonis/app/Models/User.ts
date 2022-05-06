@@ -38,6 +38,9 @@ export default class User extends BaseModel {
   @column()
   public preference_id: number;
 
+  @column()
+  public logged: boolean;
+
   @hasOne(() => Preference, {
     localKey: 'preference_id',
     foreignKey: 'id',

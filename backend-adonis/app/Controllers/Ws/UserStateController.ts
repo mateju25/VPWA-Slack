@@ -12,6 +12,15 @@ export default class UserStateController {
     const room = this.getUserRoom(auth.user!);
     await socket.in(room).allSockets();
 
+    const preference = await Preference.findBy('id', auth.user!.preference_id);
+    auth.user?.$setAttribute('logged', true);
+    await auth.user?.save();
+
+    socket.nsp.emit('changedState', {
+      stateName: preference?.stateName,
+      user: auth.user,
+    });
+
     // add this socket to user room
     socket.join(room);
     // add userId to data shared between Socket.IO servers
@@ -27,7 +36,8 @@ export default class UserStateController {
     // user is disconnected
     if (userSockets.size === 0) {
       // notify other users
-
+      auth.user?.$setAttribute('logged', false);
+      await auth.user?.save();
       socket.nsp.emit('changedState', {
         stateName: 'Offline',
         user: auth.user,

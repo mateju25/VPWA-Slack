@@ -40,17 +40,21 @@ export default class AuthController {
     const user = await User.findBy('username', username);
     const password = request.input('password');
     const email = user === null ? '' : user.email;
-
+    auth.user?.$setAttribute('logged', true);
+    await auth.user?.save();
     return await auth.use('api').attempt(email, password);
   }
 
   public async logout({ auth }: HttpContextContract) {
+    auth.user?.$setAttribute('logged', false);
+    await auth.user?.save();
     return auth.use('api').logout();
   }
 
   public async me({ auth }: HttpContextContract) {
     await auth.user!.load('preference');
-
+    auth.user?.$setAttribute('logged', true);
+    await auth.user?.save();
     return auth.user;
   }
 }
