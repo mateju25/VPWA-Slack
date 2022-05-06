@@ -45,6 +45,7 @@
     <q-drawer
       :class='Dark.isActive ? "black-scroll-bar" : "white-scroll-bar"'
       show-if-above
+      overlay 
       v-model="leftDrawerOpen"
       side="left"
       :breakpoint="768"
@@ -80,6 +81,7 @@
     <q-drawer
       :class='Dark.isActive ? "black-scroll-bar" : "white-scroll-bar"'
       show-if-above
+      overlay 
       v-model="rightDrawerOpen"
       side="right"
       :breakpoint="992"
