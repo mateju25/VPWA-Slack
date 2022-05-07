@@ -70,6 +70,30 @@ export default class ChannelSeeder extends BaseSeeder {
         });
       }
     }
+    await users[1].related('channels').sync(
+      {
+        [channels[1].id]: {
+          role_id: 1,
+        },
+      },
+      false,
+    );
+    await users[1].related('channels').sync(
+      {
+        [channels[2].id]: {
+          role_id: 1,
+        },
+      },
+      false,
+    );
+    await users[1].related('channels').sync(
+      {
+        [channels[3].id]: {
+          role_id: 1,
+        },
+      },
+      false,
+    );
     await users[0].related('channels').attach({
       [channels[4].id]: {
         role_id: 1,
