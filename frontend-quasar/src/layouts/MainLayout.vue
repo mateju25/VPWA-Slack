@@ -45,10 +45,9 @@
     <q-drawer
       :class='Dark.isActive ? "black-scroll-bar" : "white-scroll-bar"'
       show-if-above
-      overlay 
       v-model="leftDrawerOpen"
       side="left"
-      :breakpoint="768"
+      :breakpoint="830"
       bordered
     >
       <ChannelList v-if='channelsLoaded' />
@@ -81,10 +80,9 @@
     <q-drawer
       :class='Dark.isActive ? "black-scroll-bar" : "white-scroll-bar"'
       show-if-above
-      overlay 
       v-model="rightDrawerOpen"
       side="right"
-      :breakpoint="992"
+      :breakpoint="1160"
       icon="people"
       bordered
     >
@@ -173,15 +171,24 @@ export default defineComponent({
 })
 </script>
 <style>
-@media (min-width: 992px) {
+@media (min-width: 1160px) {
   .hide-users, .mobile-avatar, .hide-channels, .channel {
     display: none;
   }
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1160px) {
   .hide-avatar, .logo{
     display: none;
+  }
+  .q-drawer--right {
+    z-index: 3000;
+  }
+}
+
+@media (max-width: 830px) {
+  .q-drawer--left {
+    z-index: 3000;
   }
 }
 

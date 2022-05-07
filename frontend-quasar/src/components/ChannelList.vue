@@ -203,7 +203,7 @@ export default defineComponent({
 </script>
 
 <style>
-@media (min-width: 992px) {
+@media (min-width: 1160px) {
   .logo-mobile {
     display: none;
   }
